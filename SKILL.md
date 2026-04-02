@@ -365,7 +365,7 @@ Before starting any development:
 ### Phase 1B — First Simulations
 | # | Task | Status | Date | Notes |
 |---|------|--------|------|-------|
-| 1B.1 | Ohm's Law simulation (flagship) | ⬜ Pending | — | — |
+| 1B.1 | Ohm's Law simulation (flagship) | ✅ Done | 2026-04-02 | Circuit with Battery, Resistor, Bulb, Ammeter, ElectronFlow |
 | 1B.2 | Light Reflection simulation | ⬜ Pending | — | — |
 | 1B.3 | Newton's Laws simulation | ⬜ Pending | — | — |
 | 1B.4 | Wave Properties simulation | ⬜ Pending | — | — |
@@ -394,5 +394,6 @@ Before starting any development:
 | Slug | Subject | Chapter | Class | Status |
 |------|---------|---------|-------|--------|
 | _template | — | — | — | ✅ Template created |
+| ohms-law | Physics | Ch.11 | 9 | ✅ Done |
 
 <!-- Status symbols: ⬜ Pending | 🔄 In Progress | ✅ Done | ❌ Blocked -->

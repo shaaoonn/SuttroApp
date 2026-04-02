@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────
 
 import type { SimulationConfig } from './_template/config';
+import { ohmsLawConfig } from './physics/ohms-law/config';
 
 export interface SimRegistryEntry {
   slug: string;
@@ -11,14 +12,12 @@ export interface SimRegistryEntry {
   component: () => Promise<{ default: React.ComponentType }>;
 }
 
-// ⬇️ ADD NEW SIMULATIONS HERE
 export const simulations: SimRegistryEntry[] = [
-  // Example:
-  // {
-  //   slug: 'ohms-law',
-  //   config: ohmsLawConfig,
-  //   component: () => import('./physics/ohms-law/OhmsLawSim'),
-  // },
+  {
+    slug: 'ohms-law',
+    config: ohmsLawConfig,
+    component: () => import('./physics/ohms-law/OhmsLawSim'),
+  },
 ];
 
 export function getSimulation(slug: string): SimRegistryEntry | undefined {

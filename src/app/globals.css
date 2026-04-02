@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────
+   সূত্র | suttro.app — Brand Design Tokens
+   ───────────────────────────────────────────── */
+
+:root {
+  /* Primary Palette */
+  --suttro-deep: #0B1D3A;
+  --suttro-primary: #1B6B4A;
+  --suttro-primary-light: #2A9D6E;
+  --suttro-accent: #E8A838;
+  --suttro-accent-light: #FFF3DB;
+  --suttro-sky: #E4F0F6;
+  --suttro-surface: #FAFBF9;
+  --suttro-white: #FFFFFF;
+  --suttro-text: #1A1F2B;
+  --suttro-muted: #6B7280;
+  --suttro-border: #E2E5E0;
+  --suttro-red: #C4392D;
+
+  /* Subject Colors */
+  --physics: #2563EB;
+  --chemistry: #7C3AED;
+  --biology: #059669;
+
+  /* Player/Canvas Dark Theme */
+  --player-bg: #0d1117;
+  --player-topbar: rgba(255, 255, 255, 0.04);
+  --player-bottombar: rgba(255, 255, 255, 0.03);
+  --player-border: rgba(255, 255, 255, 0.06);
+  --player-text: rgba(255, 255, 255, 0.85);
+  --player-muted: rgba(255, 255, 255, 0.35);
+  --player-accent: #1B6B4A;
+  --player-radius: 10px;
+
+  /* Canvas Component Colors */
+  --canvas-wire: #4a9eff;
+  --canvas-resistor: #e8a838;
+  --canvas-battery: #4aef8a;
+  --canvas-bulb: #ffe066;
+  --canvas-ammeter: #ff6b6b;
+  --canvas-label: rgba(255, 255, 255, 0.9);
+  --canvas-grid-dot: rgba(255, 255, 255, 0.08);
+
+  /* Spacing base: 4px */
+  /* Border Radius */
+  --radius-icon: 6px;
+  --radius-button: 10px;
+  --radius-card: 14px;
+  --radius-modal: 20px;
+}
+
+@theme inline {
+  --color-suttro-deep: var(--suttro-deep);
+  --color-suttro-primary: var(--suttro-primary);
+  --color-suttro-primary-light: var(--suttro-primary-light);
+  --color-suttro-accent: var(--suttro-accent);
+  --color-suttro-accent-light: var(--suttro-accent-light);
+  --color-suttro-sky: var(--suttro-sky);
+  --color-suttro-surface: var(--suttro-surface);
+  --color-suttro-white: var(--suttro-white);
+  --color-suttro-text: var(--suttro-text);
+  --color-suttro-muted: var(--suttro-muted);
+  --color-suttro-border: var(--suttro-border);
+  --color-suttro-red: var(--suttro-red);
+
+  --color-physics: var(--physics);
+  --color-chemistry: var(--chemistry);
+  --color-biology: var(--biology);
+
+  --color-player-bg: var(--player-bg);
+
+  --font-bengali: 'Hind Siliguri', sans-serif;
+  --font-display: 'DM Serif Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* ─────────────────────────────────────────────
+   Base Styles
+   ───────────────────────────────────────────── */
+
+body {
+  background: var(--suttro-surface);
+  color: var(--suttro-text);
+  font-family: 'Hind Siliguri', 'DM Sans', sans-serif;
+  line-height: 1.7;
+}
+
+/* ─────────────────────────────────────────────
+   Simulation Canvas
+   ───────────────────────────────────────────── */
+
+.sim-canvas {
+  background-color: var(--player-bg);
+  background-image: radial-gradient(circle, var(--canvas-grid-dot) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.suttro-player {
+  background: var(--player-bg);
+  border-radius: var(--player-radius);
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.suttro-player:fullscreen {
+  border-radius: 0;
+  aspect-ratio: auto;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Fixed overlay for control panels — passes through clicks to canvas */
+.fixed-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.fixed-overlay > * {
+  pointer-events: auto;
+}
+
+/* Control/Readout panels */
+.control-panel,
+.readout-panel {
+  position: absolute;
+  background: rgba(15, 20, 30, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  color: var(--player-text);
+}
+
+/* Animation easing */
+.suttro-transition {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}

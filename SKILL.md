@@ -354,13 +354,13 @@ Before starting any development:
 | 1.1 | Next.js project setup (SuttroApp repo) | ✅ Done | 2026-04-02 | Next.js 16.2 + Tailwind v4 + TypeScript |
 | 1.2 | Brand tokens + fonts + Tailwind config | ✅ Done | 2026-04-02 | CSS variables, 4 Google Fonts, subject colors |
 | 1.3 | Empty simulation player template (`_template/`) | ✅ Done | 2026-04-02 | Full player shell with toolbar, pan/zoom, modes |
-| 1.4 | Player shell (topbar + bottombar + fullscreen) | ⬜ Pending | — | — |
-| 1.5 | Dot grid canvas background | ⬜ Pending | — | — |
-| 1.6 | Pan/zoom (hand mode) implementation | ⬜ Pending | — | — |
-| 1.7 | Mouse mode (object interaction) | ⬜ Pending | — | — |
-| 1.8 | Floating control panel component | ⬜ Pending | — | — |
-| 1.9 | Readout panel component | ⬜ Pending | — | — |
-| 1.10 | Fit-to-screen button | ⬜ Pending | — | — |
+| 1.4 | Player shell (topbar + bottombar + fullscreen) | ✅ Done | 2026-04-02 | PlayerShell + BottomToolbar shared components |
+| 1.5 | Dot grid canvas background | ✅ Done | 2026-04-02 | DotGridCanvas component, CSS radial-gradient |
+| 1.6 | Pan/zoom (hand mode) implementation | ✅ Done | 2026-04-02 | PanZoomContainer + usePanZoom hook, CSS transform |
+| 1.7 | Mouse mode (object interaction) | ✅ Done | 2026-04-02 | SimObject with mode-aware drag, selection, labels |
+| 1.8 | Floating control panel component | ✅ Done | 2026-04-02 | ControlPanel — slot-based variable sliders |
+| 1.9 | Readout panel component | ✅ Done | 2026-04-02 | ReadoutPanel + FormulaDisplay components |
+| 1.10 | Fit-to-screen button | ✅ Done | 2026-04-02 | fitToScreen in BottomToolbar, resets pan/zoom |
 
 ### Phase 1B — First Simulations
 | # | Task | Status | Date | Notes |

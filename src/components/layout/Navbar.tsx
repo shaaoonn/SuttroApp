@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useAuth } from '@/lib/auth-context';
 import MobileMenu from './MobileMenu';
 
 // ─────────────────────────────────────────────
@@ -24,6 +25,7 @@ const SUBJECT_LINKS = [
 ];
 
 export default function Navbar() {
+  const { user, loading } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [subjectOpen, setSubjectOpen] = useState(false);
 
@@ -103,13 +105,31 @@ export default function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-2">
-            <Link
-              href="/login"
-              className="hidden sm:inline-flex items-center px-4 py-2 rounded-[10px] text-sm font-medium text-white suttro-transition"
-              style={{ background: 'var(--suttro-primary)' }}
-            >
-              লগ ইন
-            </Link>
+            {!loading && (
+              user ? (
+                <Link
+                  href="/dashboard"
+                  className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-[10px] text-sm font-medium suttro-transition hover:bg-black/5"
+                  style={{ color: 'var(--suttro-primary)' }}
+                >
+                  <span
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                    style={{ background: 'var(--suttro-primary)' }}
+                  >
+                    {user.phone?.slice(-2) || '?'}
+                  </span>
+                  ড্যাশবোর্ড
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  className="hidden sm:inline-flex items-center px-4 py-2 rounded-[10px] text-sm font-medium text-white suttro-transition"
+                  style={{ background: 'var(--suttro-primary)' }}
+                >
+                  লগ ইন
+                </Link>
+              )
+            )}
 
             {/* Mobile hamburger */}
             <button

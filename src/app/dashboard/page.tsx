@@ -1,24 +1,63 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'ড্যাশবোর্ড — সূত্র | suttro.app',
-};
+import Link from 'next/link';
+import { useAuth } from '@/lib/auth-context';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+
+// ─────────────────────────────────────────────
+// Dashboard — User learning progress
+// Protected: redirects to /login if not logged in
+// ─────────────────────────────────────────────
 
 const RECENT_ITEMS = [
   { type: 'sim', title: 'ওহমের সূত্র', subject: 'পদার্থবিজ্ঞান', href: '/sim/ohms-law' },
 ];
 
 export default function DashboardPage() {
+  const { user, loading, signOut } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [loading, user, router]);
+
+  if (loading) {
+    return (
+      <div className="flex-1 flex items-center justify-center" style={{ background: 'var(--suttro-surface)' }}>
+        <div className="text-center">
+          <div className="text-3xl mb-3 animate-pulse">⏳</div>
+          <p style={{ color: 'var(--suttro-muted)' }}>লোড হচ্ছে...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) return null;
+
   return (
     <div style={{ background: 'var(--suttro-surface)' }}>
       <div className="mx-auto max-w-6xl px-4 py-12">
-        <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--suttro-deep)' }}>
-          ড্যাশবোর্ড
-        </h1>
-        <p className="text-sm mb-10" style={{ color: 'var(--suttro-muted)' }}>
-          তোমার শেখার অগ্রগতি এক নজরে।
-        </p>
+        {/* Header */}
+        <div className="flex items-start justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold mb-1" style={{ color: 'var(--suttro-deep)' }}>
+              ড্যাশবোর্ড
+            </h1>
+            <p className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
+              {user.phone ? `${user.phone} — ` : ''}তোমার শেখার অগ্রগতি এক নজরে।
+            </p>
+          </div>
+          <button
+            onClick={() => signOut()}
+            className="px-4 py-2 rounded-[10px] text-sm font-medium border suttro-transition hover:bg-black/5"
+            style={{ borderColor: 'var(--suttro-border)', color: 'var(--suttro-muted)' }}
+          >
+            লগ আউট
+          </button>
+        </div>
 
         {/* Quick Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
@@ -46,8 +85,9 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* Recent Activity */}
+        {/* Content Grid */}
         <div className="grid sm:grid-cols-2 gap-6">
+          {/* Recent Activity */}
           <div
             className="rounded-[14px] border p-6"
             style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}
@@ -89,6 +129,40 @@ export default function DashboardPage() {
               </p>
             </div>
           </div>
+        </div>
+
+        {/* Quick Links */}
+        <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <Link
+            href="/simulations"
+            className="rounded-[14px] p-5 text-center suttro-transition hover:opacity-80"
+            style={{ background: 'var(--suttro-sky)' }}
+          >
+            <div className="text-2xl mb-2">🔬</div>
+            <div className="text-sm font-medium" style={{ color: 'var(--suttro-deep)' }}>
+              সিমুলেশন
+            </div>
+          </Link>
+          <Link
+            href="/classes"
+            className="rounded-[14px] p-5 text-center suttro-transition hover:opacity-80"
+            style={{ background: 'var(--suttro-sky)' }}
+          >
+            <div className="text-2xl mb-2">📹</div>
+            <div className="text-sm font-medium" style={{ color: 'var(--suttro-deep)' }}>
+              ক্লাস আর্কাইভ
+            </div>
+          </Link>
+          <Link
+            href="/pricing"
+            className="rounded-[14px] p-5 text-center suttro-transition hover:opacity-80"
+            style={{ background: 'var(--suttro-sky)' }}
+          >
+            <div className="text-2xl mb-2">💎</div>
+            <div className="text-sm font-medium" style={{ color: 'var(--suttro-deep)' }}>
+              প্রিমিয়াম
+            </div>
+          </Link>
         </div>
       </div>
     </div>

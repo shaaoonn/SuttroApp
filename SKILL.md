@@ -392,10 +392,10 @@ Before starting any development:
 ### Phase 2 — Video + Auth
 | # | Task | Status | Date | Notes |
 |---|------|--------|------|-------|
-| 2.1 | Video player (HLS) | ⬜ Pending | — | — |
-| 2.2 | Class archive page | ⬜ Pending | — | — |
-| 2.3 | Phone OTP auth (Supabase) | ⬜ Pending | — | — |
-| 2.4 | User dashboard | ⬜ Pending | — | — |
+| 2.1 | Video player (HLS) | ✅ Done | 2026-04-03 | VideoPlayer component with HLS.js, speed control, progress bar, fullscreen |
+| 2.2 | Class archive page | ✅ Done | 2026-04-03 | Subject filters, class recording cards with thumbnails, "শীঘ্রই আসছে" |
+| 2.3 | Phone OTP auth (Supabase) | ✅ Done | 2026-04-03 | AuthProvider context, lazy Supabase init, login OTP flow, auth-aware Navbar |
+| 2.4 | User dashboard | ✅ Done | 2026-04-03 | Protected route, stats, recent activity, offline downloads, sign out |
 | 2.5 | PWA enhancements | ⬜ Pending | — | Offline sim caching, install prompt |
 
 ### Simulation Registry

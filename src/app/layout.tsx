@@ -3,6 +3,7 @@ import { Hind_Siliguri, DM_Serif_Display, DM_Sans, JetBrains_Mono } from "next/f
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PWARegister from "@/components/PWARegister";
+import { AuthProvider } from "@/lib/auth-context";
 import "./globals.css";
 
 const hindSiliguri = Hind_Siliguri({
@@ -75,10 +76,12 @@ export default function RootLayout({
       className={`${hindSiliguri.variable} ${dmSerifDisplay.variable} ${dmSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-bengali">
-        <Navbar />
-        <main className="flex-1 flex flex-col">{children}</main>
-        <Footer />
-        <PWARegister />
+        <AuthProvider>
+          <Navbar />
+          <main className="flex-1 flex flex-col">{children}</main>
+          <Footer />
+          <PWARegister />
+        </AuthProvider>
       </body>
     </html>
   );

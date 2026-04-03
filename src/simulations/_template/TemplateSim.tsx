@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef } from 'react';
 import { useSimulation } from './useSimulation';
 import { usePanZoom } from '@/hooks/usePanZoom';
 import { useInteractionMode } from '@/hooks/useInteractionMode';
@@ -18,8 +19,9 @@ import FormulaDisplay from '@/components/player/FormulaDisplay';
 // ─────────────────────────────────────────────
 
 export default function TemplateSim() {
+  const viewportRef = useRef<HTMLDivElement>(null);
   const { variables, computed, setVariable, resetAll, config } = useSimulation();
-  const panZoom = usePanZoom(config.defaultZoom);
+  const panZoom = usePanZoom(config.defaultZoom, config.canvasSize, viewportRef);
   const interaction = useInteractionMode();
 
   // ⬇️ CONVERT computed values to ReadoutPanel entries
@@ -69,8 +71,10 @@ export default function TemplateSim() {
       }
     >
       <PanZoomContainer
+        ref={viewportRef}
         panZoom={panZoom}
         mode={interaction.effectiveMode}
+        canvasSize={config.canvasSize}
       >
         {/* ⬇️ ADD YOUR SIMULATION VISUAL ELEMENTS HERE */}
         {/* Example: circuit components, molecules, cells */}

@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef } from 'react';
 import { useOhmsLaw } from './useOhmsLaw';
 import { usePanZoom } from '@/hooks/usePanZoom';
 import { useInteractionMode } from '@/hooks/useInteractionMode';
@@ -33,27 +34,15 @@ const LAYOUT = {
 };
 
 // Wire paths for electron flow animation
-// Top wire: battery+ → resistor → bulb
 const WIRE_TOP: [number, number][] = [
-  [160, 200], // battery top
-  [160, 140], // corner
-  [370, 140], // to resistor
-  [430, 140], // past resistor
-  [650, 140], // corner
-  [650, 200], // to bulb
+  [160, 200], [160, 140], [370, 140], [430, 140], [650, 140], [650, 200],
 ];
-
-// Bottom wire: bulb → ammeter → battery−
 const WIRE_BOTTOM: [number, number][] = [
-  [650, 280], // bulb bottom
-  [650, 400], // corner
-  [410, 400], // to ammeter
-  [330, 400], // past ammeter
-  [160, 400], // corner
-  [160, 300], // back to battery
+  [650, 280], [650, 400], [410, 400], [330, 400], [160, 400], [160, 300],
 ];
 
 export default function OhmsLawSim() {
+  const viewportRef = useRef<HTMLDivElement>(null);
   const {
     variables,
     computed,
@@ -64,7 +53,7 @@ export default function OhmsLawSim() {
     electronSpeed,
   } = useOhmsLaw();
 
-  const panZoom = usePanZoom(config.defaultZoom);
+  const panZoom = usePanZoom(config.defaultZoom, config.canvasSize, viewportRef);
   const interaction = useInteractionMode();
 
   const readouts = [
@@ -116,13 +105,17 @@ export default function OhmsLawSim() {
         </>
       }
     >
-      <PanZoomContainer panZoom={panZoom} mode={interaction.effectiveMode}>
+      <PanZoomContainer
+        ref={viewportRef}
+        panZoom={panZoom}
+        mode={interaction.effectiveMode}
+        canvasSize={config.canvasSize}
+      >
         {/* ── Wires (SVG lines connecting components) ── */}
         <svg
           className="absolute inset-0 pointer-events-none"
           style={{ width: config.canvasSize.width, height: config.canvasSize.height }}
         >
-          {/* Top wire path */}
           <polyline
             points={WIRE_TOP.map((p) => p.join(',')).join(' ')}
             fill="none"
@@ -132,7 +125,6 @@ export default function OhmsLawSim() {
             strokeLinecap="round"
             opacity={0.6}
           />
-          {/* Bottom wire path */}
           <polyline
             points={WIRE_BOTTOM.map((p) => p.join(',')).join(' ')}
             fill="none"
@@ -144,59 +136,28 @@ export default function OhmsLawSim() {
           />
         </svg>
 
-        {/* ── Electron Flow Animation ── */}
+        {/* ── Electron Flow ── */}
         <ElectronFlow path={WIRE_TOP} speed={electronSpeed} count={5} />
         <ElectronFlow path={WIRE_BOTTOM} speed={electronSpeed} count={5} />
 
         {/* ── Circuit Components ── */}
-        <div
-          className="absolute"
-          style={{
-            left: LAYOUT.battery.x - 40,
-            top: LAYOUT.battery.y - 50,
-          }}
-        >
+        <div className="absolute" style={{ left: LAYOUT.battery.x - 40, top: LAYOUT.battery.y - 50 }}>
           <Battery voltage={variables.voltage} />
         </div>
-
-        <div
-          className="absolute"
-          style={{
-            left: LAYOUT.resistor.x - 60,
-            top: LAYOUT.resistor.y - 30,
-          }}
-        >
+        <div className="absolute" style={{ left: LAYOUT.resistor.x - 60, top: LAYOUT.resistor.y - 30 }}>
           <Resistor resistance={variables.resistance} />
         </div>
-
-        <div
-          className="absolute"
-          style={{
-            left: LAYOUT.bulb.x - 35,
-            top: LAYOUT.bulb.y - 40,
-          }}
-        >
+        <div className="absolute" style={{ left: LAYOUT.bulb.x - 35, top: LAYOUT.bulb.y - 40 }}>
           <Bulb brightness={bulbBrightness} />
         </div>
-
-        <div
-          className="absolute"
-          style={{
-            left: LAYOUT.ammeter.x - 40,
-            top: LAYOUT.ammeter.y - 40,
-          }}
-        >
+        <div className="absolute" style={{ left: LAYOUT.ammeter.x - 40, top: LAYOUT.ammeter.y - 40 }}>
           <Ammeter current={computed.current} />
         </div>
 
-        {/* ── Circuit Description ── */}
+        {/* ── Hint text ── */}
         <div
           className="absolute text-center"
-          style={{
-            left: config.canvasSize.width / 2 - 140,
-            top: config.canvasSize.height / 2 - 15,
-            width: 280,
-          }}
+          style={{ left: config.canvasSize.width / 2 - 140, top: config.canvasSize.height / 2 - 15, width: 280 }}
         >
           <p className="text-xs" style={{ color: 'var(--player-muted)' }}>
             ভোল্টেজ ও রোধ পরিবর্তন করো — দেখো কারেন্ট কীভাবে বদলায়!

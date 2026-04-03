@@ -112,6 +112,9 @@ Refs:    D:\APPS AND WEB\Suttro App\references\
 --physics: #2563EB;   /* Electric Blue */
 --chemistry: #7C3AED; /* Vivid Purple */
 --biology: #059669;   /* Emerald */
+--subject-math: #DC2626;        /* Red — সাধারণ গণিত */
+--subject-higher-math: #EA580C; /* Orange — উচ্চতর গণিত */
+--subject-english: #0891B2;     /* Cyan/Teal — ইংরেজি */
 ```
 
 ### Typography
@@ -366,7 +369,7 @@ Before starting any development:
 | # | Task | Status | Date | Notes |
 |---|------|--------|------|-------|
 | 1B.1 | Ohm's Law simulation (flagship) | ✅ Done | 2026-04-02 | Circuit with Battery, Resistor, Bulb, Ammeter, ElectronFlow |
-| 1B.2 | Light Reflection simulation | ⬜ Pending | — | — |
+| 1B.2 | Light Reflection simulation | ✅ Done | 2026-04-03 | Mirror, rays, normal, angle arcs, θᵢ=θᵣ |
 | 1B.3 | Newton's Laws simulation | ⬜ Pending | — | — |
 | 1B.4 | Wave Properties simulation | ⬜ Pending | — | — |
 | 1B.5 | Circuit Builder simulation | ⬜ Pending | — | — |
@@ -404,5 +407,6 @@ Before starting any development:
 |------|---------|---------|-------|--------|
 | _template | — | — | — | ✅ Template created |
 | ohms-law | Physics | Ch.11 | 9 | ✅ Done |
+| light-reflection | Physics | Ch.10 | 9 | ✅ Done |
 
 <!-- Status symbols: ⬜ Pending | 🔄 In Progress | ✅ Done | ❌ Blocked -->

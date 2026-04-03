@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getSimulation, simulations } from '@/simulations/registry';
 import OhmsLawSim from '@/simulations/physics/ohms-law/OhmsLawSim';
 import LightReflectionSim from '@/simulations/physics/light-reflection/LightReflectionSim';
+import LightRefractionSim from '@/simulations/physics/light-refraction/LightRefractionSim';
 
 interface SimPageProps {
   params: Promise<{ slug: string }>;
@@ -26,6 +27,7 @@ export async function generateMetadata({ params }: SimPageProps) {
 const SIMULATION_COMPONENTS: Record<string, React.ComponentType> = {
   'ohms-law': OhmsLawSim,
   'light-reflection': LightReflectionSim,
+  'light-refraction': LightRefractionSim,
 };
 
 const SUBJECT_LABELS: Record<string, string> = {

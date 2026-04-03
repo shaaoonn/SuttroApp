@@ -408,5 +408,6 @@ Before starting any development:
 | _template | — | — | — | ✅ Template created |
 | ohms-law | Physics | Ch.11 | 9 | ✅ Done |
 | light-reflection | Physics | Ch.10 | 9 | ✅ Done |
+| light-refraction | Physics | Ch.10 | 9 | ✅ Done |
 
 <!-- Status symbols: ⬜ Pending | 🔄 In Progress | ✅ Done | ❌ Blocked -->

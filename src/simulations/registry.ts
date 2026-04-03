@@ -6,6 +6,7 @@
 import type { SimulationConfig } from './_template/config';
 import { ohmsLawConfig } from './physics/ohms-law/config';
 import { lightReflectionConfig } from './physics/light-reflection/config';
+import { lightRefractionConfig } from './physics/light-refraction/config';
 
 export interface SimRegistryEntry {
   slug: string;
@@ -23,6 +24,11 @@ export const simulations: SimRegistryEntry[] = [
     slug: 'light-reflection',
     config: lightReflectionConfig,
     component: () => import('./physics/light-reflection/LightReflectionSim'),
+  },
+  {
+    slug: 'light-refraction',
+    config: lightRefractionConfig,
+    component: () => import('./physics/light-refraction/LightRefractionSim'),
   },
 ];
 

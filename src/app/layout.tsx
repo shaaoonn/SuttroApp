@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Hind_Siliguri, DM_Serif_Display, DM_Sans, JetBrains_Mono } from "next/font/google";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import "./globals.css";
 
 const hindSiliguri = Hind_Siliguri({
@@ -36,18 +38,8 @@ export const metadata: Metadata = {
   description:
     "সূত্র — বাংলাদেশের প্রথম ইন্টারেক্টিভ সায়েন্স সিমুলেশন প্ল্যাটফর্ম। NCTB ক্লাস ৯-১০ পদার্থবিজ্ঞান, রসায়ন, জীববিজ্ঞান সিমুলেশন।",
   keywords: [
-    "সূত্র",
-    "suttro",
-    "science simulation",
-    "বিজ্ঞান সিমুলেশন",
-    "NCTB",
-    "ক্লাস ৯",
-    "ক্লাস ১০",
-    "পদার্থবিজ্ঞান",
-    "রসায়ন",
-    "জীববিজ্ঞান",
-    "interactive lab",
-    "virtual lab",
+    "সূত্র", "suttro", "science simulation", "বিজ্ঞান সিমুলেশন",
+    "NCTB", "ক্লাস ৯", "ক্লাস ১০", "পদার্থবিজ্ঞান", "রসায়ন", "জীববিজ্ঞান",
   ],
   openGraph: {
     title: "সূত্র | suttro.app",
@@ -69,7 +61,11 @@ export default function RootLayout({
       lang="bn"
       className={`${hindSiliguri.variable} ${dmSerifDisplay.variable} ${dmSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-bengali">{children}</body>
+      <body className="min-h-full flex flex-col font-bengali">
+        <Navbar />
+        <main className="flex-1 flex flex-col">{children}</main>
+        <Footer />
+      </body>
     </html>
   );
 }

@@ -374,10 +374,14 @@ Before starting any development:
 ### Phase 1C — Website
 | # | Task | Status | Date | Notes |
 |---|------|--------|------|-------|
-| 1C.1 | Landing page with hero simulation | ⬜ Pending | — | — |
-| 1C.2 | Simulation gallery page | ⬜ Pending | — | — |
-| 1C.3 | Individual simulation page | ⬜ Pending | — | — |
-| 1C.4 | Responsive navigation | ⬜ Pending | — | — |
+| 1C.1 | Landing page with hero simulation | ✅ Done | 2026-04-03 | Hero with live OhmsLaw sim, stats, features, gallery, CTA |
+| 1C.2 | Simulation gallery page | ✅ Done | 2026-04-03 | Subject filter tabs, SimulationCard component |
+| 1C.3 | Individual simulation page | ✅ Done | 2026-04-03 | Breadcrumb, sidebar, formulas, variables, share/NCTB ref |
+| 1C.4 | Responsive navigation | ✅ Done | 2026-04-03 | Navbar with subject dropdown, MobileMenu, Footer (4-col) |
+| 1C.4a | About page | ✅ Done | 2026-04-03 | Mission, teacher story, EJOSB IT, vision sections |
+| 1C.4b | Pricing page | ✅ Done | 2026-04-03 | Free + Premium (৳299/mo) plan cards |
+| 1C.4c | Classes page | ✅ Done | 2026-04-03 | Placeholder "coming soon" for HLS video archive |
+| 1C.4d | Login page | ✅ Done | 2026-04-03 | Phone OTP UI with +880 prefix |
 | 1C.5 | Deploy to Coolify | ⬜ Pending | — | — |
 
 ### Phase 2 — Video + Auth

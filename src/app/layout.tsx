@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Hind_Siliguri, DM_Serif_Display, DM_Sans, JetBrains_Mono } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import PWARegister from "@/components/PWARegister";
 import "./globals.css";
 
 const hindSiliguri = Hind_Siliguri({
@@ -33,6 +34,12 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+export const viewport: Viewport = {
+  themeColor: "#1B6B4A",
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   title: "সূত্র | suttro.app — বিজ্ঞান দেখো, বিজ্ঞান বোঝো",
   description:
@@ -41,6 +48,12 @@ export const metadata: Metadata = {
     "সূত্র", "suttro", "science simulation", "বিজ্ঞান সিমুলেশন",
     "NCTB", "ক্লাস ৯", "ক্লাস ১০", "পদার্থবিজ্ঞান", "রসায়ন", "জীববিজ্ঞান",
   ],
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "সূত্র",
+  },
   openGraph: {
     title: "সূত্র | suttro.app",
     description: "বিজ্ঞান দেখো, বিজ্ঞান বোঝো। ক্লাস ৯-১০ ইন্টারেক্টিভ সায়েন্স সিমুলেশন।",
@@ -65,6 +78,7 @@ export default function RootLayout({
         <Navbar />
         <main className="flex-1 flex flex-col">{children}</main>
         <Footer />
+        <PWARegister />
       </body>
     </html>
   );

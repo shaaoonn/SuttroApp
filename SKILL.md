@@ -382,7 +382,12 @@ Before starting any development:
 | 1C.4b | Pricing page | ✅ Done | 2026-04-03 | Free + Premium (৳299/mo) plan cards |
 | 1C.4c | Classes page | ✅ Done | 2026-04-03 | Placeholder "coming soon" for HLS video archive |
 | 1C.4d | Login page | ✅ Done | 2026-04-03 | Phone OTP UI with +880 prefix |
-| 1C.5 | Deploy to Coolify | ⬜ Pending | — | — |
+| 1C.4e | Dashboard page | ✅ Done | 2026-04-03 | Stats, recent activity, offline downloads section |
+| 1C.4f | Class player page | ✅ Done | 2026-04-03 | /class/[slug] with video placeholder, breadcrumb |
+| 1C.4g | Custom 404 page | ✅ Done | 2026-04-03 | Bangla "৪০৪ পেজ পাওয়া যায়নি" |
+| 1C.5 | Dockerfile + docker-compose | ✅ Done | 2026-04-03 | Multi-stage build, standalone output, .dockerignore |
+| 1C.6 | PWA setup | ✅ Done | 2026-04-03 | manifest.json, service worker, PWARegister component |
+| 1C.7 | Deploy to Coolify | ⬜ Pending | — | Needs Contabo VPS access |
 
 ### Phase 2 — Video + Auth
 | # | Task | Status | Date | Notes |
@@ -391,7 +396,7 @@ Before starting any development:
 | 2.2 | Class archive page | ⬜ Pending | — | — |
 | 2.3 | Phone OTP auth (Supabase) | ⬜ Pending | — | — |
 | 2.4 | User dashboard | ⬜ Pending | — | — |
-| 2.5 | PWA setup | ⬜ Pending | — | — |
+| 2.5 | PWA enhancements | ⬜ Pending | — | Offline sim caching, install prompt |
 
 ### Simulation Registry
 <!-- Claude Code: নতুন সিমুলেশন তৈরি হলে এখানে যোগ করো -->

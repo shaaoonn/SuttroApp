@@ -387,7 +387,7 @@ Before starting any development:
 | 1C.4g | Custom 404 page | ✅ Done | 2026-04-03 | Bangla "৪০৪ পেজ পাওয়া যায়নি" |
 | 1C.5 | Dockerfile + docker-compose | ✅ Done | 2026-04-03 | Multi-stage build, standalone output, .dockerignore |
 | 1C.6 | PWA setup | ✅ Done | 2026-04-03 | manifest.json, service worker, PWARegister component |
-| 1C.7 | Deploy to Coolify | ⬜ Pending | — | Needs Contabo VPS access |
+| 1C.7 | Deploy to Coolify | ✅ Done | 2026-04-03 | suttro.ejobsit.com — Dockerfile, auto-deploy on push |
 
 ### Phase 2 — Video + Auth
 | # | Task | Status | Date | Notes |

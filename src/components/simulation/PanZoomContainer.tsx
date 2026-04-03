@@ -24,7 +24,7 @@ interface PanZoomContainerProps {
     handlers: {
       onPointerDown: (e: React.PointerEvent) => void;
       onPointerMove: (e: React.PointerEvent) => void;
-      onPointerUp: () => void;
+      onPointerUp: (e: React.PointerEvent) => void;
       onWheel: (e: React.WheelEvent) => void;
     };
   };
@@ -49,12 +49,23 @@ const PanZoomContainer = forwardRef<HTMLDivElement, PanZoomContainerProps>(
     },
     ref,
   ) {
-    // Only pass pan/zoom handlers in hand mode
-    const canvasHandlers = mode === 'hand' ? panZoom.handlers : undefined;
+    // Hand mode: pass all handlers (pan + zoom)
+    // Mouse mode: only pass wheel handler (scroll-zoom always works, like Figma)
+    const canvasHandlers =
+      mode === 'hand'
+        ? panZoom.handlers
+        : { onWheel: panZoom.handlers.onWheel };
 
     return (
       // Viewport — fills parent, clips the large canvas
-      <div ref={ref} className="absolute inset-0 overflow-hidden" style={{ backgroundColor: 'var(--player-bg)' }}>
+      <div
+        ref={ref}
+        className="absolute inset-0 overflow-hidden"
+        style={{
+          backgroundColor: 'var(--player-bg)',
+          touchAction: 'none', // prevent browser gestures interfering
+        }}
+      >
         {/* Layer 1+2: Dot grid + simulation objects (transform layer) */}
         <DotGridCanvas
           transformStyle={panZoom.transformStyle}

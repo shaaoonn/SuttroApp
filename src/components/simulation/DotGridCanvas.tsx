@@ -17,12 +17,15 @@ interface DotGridCanvasProps {
   /** Canvas virtual size */
   canvasWidth: number;
   canvasHeight: number;
-  /** Pointer event handlers (only active in hand mode) */
+  /** Pointer event handlers
+   * Hand mode: all handlers (pan + zoom)
+   * Mouse mode: only onWheel (scroll-zoom always works)
+   */
   handlers?: {
-    onPointerDown: (e: PointerEvent) => void;
-    onPointerMove: (e: PointerEvent) => void;
-    onPointerUp: () => void;
-    onWheel: (e: WheelEvent) => void;
+    onPointerDown?: (e: PointerEvent) => void;
+    onPointerMove?: (e: PointerEvent) => void;
+    onPointerUp?: (e: PointerEvent) => void;
+    onWheel?: (e: WheelEvent) => void;
   };
   /** Simulation visual elements (Layer 2) */
   children?: ReactNode;

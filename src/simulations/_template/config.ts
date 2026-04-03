@@ -22,7 +22,7 @@ export interface SimulationConfig {
   id: string;
   slug: string;
   title: { bn: string; en: string };
-  subject: 'physics' | 'chemistry' | 'biology';
+  subject: 'physics' | 'chemistry' | 'biology' | 'math' | 'higher-math' | 'english';
   nctb: { class: 9 | 10; chapter: number; section: string };
   variables: VariableConfig[];
   formulas: FormulaConfig[];

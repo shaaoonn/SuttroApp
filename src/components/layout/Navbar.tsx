@@ -22,6 +22,9 @@ const SUBJECT_LINKS = [
   { href: '/simulations?subject=physics', label: 'পদার্থবিজ্ঞান', color: 'bg-physics' },
   { href: '/simulations?subject=chemistry', label: 'রসায়ন', color: 'bg-chemistry' },
   { href: '/simulations?subject=biology', label: 'জীববিজ্ঞান', color: 'bg-biology' },
+  { href: '/simulations?subject=math', label: 'সাধারণ গণিত', color: 'bg-subject-math' },
+  { href: '/simulations?subject=higher-math', label: 'উচ্চতর গণিত', color: 'bg-subject-higher-math' },
+  { href: '/simulations?subject=english', label: 'ইংরেজি', color: 'bg-subject-english' },
 ];
 
 export default function Navbar() {

@@ -9,12 +9,18 @@ const SUBJECT_COLORS: Record<string, string> = {
   physics: 'bg-physics',
   chemistry: 'bg-chemistry',
   biology: 'bg-biology',
+  math: 'bg-subject-math',
+  'higher-math': 'bg-subject-higher-math',
+  english: 'bg-subject-english',
 };
 
 const SUBJECT_LABELS: Record<string, string> = {
   physics: 'পদার্থবিজ্ঞান',
   chemistry: 'রসায়ন',
   biology: 'জীববিজ্ঞান',
+  math: 'সাধারণ গণিত',
+  'higher-math': 'উচ্চতর গণিত',
+  english: 'ইংরেজি',
 };
 
 interface SimulationCardProps {

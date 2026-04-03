@@ -83,6 +83,9 @@ Minimum digital width: full wordmark = 120px, icon mark = 32px.
 | পদার্থবিজ্ঞান (Physics) | Electric Blue | #2563EB | Chapter tags, sim borders |
 | রসায়ন (Chemistry) | Vivid Purple | #7C3AED | Chapter tags, sim borders |
 | জীববিজ্ঞান (Biology) | Emerald | #059669 | Chapter tags, sim borders |
+| সাধারণ গণিত (General Math) | Red | #DC2626 | Chapter tags, sim borders |
+| উচ্চতর গণিত (Higher Math) | Orange | #EA580C | Chapter tags, sim borders |
+| ইংরেজি (English) | Cyan/Teal | #0891B2 | Chapter tags, sim borders |
 
 ### Color Ratio
 - Deep: 60% (main backgrounds, text)

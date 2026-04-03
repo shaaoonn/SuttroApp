@@ -23,6 +23,9 @@
   --physics: #2563EB;
   --chemistry: #7C3AED;
   --biology: #059669;
+  --subject-math: #DC2626;
+  --subject-higher-math: #EA580C;
+  --subject-english: #0891B2;
 
   /* Player/Canvas Dark Theme */
   --player-bg: #0d1117;
@@ -68,6 +71,9 @@
   --color-physics: var(--physics);
   --color-chemistry: var(--chemistry);
   --color-biology: var(--biology);
+  --color-subject-math: var(--subject-math);
+  --color-subject-higher-math: var(--subject-higher-math);
+  --color-subject-english: var(--subject-english);
 
   --color-player-bg: var(--player-bg);
 

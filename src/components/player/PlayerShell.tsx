@@ -16,7 +16,7 @@ import type { InteractionMode } from '@/hooks/useInteractionMode';
 interface PlayerShellProps {
   /** Subject tag + chapter info for top bar */
   topBar: {
-    subject: 'physics' | 'chemistry' | 'biology';
+    subject: 'physics' | 'chemistry' | 'biology' | 'math' | 'higher-math' | 'english';
     chapter: number;
     title: string;
   };
@@ -40,12 +40,18 @@ const SUBJECT_COLORS: Record<string, string> = {
   physics: 'bg-physics',
   chemistry: 'bg-chemistry',
   biology: 'bg-biology',
+  math: 'bg-subject-math',
+  'higher-math': 'bg-subject-higher-math',
+  english: 'bg-subject-english',
 };
 
 const SUBJECT_LABELS: Record<string, string> = {
   physics: 'পদার্থবিজ্ঞান',
   chemistry: 'রসায়ন',
   biology: 'জীববিজ্ঞান',
+  math: 'সাধারণ গণিত',
+  'higher-math': 'উচ্চতর গণিত',
+  english: 'ইংরেজি',
 };
 
 export default function PlayerShell({

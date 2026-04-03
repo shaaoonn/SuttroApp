@@ -14,6 +14,9 @@ const FOOTER_LINKS = {
     { href: '/simulations?subject=physics', label: 'পদার্থবিজ্ঞান' },
     { href: '/simulations?subject=chemistry', label: 'রসায়ন' },
     { href: '/simulations?subject=biology', label: 'জীববিজ্ঞান' },
+    { href: '/simulations?subject=math', label: 'সাধারণ গণিত' },
+    { href: '/simulations?subject=higher-math', label: 'উচ্চতর গণিত' },
+    { href: '/simulations?subject=english', label: 'ইংরেজি' },
   ],
   company: [
     { href: '/about', label: 'আমাদের সম্পর্কে' },

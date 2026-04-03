@@ -4,7 +4,7 @@ import SimulationCard from '@/components/ui/SimulationCard';
 
 export const metadata: Metadata = {
   title: 'সিমুলেশন — সূত্র | suttro.app',
-  description: 'NCTB ক্লাস ৯-১০ ইন্টারেক্টিভ সায়েন্স সিমুলেশন। পদার্থবিজ্ঞান, রসায়ন, জীববিজ্ঞান।',
+  description: 'NCTB ক্লাস ৯-১০ ইন্টারেক্টিভ সিমুলেশন। পদার্থবিজ্ঞান, রসায়ন, জীববিজ্ঞান, সাধারণ গণিত, উচ্চতর গণিত, ইংরেজি।',
 };
 
 const SUBJECT_FILTERS = [
@@ -12,6 +12,9 @@ const SUBJECT_FILTERS = [
   { id: 'physics', label: 'পদার্থবিজ্ঞান', color: 'bg-physics' },
   { id: 'chemistry', label: 'রসায়ন', color: 'bg-chemistry' },
   { id: 'biology', label: 'জীববিজ্ঞান', color: 'bg-biology' },
+  { id: 'math', label: 'সাধারণ গণিত', color: 'bg-subject-math' },
+  { id: 'higher-math', label: 'উচ্চতর গণিত', color: 'bg-subject-higher-math' },
+  { id: 'english', label: 'ইংরেজি', color: 'bg-subject-english' },
 ];
 
 export default function SimulationsPage() {
@@ -27,7 +30,7 @@ export default function SimulationsPage() {
             সিমুলেশন
           </h1>
           <p className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
-            NCTB ক্লাস ৯-১০ পদার্থবিজ্ঞান, রসায়ন ও জীববিজ্ঞান সিমুলেশন
+            NCTB ক্লাস ৯-১০ পদার্থবিজ্ঞান, রসায়ন, জীববিজ্ঞান, গণিত ও ইংরেজি সিমুলেশন
           </p>
         </div>
 

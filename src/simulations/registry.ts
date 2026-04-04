@@ -8,6 +8,7 @@ import { ohmsLawConfig } from './physics/ohms-law/config';
 import { lightReflectionConfig } from './physics/light-reflection/config';
 import { lightRefractionConfig } from './physics/light-refraction/config';
 import { acidBaseConfig } from './chemistry/acid-base/config';
+import { atomicStructureConfig } from './chemistry/atomic-structure/config';
 
 export interface SimRegistryEntry {
   slug: string;
@@ -35,6 +36,11 @@ export const simulations: SimRegistryEntry[] = [
     slug: 'acid-base',
     config: acidBaseConfig,
     component: () => import('./chemistry/acid-base/AcidBaseSim'),
+  },
+  {
+    slug: 'atomic-structure',
+    config: atomicStructureConfig,
+    component: () => import('./chemistry/atomic-structure/AtomicStructureSim'),
   },
 ];
 

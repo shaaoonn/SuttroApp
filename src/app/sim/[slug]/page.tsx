@@ -8,6 +8,12 @@ import AcidBaseSim from '@/simulations/chemistry/acid-base/AcidBaseSim';
 import AtomicStructureSim from '@/simulations/chemistry/atomic-structure/AtomicStructureSim';
 import CellDivisionSim from '@/simulations/biology/cell-division/CellDivisionSim';
 import PhotosynthesisSim from '@/simulations/biology/photosynthesis/PhotosynthesisSim';
+import PythagoreanSim from '@/simulations/math/pythagorean/PythagoreanSim';
+import CircleGeometrySim from '@/simulations/math/circle-geometry/CircleGeometrySim';
+import TrigonometrySim from '@/simulations/higher-math/trigonometry/TrigonometrySim';
+import StraightLineSim from '@/simulations/higher-math/straight-line/StraightLineSim';
+import SentenceStructureSim from '@/simulations/english/sentence-structure/SentenceStructureSim';
+import TenseTimelineSim from '@/simulations/english/tense-timeline/TenseTimelineSim';
 
 interface SimPageProps {
   params: Promise<{ slug: string }>;
@@ -36,6 +42,12 @@ const SIMULATION_COMPONENTS: Record<string, React.ComponentType> = {
   'atomic-structure': AtomicStructureSim,
   'cell-division': CellDivisionSim,
   'photosynthesis': PhotosynthesisSim,
+  'pythagorean': PythagoreanSim,
+  'circle-geometry': CircleGeometrySim,
+  'trigonometry': TrigonometrySim,
+  'straight-line': StraightLineSim,
+  'sentence-structure': SentenceStructureSim,
+  'tense-timeline': TenseTimelineSim,
 };
 
 const SUBJECT_LABELS: Record<string, string> = {

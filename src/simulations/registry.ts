@@ -11,6 +11,12 @@ import { acidBaseConfig } from './chemistry/acid-base/config';
 import { atomicStructureConfig } from './chemistry/atomic-structure/config';
 import { cellDivisionConfig } from './biology/cell-division/config';
 import { photosynthesisConfig } from './biology/photosynthesis/config';
+import { pythagoreanConfig } from './math/pythagorean/config';
+import { circleGeometryConfig } from './math/circle-geometry/config';
+import { trigonometryConfig } from './higher-math/trigonometry/config';
+import { straightLineConfig } from './higher-math/straight-line/config';
+import { sentenceStructureConfig } from './english/sentence-structure/config';
+import { tenseTimelineConfig } from './english/tense-timeline/config';
 
 export interface SimRegistryEntry {
   slug: string;
@@ -53,6 +59,36 @@ export const simulations: SimRegistryEntry[] = [
     slug: 'photosynthesis',
     config: photosynthesisConfig,
     component: () => import('./biology/photosynthesis/PhotosynthesisSim'),
+  },
+  {
+    slug: 'pythagorean',
+    config: pythagoreanConfig,
+    component: () => import('./math/pythagorean/PythagoreanSim'),
+  },
+  {
+    slug: 'circle-geometry',
+    config: circleGeometryConfig,
+    component: () => import('./math/circle-geometry/CircleGeometrySim'),
+  },
+  {
+    slug: 'trigonometry',
+    config: trigonometryConfig,
+    component: () => import('./higher-math/trigonometry/TrigonometrySim'),
+  },
+  {
+    slug: 'straight-line',
+    config: straightLineConfig,
+    component: () => import('./higher-math/straight-line/StraightLineSim'),
+  },
+  {
+    slug: 'sentence-structure',
+    config: sentenceStructureConfig,
+    component: () => import('./english/sentence-structure/SentenceStructureSim'),
+  },
+  {
+    slug: 'tense-timeline',
+    config: tenseTimelineConfig,
+    component: () => import('./english/tense-timeline/TenseTimelineSim'),
   },
 ];
 

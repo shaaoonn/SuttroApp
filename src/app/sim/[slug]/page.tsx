@@ -7,6 +7,7 @@ import LightRefractionSim from '@/simulations/physics/light-refraction/LightRefr
 import AcidBaseSim from '@/simulations/chemistry/acid-base/AcidBaseSim';
 import AtomicStructureSim from '@/simulations/chemistry/atomic-structure/AtomicStructureSim';
 import CellDivisionSim from '@/simulations/biology/cell-division/CellDivisionSim';
+import PhotosynthesisSim from '@/simulations/biology/photosynthesis/PhotosynthesisSim';
 
 interface SimPageProps {
   params: Promise<{ slug: string }>;
@@ -34,6 +35,7 @@ const SIMULATION_COMPONENTS: Record<string, React.ComponentType> = {
   'acid-base': AcidBaseSim,
   'atomic-structure': AtomicStructureSim,
   'cell-division': CellDivisionSim,
+  'photosynthesis': PhotosynthesisSim,
 };
 
 const SUBJECT_LABELS: Record<string, string> = {

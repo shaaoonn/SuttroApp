@@ -9,6 +9,7 @@ import { lightReflectionConfig } from './physics/light-reflection/config';
 import { lightRefractionConfig } from './physics/light-refraction/config';
 import { acidBaseConfig } from './chemistry/acid-base/config';
 import { atomicStructureConfig } from './chemistry/atomic-structure/config';
+import { cellDivisionConfig } from './biology/cell-division/config';
 
 export interface SimRegistryEntry {
   slug: string;
@@ -41,6 +42,11 @@ export const simulations: SimRegistryEntry[] = [
     slug: 'atomic-structure',
     config: atomicStructureConfig,
     component: () => import('./chemistry/atomic-structure/AtomicStructureSim'),
+  },
+  {
+    slug: 'cell-division',
+    config: cellDivisionConfig,
+    component: () => import('./biology/cell-division/CellDivisionSim'),
   },
 ];
 

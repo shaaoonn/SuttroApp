@@ -125,8 +125,8 @@ export default function TrigonometrySim() {
           {/* Special angle markers on circle */}
           {[0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330].map(a => {
             const rad = a * Math.PI / 180;
-            const mx = cx + R * Math.cos(rad);
-            const my = cy - R * Math.sin(rad);
+            const mx = Math.round((cx + R * Math.cos(rad)) * 100) / 100;
+            const my = Math.round((cy - R * Math.sin(rad)) * 100) / 100;
             return (
               <circle key={a} cx={mx} cy={my} r={2}
                 fill={a === state.angle ? 'rgba(251,191,36,0.8)' : 'rgba(255,255,255,0.15)'} />

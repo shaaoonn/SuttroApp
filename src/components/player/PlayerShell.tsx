@@ -28,6 +28,11 @@ interface PlayerShellProps {
     setMouseMode: () => void;
     setHandMode: () => void;
   };
+  /** Sound toggle (TTS narration) */
+  sound?: {
+    enabled: boolean;
+    toggle: () => void;
+  };
   /** Cursor style */
   cursor?: string;
   /** Main content area (canvas or video) */
@@ -58,6 +63,7 @@ export default function PlayerShell({
   topBar,
   panZoom,
   interactionMode,
+  sound,
   cursor = 'default',
   children,
   overlay,
@@ -89,14 +95,26 @@ export default function PlayerShell({
             {topBar.title}
           </span>
         </div>
-        <button
-          onClick={toggleFullscreen}
-          className="p-2 rounded hover:bg-white/10 suttro-transition"
-          style={{ color: 'var(--player-muted)' }}
-          title={isFullscreen ? 'ফুলস্ক্রিন থেকে বের হও' : 'ফুলস্ক্রিন'}
-        >
-          ⛶
-        </button>
+        <div className="flex items-center gap-1">
+          {sound && (
+            <button
+              onClick={sound.toggle}
+              className="p-2 rounded hover:bg-white/10 suttro-transition text-sm"
+              style={{ color: sound.enabled ? 'var(--player-text)' : 'var(--player-muted)' }}
+              title={sound.enabled ? 'শব্দ বন্ধ করো' : 'শব্দ চালু করো'}
+            >
+              {sound.enabled ? '🔊' : '🔇'}
+            </button>
+          )}
+          <button
+            onClick={toggleFullscreen}
+            className="p-2 rounded hover:bg-white/10 suttro-transition"
+            style={{ color: 'var(--player-muted)' }}
+            title={isFullscreen ? 'ফুলস্ক্রিন থেকে বের হও' : 'ফুলস্ক্রিন'}
+          >
+            ⛶
+          </button>
+        </div>
       </div>
 
       {/* ── Content Area ── */}

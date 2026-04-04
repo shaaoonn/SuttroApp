@@ -4,6 +4,8 @@ import { useRef } from 'react';
 import { useOhmsLaw } from './useOhmsLaw';
 import { usePanZoom } from '@/hooks/usePanZoom';
 import { useInteractionMode } from '@/hooks/useInteractionMode';
+import { useSimNarration, useSoundToggle } from '@/hooks/useSimNarration';
+import { SIM_NARRATIONS } from '@/data/simNarrations';
 import PlayerShell from '@/components/player/PlayerShell';
 import PanZoomContainer from '@/components/simulation/PanZoomContainer';
 import ControlPanel from '@/components/player/ControlPanel';
@@ -55,6 +57,8 @@ export default function OhmsLawSim() {
 
   const panZoom = usePanZoom(config.defaultZoom, config.canvasSize, viewportRef);
   const interaction = useInteractionMode();
+  const { soundEnabled, toggleSound } = useSoundToggle();
+  useSimNarration({ template: SIM_NARRATIONS['ohms-law'], values: variables, soundEnabled });
 
   const readouts = [
     {
@@ -91,6 +95,7 @@ export default function OhmsLawSim() {
         setMouseMode: interaction.setMouseMode,
         setHandMode: interaction.setHandMode,
       }}
+      sound={{ enabled: soundEnabled, toggle: toggleSound }}
       cursor={interaction.cursor}
       overlay={
         <>

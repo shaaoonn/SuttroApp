@@ -4,6 +4,8 @@ import { useRef } from 'react';
 import { useCellDivision } from './useSimulation';
 import { usePanZoom } from '@/hooks/usePanZoom';
 import { useInteractionMode } from '@/hooks/useInteractionMode';
+import { useSimNarration, useSoundToggle } from '@/hooks/useSimNarration';
+import { SIM_NARRATIONS } from '@/data/simNarrations';
 import PlayerShell from '@/components/player/PlayerShell';
 import PanZoomContainer from '@/components/simulation/PanZoomContainer';
 import ControlPanel from '@/components/player/ControlPanel';
@@ -26,6 +28,8 @@ export default function CellDivisionSim() {
   } = useCellDivision();
   const panZoom = usePanZoom(config.defaultZoom, config.canvasSize, viewportRef);
   const interaction = useInteractionMode();
+  const { soundEnabled, toggleSound } = useSoundToggle();
+  useSimNarration({ template: SIM_NARRATIONS['cell-division'], values: variables, soundEnabled });
 
   const readouts = [
     {
@@ -65,6 +69,7 @@ export default function CellDivisionSim() {
         setMouseMode: interaction.setMouseMode,
         setHandMode: interaction.setHandMode,
       }}
+      sound={{ enabled: soundEnabled, toggle: toggleSound }}
       cursor={interaction.cursor}
       overlay={
         <>

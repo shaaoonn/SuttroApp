@@ -4,6 +4,8 @@ import { useRef, useState, useCallback } from 'react';
 import { sentenceStructureConfig, SENTENCES } from './config';
 import { usePanZoom } from '@/hooks/usePanZoom';
 import { useInteractionMode } from '@/hooks/useInteractionMode';
+import { useSimNarration, useSoundToggle } from '@/hooks/useSimNarration';
+import { SIM_NARRATIONS } from '@/data/simNarrations';
 import PlayerShell from '@/components/player/PlayerShell';
 import PanZoomContainer from '@/components/simulation/PanZoomContainer';
 import ControlPanel from '@/components/player/ControlPanel';
@@ -28,6 +30,8 @@ export default function SentenceStructureSim() {
   const resetAll = useCallback(() => { setVariables(initialVars); }, []);// eslint-disable-line react-hooks/exhaustive-deps
 
   const panZoom = usePanZoom(config.defaultZoom, config.canvasSize, viewportRef);
+  const { soundEnabled, toggleSound } = useSoundToggle();
+  useSimNarration({ template: SIM_NARRATIONS['sentence-structure'], values: variables, soundEnabled });
   const interaction = useInteractionMode();
 
   const sentenceIdx = Math.round(variables.sentenceType ?? 0);
@@ -38,6 +42,7 @@ export default function SentenceStructureSim() {
       topBar={{ subject: config.subject, chapter: config.nctb.chapter, title: config.title.bn }}
       panZoom={{ zoom: panZoom.zoom, zoomIn: panZoom.zoomIn, zoomOut: panZoom.zoomOut, fitToScreen: panZoom.fitToScreen }}
       interactionMode={{ effectiveMode: interaction.effectiveMode, setMouseMode: interaction.setMouseMode, setHandMode: interaction.setHandMode }}
+      sound={{ enabled: soundEnabled, toggle: toggleSound }}
       cursor={interaction.cursor}
       overlay={
         <>

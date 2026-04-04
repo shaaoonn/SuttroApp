@@ -4,6 +4,8 @@ import { useRef } from 'react';
 import { useAtomicStructure } from './useSimulation';
 import { usePanZoom } from '@/hooks/usePanZoom';
 import { useInteractionMode } from '@/hooks/useInteractionMode';
+import { useSimNarration, useSoundToggle } from '@/hooks/useSimNarration';
+import { SIM_NARRATIONS } from '@/data/simNarrations';
 import PlayerShell from '@/components/player/PlayerShell';
 import PanZoomContainer from '@/components/simulation/PanZoomContainer';
 import ControlPanel from '@/components/player/ControlPanel';
@@ -26,6 +28,8 @@ export default function AtomicStructureSim() {
   const { variables, state, setVariable, resetAll, config } = useAtomicStructure();
   const panZoom = usePanZoom(config.defaultZoom, config.canvasSize, viewportRef);
   const interaction = useInteractionMode();
+  const { soundEnabled, toggleSound } = useSoundToggle();
+  useSimNarration({ template: SIM_NARRATIONS['atomic-structure'], values: variables, soundEnabled });
 
   const { element } = state;
 
@@ -82,6 +86,7 @@ export default function AtomicStructureSim() {
         setMouseMode: interaction.setMouseMode,
         setHandMode: interaction.setHandMode,
       }}
+      sound={{ enabled: soundEnabled, toggle: toggleSound }}
       cursor={interaction.cursor}
       overlay={
         <>

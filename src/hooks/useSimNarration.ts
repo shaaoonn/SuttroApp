@@ -4,8 +4,11 @@ import { useEffect, useRef, useCallback, useState } from 'react';
 
 // ─────────────────────────────────────────────
 // useSimNarration — Text-to-Speech narration hook
-// Web Speech API based. Speaks welcome on mount,
-// contextual feedback 3s after slider change.
+// Uses Google Translate TTS via /api/tts proxy
+// for natural Bangla pronunciation.
+//
+// Speaks welcome on mount, contextual feedback
+// 3s after slider change (debounced).
 // ─────────────────────────────────────────────
 
 export interface NarrationTemplate {
@@ -28,45 +31,51 @@ export function useSimNarration({ template, values, soundEnabled }: UseSimNarrat
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const welcomeSpokenRef = useRef(false);
   const prevValuesRef = useRef<Record<string, number> | null>(null);
-  const synthRef = useRef<SpeechSynthesis | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
-  // Initialize speechSynthesis ref (client-only)
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.speechSynthesis) {
-      synthRef.current = window.speechSynthesis;
-    }
-  }, []);
-
-  // Speak function
+  // Speak function — uses Google TTS via /api/tts
   const speak = useCallback((text: string) => {
-    const synth = synthRef.current;
-    if (!synth || !soundEnabled) return;
+    if (!soundEnabled || typeof window === 'undefined') return;
 
-    // Cancel any ongoing speech
-    synth.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'bn-BD'; // Bangla
-    utterance.rate = 0.95;
-    utterance.pitch = 1.0;
-    utterance.volume = 0.9;
-
-    // Try to find a Bangla voice
-    const voices = synth.getVoices();
-    const banglaVoice = voices.find(
-      (v) => v.lang.startsWith('bn') || v.lang.startsWith('ben')
-    );
-    if (banglaVoice) {
-      utterance.voice = banglaVoice;
+    // Cancel any ongoing audio
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = '';
+      audioRef.current = null;
     }
 
-    synth.speak(utterance);
+    // Abort any pending fetch
+    if (abortRef.current) {
+      abortRef.current.abort();
+    }
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    // Build TTS URL via our API proxy
+    const ttsUrl = `/api/tts?lang=bn&text=${encodeURIComponent(text)}`;
+
+    const audio = new Audio(ttsUrl);
+    audio.volume = 0.9;
+    audioRef.current = audio;
+
+    audio.play().catch(() => {
+      // Autoplay blocked or audio error — silently ignore
+    });
   }, [soundEnabled]);
 
   // Stop speech
   const stopSpeech = useCallback(() => {
-    const synth = synthRef.current;
-    if (synth) synth.cancel();
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = '';
+      audioRef.current = null;
+    }
+    if (abortRef.current) {
+      abortRef.current.abort();
+      abortRef.current = null;
+    }
   }, []);
 
   // Welcome message — spoken once on mount
@@ -144,12 +153,7 @@ export function useSoundToggle(defaultOn = true) {
   const [soundEnabled, setSoundEnabled] = useState(defaultOn);
 
   const toggleSound = useCallback(() => {
-    setSoundEnabled((prev) => {
-      if (prev && typeof window !== 'undefined' && window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-      }
-      return !prev;
-    });
+    setSoundEnabled((prev) => !prev);
   }, []);
 
   return { soundEnabled, toggleSound };

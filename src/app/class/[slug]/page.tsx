@@ -269,8 +269,8 @@ export default async function ClassPlayerPage({ params }: ClassPageProps) {
         </div>
 
         {/* Below player info */}
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="md:col-span-2">
+        <div className="grid lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
             <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--suttro-deep)' }}>
               {cls?.title || 'ক্লাস রেকর্ডিং'}
             </h1>

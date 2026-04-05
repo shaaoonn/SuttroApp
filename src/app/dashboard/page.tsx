@@ -60,7 +60,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
           {[
             { label: 'সিমুলেশন দেখেছ', value: '1' },
             { label: 'ক্লাস দেখেছ', value: '0' },
@@ -86,7 +86,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Content Grid */}
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-2 gap-6">
           {/* Recent Activity */}
           <div
             className="rounded-[14px] border p-6"
@@ -132,7 +132,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Quick Links */}
-        <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="mt-8 grid grid-cols-2 lg:grid-cols-3 gap-4">
           <Link
             href="/simulations"
             className="rounded-[14px] p-5 text-center suttro-transition hover:opacity-80"

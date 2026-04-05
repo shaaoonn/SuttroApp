@@ -50,14 +50,14 @@ export default function Home() {
       >
         <div className="mx-auto max-w-6xl px-4 py-12 md:py-20">
           <div className="text-center mb-8 md:mb-10">
-            <h1 className="text-3xl lg:text-5xl font-bold text-white leading-tight mb-4">
+            <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight mb-4">
               বিজ্ঞান দেখো, বিজ্ঞান বোঝো।
             </h1>
             <p className="text-base md:text-lg text-white/60 max-w-xl mx-auto mb-6">
               ক্লাস ৯-১০ ইন্টারেক্টিভ সায়েন্স সিমুলেশন — NCTB পাঠ্যবইয়ের প্রতিটি অধ্যায়,
               এখন তোমার হাতের মুঠোয়।
             </p>
-            <div className="flex flex-col md:flex-row gap-3 justify-center">
+            <div className="flex flex-col lg:flex-row gap-3 justify-center">
               <Link
                 href="/simulations"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[10px] text-base font-medium text-white suttro-transition hover:opacity-90"
@@ -88,7 +88,7 @@ export default function Home() {
       {/* ── Stats Bar ── */}
       <section style={{ background: 'var(--suttro-sky)' }}>
         <div className="mx-auto max-w-6xl px-4 py-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
             {STATS.map((stat) => (
               <div key={stat.label}>
                 <div
@@ -118,7 +118,7 @@ export default function Home() {
           >
             কেন সূত্র?
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid lg:grid-cols-2 lg:grid-cols-4 gap-6">
             {FEATURES.map((feature) => (
               <div
                 key={feature.title}
@@ -159,7 +159,7 @@ export default function Home() {
               সব দেখো &rarr;
             </Link>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid lg:grid-cols-2 lg:grid-cols-3 gap-6">
             {simulations.map((sim) => (
               <SimulationCard key={sim.slug} config={sim.config} slug={sim.slug} />
             ))}
@@ -185,7 +185,7 @@ export default function Home() {
               সব ক্লাস &rarr;
             </Link>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid lg:grid-cols-2 lg:grid-cols-3 gap-5">
             {CLASSES.slice(0, 6).map((cls) => (
               <Link
                 key={cls.slug}

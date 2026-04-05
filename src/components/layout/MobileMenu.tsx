@@ -21,10 +21,10 @@ export default function MobileMenu({ open, onClose, links, subjectLinks }: Mobil
       className="fixed inset-0 z-40 lg:hidden"
       style={{ background: 'rgba(250, 251, 249, 0.98)', backdropFilter: 'blur(12px)' }}
     >
-      <div className="flex flex-col pt-16 px-6 gap-2">
+      <div className="flex flex-col pt-20 px-6 gap-2">
         {/* Subject section */}
         <p
-          className="text-xs font-semibold uppercase tracking-wider mt-4 mb-2"
+          className="text-sm font-semibold uppercase tracking-wider mt-4 mb-2"
           style={{ color: 'var(--suttro-muted)' }}
         >
           বিষয়
@@ -35,7 +35,7 @@ export default function MobileMenu({ open, onClose, links, subjectLinks }: Mobil
               key={s.href}
               href={s.href}
               onClick={onClose}
-              className={`${s.color} px-4 py-2 rounded-[10px] text-sm text-white font-medium`}
+              className={`${s.color} px-5 py-3 rounded-[10px] text-base text-white font-medium`}
             >
               {s.label}
             </Link>
@@ -48,7 +48,7 @@ export default function MobileMenu({ open, onClose, links, subjectLinks }: Mobil
             key={link.href}
             href={link.href}
             onClick={onClose}
-            className="flex items-center py-3 px-4 rounded-[10px] text-base hover:bg-black/5 suttro-transition"
+            className="flex items-center py-4 px-4 rounded-[10px] text-lg hover:bg-black/5 suttro-transition"
             style={{ color: 'var(--suttro-text)' }}
           >
             {link.label}
@@ -59,7 +59,7 @@ export default function MobileMenu({ open, onClose, links, subjectLinks }: Mobil
         <Link
           href="/login"
           onClick={onClose}
-          className="mt-4 flex items-center justify-center py-3 px-4 rounded-[10px] text-base font-medium text-white"
+          className="mt-4 flex items-center justify-center py-4 px-4 rounded-[12px] text-lg font-semibold text-white"
           style={{ background: 'var(--suttro-primary)' }}
         >
           লগ ইন
@@ -67,7 +67,7 @@ export default function MobileMenu({ open, onClose, links, subjectLinks }: Mobil
 
         {/* Tagline */}
         <p
-          className="text-center text-xs mt-8"
+          className="text-center text-sm mt-8"
           style={{ color: 'var(--suttro-muted)' }}
         >
           বিজ্ঞান পড়া নয়, বিজ্ঞান করা।

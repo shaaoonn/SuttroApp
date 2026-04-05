@@ -41,19 +41,19 @@ export default function SimulationCard({ config, slug }: SimulationCardProps) {
       <div className="p-5">
         {/* Subject tag */}
         <span
-          className={`${SUBJECT_COLORS[config.subject]} inline-block px-2 py-0.5 rounded text-xs text-white font-medium mb-3`}
+          className={`${SUBJECT_COLORS[config.subject]} inline-block px-2.5 py-1 rounded text-sm text-white font-medium mb-3`}
         >
           {SUBJECT_LABELS[config.subject]} · অধ্যায় {config.nctb.chapter}
         </span>
 
         {/* Title */}
         <h3
-          className="text-lg font-semibold mb-1"
+          className="text-xl font-semibold mb-1"
           style={{ color: 'var(--suttro-deep)' }}
         >
           {config.title.bn}
         </h3>
-        <p className="text-xs mb-4" style={{ color: 'var(--suttro-muted)' }}>
+        <p className="text-sm mb-4" style={{ color: 'var(--suttro-muted)' }}>
           {config.title.en} · ক্লাস {config.nctb.class}
         </p>
 
@@ -63,7 +63,7 @@ export default function SimulationCard({ config, slug }: SimulationCardProps) {
             {config.formulas.map((f, i) => (
               <span
                 key={i}
-                className="font-mono text-xs px-2 py-1 rounded"
+                className="font-mono text-sm px-2.5 py-1 rounded"
                 style={{ background: 'var(--suttro-sky)', color: 'var(--suttro-deep)' }}
               >
                 {f.expression}
@@ -74,7 +74,7 @@ export default function SimulationCard({ config, slug }: SimulationCardProps) {
 
         {/* CTA */}
         <span
-          className="text-sm font-medium group-hover:gap-3 inline-flex items-center gap-2 suttro-transition"
+          className="text-base font-medium group-hover:gap-3 inline-flex items-center gap-2 suttro-transition"
           style={{ color: 'var(--suttro-primary)' }}
         >
           সিমুলেশন চালাও

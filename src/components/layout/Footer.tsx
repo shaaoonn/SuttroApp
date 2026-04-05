@@ -30,13 +30,13 @@ export default function Footer() {
       className="border-t mt-auto"
       style={{ background: 'var(--suttro-deep)', borderColor: 'rgba(255,255,255,0.08)' }}
     >
-      <div className="mx-auto max-w-6xl px-4 py-12">
+      <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand column */}
           <div className="col-span-2 lg:col-span-1">
-            <h3 className="text-xl font-bold text-white mb-2">সূত্র</h3>
-            <p className="text-xs text-white/40 mb-1">suttro.app</p>
-            <p className="text-sm text-white/60 mt-3 leading-relaxed">
+            <h3 className="text-2xl font-bold text-white mb-2">সূত্র</h3>
+            <p className="text-sm text-white/40 mb-1">suttro.app</p>
+            <p className="text-base text-white/60 mt-3 leading-relaxed">
               বিজ্ঞান দেখো, বিজ্ঞান বোঝো।
             </p>
             <p className="text-xs text-white/30 mt-2">
@@ -46,13 +46,13 @@ export default function Footer() {
 
           {/* Platform */}
           <div>
-            <h4 className="text-sm font-semibold text-white/80 mb-3">প্ল্যাটফর্ম</h4>
+            <h4 className="text-base font-semibold text-white/80 mb-3">প্ল্যাটফর্ম</h4>
             <ul className="space-y-2">
               {FOOTER_LINKS.platform.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/50 hover:text-white/80 suttro-transition"
+                    className="text-base text-white/50 hover:text-white/80 suttro-transition"
                   >
                     {link.label}
                   </Link>
@@ -63,13 +63,13 @@ export default function Footer() {
 
           {/* Subjects */}
           <div>
-            <h4 className="text-sm font-semibold text-white/80 mb-3">বিষয়</h4>
+            <h4 className="text-base font-semibold text-white/80 mb-3">বিষয়</h4>
             <ul className="space-y-2">
               {FOOTER_LINKS.subjects.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/50 hover:text-white/80 suttro-transition"
+                    className="text-base text-white/50 hover:text-white/80 suttro-transition"
                   >
                     {link.label}
                   </Link>
@@ -80,13 +80,13 @@ export default function Footer() {
 
           {/* Company */}
           <div>
-            <h4 className="text-sm font-semibold text-white/80 mb-3">কোম্পানি</h4>
+            <h4 className="text-base font-semibold text-white/80 mb-3">কোম্পানি</h4>
             <ul className="space-y-2">
               {FOOTER_LINKS.company.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/50 hover:text-white/80 suttro-transition"
+                    className="text-base text-white/50 hover:text-white/80 suttro-transition"
                     {...('external' in link ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   >
                     {link.label}

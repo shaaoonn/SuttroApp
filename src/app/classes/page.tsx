@@ -8,11 +8,11 @@ export const metadata: Metadata = {
 export default function ClassesPage() {
   return (
     <div style={{ background: 'var(--suttro-surface)' }}>
-      <div className="mx-auto max-w-6xl px-4 py-12">
-        <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--suttro-deep)' }}>
+      <div className="mx-auto max-w-6xl px-6 py-12">
+        <h1 className="text-4xl font-bold mb-3" style={{ color: 'var(--suttro-deep)' }}>
           ক্লাস আর্কাইভ
         </h1>
-        <p className="text-sm mb-8" style={{ color: 'var(--suttro-muted)' }}>
+        <p className="text-base mb-8" style={{ color: 'var(--suttro-muted)' }}>
           প্রতিদিনের ক্লাস রেকর্ডিং — বিষয় ও অধ্যায় ধরে ফিল্টার করো, যখন খুশি দেখো।
         </p>
 

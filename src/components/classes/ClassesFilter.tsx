@@ -66,7 +66,7 @@ export default function ClassesFilter() {
       <div className="flex flex-wrap gap-2 mb-4">
         <button
           onClick={() => handleSubjectClick(null)}
-          className="px-4 py-2 rounded-full text-sm font-medium suttro-transition"
+          className="px-5 py-2.5 rounded-full text-base font-medium suttro-transition"
           style={{
             background: activeSubject === null ? 'var(--suttro-deep)' : 'transparent',
             color: activeSubject === null ? 'white' : 'var(--suttro-text)',
@@ -83,7 +83,7 @@ export default function ClassesFilter() {
             <button
               key={key}
               onClick={() => handleSubjectClick(key)}
-              className="px-4 py-2 rounded-full text-sm font-medium suttro-transition"
+              className="px-5 py-2.5 rounded-full text-base font-medium suttro-transition"
               style={{
                 background: isActive ? SUBJECT_COLORS[key] : 'transparent',
                 color: isActive ? 'white' : 'var(--suttro-text)',

@@ -16,13 +16,13 @@ const simEntries = simulations.map((s) => ({
 export default function SimulationsPage() {
   return (
     <div style={{ background: 'var(--suttro-surface)' }}>
-      <div className="mx-auto max-w-6xl px-4 py-10">
+      <div className="mx-auto max-w-6xl px-6 py-10">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--suttro-deep)' }}>
+          <h1 className="text-4xl font-bold mb-3" style={{ color: 'var(--suttro-deep)' }}>
             সিমুলেশন
           </h1>
-          <p className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
+          <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
             NCTB ক্লাস ৯-১০ — বিষয় ও অধ্যায় ধরে ফিল্টার করো, সিমুলেশন চালাও।
           </p>
         </div>

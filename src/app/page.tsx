@@ -48,27 +48,27 @@ export default function Home() {
         className="relative overflow-hidden"
         style={{ background: 'var(--suttro-deep)' }}
       >
-        <div className="mx-auto max-w-6xl px-4 py-12 md:py-20">
-          <div className="text-center mb-8 md:mb-10">
-            <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight mb-4">
+        <div className="mx-auto max-w-6xl px-6 py-14 lg:py-20">
+          <div className="text-center mb-8 lg:mb-10">
+            <h1 className="text-[2.75rem] lg:text-5xl font-bold text-white leading-[1.15] mb-5">
               বিজ্ঞান দেখো, বিজ্ঞান বোঝো।
             </h1>
-            <p className="text-base md:text-lg text-white/60 max-w-xl mx-auto mb-6">
+            <p className="text-lg lg:text-xl text-white/60 max-w-xl mx-auto mb-8">
               ক্লাস ৯-১০ ইন্টারেক্টিভ সায়েন্স সিমুলেশন — NCTB পাঠ্যবইয়ের প্রতিটি অধ্যায়,
               এখন তোমার হাতের মুঠোয়।
             </p>
             <div className="flex flex-col lg:flex-row gap-3 justify-center">
               <Link
                 href="/simulations"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[10px] text-base font-medium text-white suttro-transition hover:opacity-90"
+                className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-[12px] text-lg font-semibold text-white suttro-transition hover:opacity-90"
                 style={{ background: 'var(--suttro-primary)' }}
               >
                 সিমুলেশন চালাও &rarr;
               </Link>
               <Link
                 href="/classes"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-[10px] text-base font-medium suttro-transition hover:bg-white/15"
-                style={{ color: 'white', border: '1.5px solid rgba(255,255,255,0.2)' }}
+                className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-[12px] text-lg font-semibold suttro-transition hover:bg-white/15"
+                style={{ color: 'white', border: '1.5px solid rgba(255,255,255,0.25)' }}
               >
                 &#9654; ক্লাস দেখো
               </Link>
@@ -87,18 +87,18 @@ export default function Home() {
 
       {/* ── Stats Bar ── */}
       <section style={{ background: 'var(--suttro-sky)' }}>
-        <div className="mx-auto max-w-6xl px-4 py-8">
+        <div className="mx-auto max-w-6xl px-6 py-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
             {STATS.map((stat) => (
               <div key={stat.label}>
                 <div
-                  className="text-2xl md:text-3xl font-bold"
+                  className="text-3xl lg:text-4xl font-bold"
                   style={{ color: 'var(--suttro-primary)' }}
                 >
                   {stat.value}
                 </div>
                 <div
-                  className="text-sm mt-1"
+                  className="text-base mt-1"
                   style={{ color: 'var(--suttro-muted)' }}
                 >
                   {stat.label}
@@ -111,28 +111,28 @@ export default function Home() {
 
       {/* ── Features ── */}
       <section style={{ background: 'var(--suttro-surface)' }}>
-        <div className="mx-auto max-w-6xl px-4 py-16">
+        <div className="mx-auto max-w-6xl px-6 py-16">
           <h2
-            className="text-2xl md:text-3xl font-bold text-center mb-10"
+            className="text-3xl lg:text-4xl font-bold text-center mb-10"
             style={{ color: 'var(--suttro-deep)' }}
           >
             কেন সূত্র?
           </h2>
-          <div className="grid lg:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid lg:grid-cols-4 gap-6">
             {FEATURES.map((feature) => (
               <div
                 key={feature.title}
                 className="rounded-[14px] border p-6"
                 style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}
               >
-                <div className="text-3xl mb-3">{feature.icon}</div>
+                <div className="text-4xl mb-3">{feature.icon}</div>
                 <h3
-                  className="text-base font-semibold mb-2"
+                  className="text-lg font-semibold mb-2"
                   style={{ color: 'var(--suttro-deep)' }}
                 >
                   {feature.title}
                 </h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--suttro-muted)' }}>
+                <p className="text-base leading-relaxed" style={{ color: 'var(--suttro-muted)' }}>
                   {feature.desc}
                 </p>
               </div>
@@ -143,23 +143,23 @@ export default function Home() {
 
       {/* ── Simulation Gallery Preview ── */}
       <section style={{ background: 'var(--suttro-white)' }}>
-        <div className="mx-auto max-w-6xl px-4 py-16">
+        <div className="mx-auto max-w-6xl px-6 py-16">
           <div className="flex items-center justify-between mb-8">
             <h2
-              className="text-2xl md:text-3xl font-bold"
+              className="text-3xl lg:text-4xl font-bold"
               style={{ color: 'var(--suttro-deep)' }}
             >
               সিমুলেশন
             </h2>
             <Link
               href="/simulations"
-              className="text-sm font-medium suttro-transition hover:opacity-80"
+              className="text-base font-medium suttro-transition hover:opacity-80"
               style={{ color: 'var(--suttro-primary)' }}
             >
               সব দেখো &rarr;
             </Link>
           </div>
-          <div className="grid lg:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid lg:grid-cols-3 gap-6">
             {simulations.map((sim) => (
               <SimulationCard key={sim.slug} config={sim.config} slug={sim.slug} />
             ))}
@@ -169,23 +169,23 @@ export default function Home() {
 
       {/* ── Recent Classes ── */}
       <section style={{ background: 'var(--suttro-surface)' }}>
-        <div className="mx-auto max-w-6xl px-4 py-16">
+        <div className="mx-auto max-w-6xl px-6 py-16">
           <div className="flex items-center justify-between mb-8">
             <h2
-              className="text-2xl md:text-3xl font-bold"
+              className="text-3xl lg:text-4xl font-bold"
               style={{ color: 'var(--suttro-deep)' }}
             >
               সাম্প্রতিক ক্লাস
             </h2>
             <Link
               href="/classes"
-              className="text-sm font-medium suttro-transition hover:opacity-80"
+              className="text-base font-medium suttro-transition hover:opacity-80"
               style={{ color: 'var(--suttro-primary)' }}
             >
               সব ক্লাস &rarr;
             </Link>
           </div>
-          <div className="grid lg:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid lg:grid-cols-3 gap-5">
             {CLASSES.slice(0, 6).map((cls) => (
               <Link
                 key={cls.slug}
@@ -235,15 +235,15 @@ export default function Home() {
                   </div>
                 </div>
                 {/* Info */}
-                <div className="p-4">
+                <div className="p-5">
                   <h3
-                    className="text-base font-semibold mb-1 truncate group-hover:text-[var(--suttro-primary)] suttro-transition"
+                    className="text-lg font-semibold mb-1 truncate group-hover:text-[var(--suttro-primary)] suttro-transition"
                     style={{ color: 'var(--suttro-deep)' }}
                   >
                     {cls.title}
                   </h3>
                   <div
-                    className="flex items-center gap-2 text-sm"
+                    className="flex items-center gap-2 text-base"
                     style={{ color: 'var(--suttro-muted)' }}
                   >
                     <span>অধ্যায় {cls.chapter}</span>
@@ -261,11 +261,11 @@ export default function Home() {
 
       {/* ── Trust / Teacher Section ── */}
       <section style={{ background: 'var(--suttro-sky)' }}>
-        <div className="mx-auto max-w-3xl px-4 py-16 text-center">
-          <p className="text-lg mb-2" style={{ color: 'var(--suttro-deep)' }}>
+        <div className="mx-auto max-w-3xl px-6 py-16 text-center">
+          <p className="text-xl font-semibold mb-3" style={{ color: 'var(--suttro-deep)' }}>
             ১০ বছরের অভিজ্ঞতা, এক ক্লিকে।
           </p>
-          <p className="text-sm leading-relaxed" style={{ color: 'var(--suttro-muted)' }}>
+          <p className="text-base leading-relaxed" style={{ color: 'var(--suttro-muted)' }}>
             সূত্র তৈরি করেছে একজন অভিজ্ঞ বিজ্ঞান শিক্ষক — যিনি জানেন ঠিক কোথায় শিক্ষার্থীরা আটকে যায়,
             আর কীভাবে interactive simulation দিয়ে সেই গ্যাপ পূরণ করা যায়।
           </p>
@@ -274,16 +274,16 @@ export default function Home() {
 
       {/* ── CTA ── */}
       <section style={{ background: 'var(--suttro-deep)' }}>
-        <div className="mx-auto max-w-3xl px-4 py-16 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+        <div className="mx-auto max-w-3xl px-6 py-16 text-center">
+          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
             আজই শুরু করো
           </h2>
-          <p className="text-base text-white/60 mb-6">
+          <p className="text-lg text-white/60 mb-8">
             ফ্রি সিমুলেশন চালাও — কোনো অ্যাকাউন্ট লাগবে না।
           </p>
           <Link
             href="/simulations"
-            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-[10px] text-base font-semibold suttro-transition hover:opacity-90"
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-[12px] text-lg font-semibold suttro-transition hover:opacity-90"
             style={{ background: 'var(--suttro-accent)', color: 'var(--suttro-deep)' }}
           >
             সিমুলেশন চালাও &rarr;

@@ -73,7 +73,7 @@ export default function SimulationsFilter({ simulations }: SimulationsFilterProp
       <div className="flex flex-wrap gap-2 mb-4">
         <button
           onClick={() => handleSubjectClick(null)}
-          className="px-4 py-2 rounded-full text-sm font-medium suttro-transition"
+          className="px-5 py-2.5 rounded-full text-base font-medium suttro-transition"
           style={{
             background: activeSubject === null ? 'var(--suttro-deep)' : 'transparent',
             color: activeSubject === null ? 'white' : 'var(--suttro-text)',
@@ -90,7 +90,7 @@ export default function SimulationsFilter({ simulations }: SimulationsFilterProp
             <button
               key={key}
               onClick={() => handleSubjectClick(key)}
-              className="px-4 py-2 rounded-full text-sm font-medium suttro-transition"
+              className="px-5 py-2.5 rounded-full text-base font-medium suttro-transition"
               style={{
                 background: isActive ? SUBJECT_COLORS[key] : 'transparent',
                 color: isActive ? 'white' : 'var(--suttro-text)',
@@ -222,10 +222,10 @@ export default function SimulationsFilter({ simulations }: SimulationsFilterProp
 
                 {/* Info */}
                 <div className="p-5">
-                  <h3 className="text-base font-semibold mb-1" style={{ color: 'var(--suttro-deep)' }}>
+                  <h3 className="text-lg font-semibold mb-1" style={{ color: 'var(--suttro-deep)' }}>
                     {sim.config.title.bn}
                   </h3>
-                  <p className="text-xs mb-3" style={{ color: 'var(--suttro-muted)' }}>
+                  <p className="text-sm mb-3" style={{ color: 'var(--suttro-muted)' }}>
                     {sim.config.title.en} · ক্লাস {sim.config.nctb.class}
                   </p>
 

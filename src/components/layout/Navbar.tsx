@@ -60,7 +60,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-1">
             {/* Subject dropdown */}
             <div className="relative">
               <button
@@ -112,7 +112,7 @@ export default function Navbar() {
               user ? (
                 <Link
                   href="/dashboard"
-                  className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-[10px] text-sm font-medium suttro-transition hover:bg-black/5"
+                  className="hidden lg:inline-flex items-center gap-2 px-4 py-2 rounded-[10px] text-sm font-medium suttro-transition hover:bg-black/5"
                   style={{ color: 'var(--suttro-primary)' }}
                 >
                   <span
@@ -126,7 +126,7 @@ export default function Navbar() {
               ) : (
                 <Link
                   href="/login"
-                  className="hidden sm:inline-flex items-center px-4 py-2 rounded-[10px] text-sm font-medium text-white suttro-transition"
+                  className="hidden lg:inline-flex items-center px-4 py-2 rounded-[10px] text-sm font-medium text-white suttro-transition"
                   style={{ background: 'var(--suttro-primary)' }}
                 >
                   লগ ইন
@@ -137,7 +137,7 @@ export default function Navbar() {
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-[10px] hover:bg-black/5"
+              className="lg:hidden p-2 rounded-[10px] hover:bg-black/5"
               style={{ color: 'var(--suttro-text)' }}
               aria-label="মেনু"
             >

@@ -50,7 +50,7 @@ export default function Home() {
       >
         <div className="mx-auto max-w-6xl px-4 py-12 sm:py-20">
           <div className="text-center mb-8 sm:mb-10">
-            <h1 className="text-3xl sm:text-5xl font-bold text-white leading-tight mb-4">
+            <h1 className="text-3xl lg:text-5xl font-bold text-white leading-tight mb-4">
               বিজ্ঞান দেখো, বিজ্ঞান বোঝো।
             </h1>
             <p className="text-base sm:text-lg text-white/60 max-w-xl mx-auto mb-6">

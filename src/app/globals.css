@@ -87,11 +87,17 @@
    Base Styles
    ───────────────────────────────────────────── */
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   background: var(--suttro-surface);
   color: var(--suttro-text);
   font-family: 'Hind Siliguri', 'DM Sans', sans-serif;
   line-height: 1.7;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 /* ─────────────────────────────────────────────
@@ -110,6 +116,7 @@ body {
   overflow: hidden;
   position: relative;
   width: 100%;
+  max-width: 100%;
   aspect-ratio: 16 / 9;
 }
 

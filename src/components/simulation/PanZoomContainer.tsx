@@ -64,6 +64,7 @@ const PanZoomContainer = forwardRef<HTMLDivElement, PanZoomContainerProps>(
         style={{
           backgroundColor: 'var(--player-bg)',
           touchAction: 'none', // prevent browser gestures interfering
+          contain: 'strict',   // prevent 900px canvas from expanding mobile viewport
         }}
       >
         {/* Layer 1+2: Dot grid + simulation objects (transform layer) */}

@@ -118,7 +118,7 @@ export default function PlayerShell({
       </div>
 
       {/* ── Content Area ── */}
-      <div className="relative flex-1 overflow-hidden">
+      <div className="relative flex-1 overflow-hidden" style={{ contain: 'paint' }}>
         {children}
 
         {/* Fixed overlay (control panels, readouts) */}

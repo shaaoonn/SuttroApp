@@ -18,7 +18,7 @@ export default function MobileMenu({ open, onClose, links, subjectLinks }: Mobil
 
   return (
     <div
-      className="fixed inset-0 z-40 md:hidden"
+      className="fixed inset-0 z-40 lg:hidden"
       style={{ background: 'rgba(250, 251, 249, 0.98)', backdropFilter: 'blur(12px)' }}
     >
       <div className="flex flex-col pt-16 px-6 gap-2">

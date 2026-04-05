@@ -74,7 +74,7 @@ export default function LoginPage() {
     <div className="flex-1 flex items-center justify-center" style={{ background: 'var(--suttro-surface)' }}>
       <div className="w-full max-w-sm px-4">
         <div
-          className="rounded-[14px] border p-6 sm:p-8"
+          className="rounded-[14px] border p-6 md:p-8"
           style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}
         >
           <div className="text-center mb-6">

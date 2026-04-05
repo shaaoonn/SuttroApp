@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Hind_Siliguri, DM_Serif_Display, DM_Sans, JetBrains_Mono } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import BottomNav from "@/components/layout/BottomNav";
 import PWARegister from "@/components/PWARegister";
 import { AuthProvider } from "@/lib/auth-context";
 import "./globals.css";
@@ -39,6 +40,7 @@ export const viewport: Viewport = {
   themeColor: "#1B6B4A",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 export const metadata: Metadata = {
@@ -81,6 +83,7 @@ export default function RootLayout({
           <Navbar />
           <main className="flex-1 flex flex-col">{children}</main>
           <Footer />
+          <BottomNav />
           <PWARegister />
         </AuthProvider>
       </body>

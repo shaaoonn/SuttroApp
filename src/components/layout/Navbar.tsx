@@ -42,17 +42,17 @@ export default function Navbar() {
           borderColor: 'var(--suttro-border)',
         }}
       >
-        <div className="mx-auto max-w-6xl flex items-center justify-between px-4 h-14 sm:h-16">
+        <div className="mx-auto max-w-6xl flex items-center justify-between px-4 h-14 md:h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
             <span
-              className="text-xl sm:text-2xl font-bold"
+              className="text-xl md:text-2xl font-bold"
               style={{ color: 'var(--suttro-deep)' }}
             >
               সূত্র
             </span>
             <span
-              className="hidden sm:inline text-xs"
+              className="hidden md:inline text-xs"
               style={{ color: 'var(--suttro-muted)' }}
             >
               suttro.app

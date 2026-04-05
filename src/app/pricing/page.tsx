@@ -50,11 +50,11 @@ export default function PricingPage() {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
           {PLANS.map((plan) => (
             <div
               key={plan.name}
-              className={`rounded-[14px] border p-6 sm:p-8 ${plan.highlight ? 'ring-2' : ''}`}
+              className={`rounded-[14px] border p-6 md:p-8 ${plan.highlight ? 'ring-2' : ''}`}
               style={{
                 borderColor: plan.highlight ? 'var(--suttro-primary)' : 'var(--suttro-border)',
                 background: 'var(--suttro-white)',

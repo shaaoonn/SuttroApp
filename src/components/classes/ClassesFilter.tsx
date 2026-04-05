@@ -174,12 +174,12 @@ export default function ClassesFilter() {
           filtered.map((cls) => (
             <div
               key={cls.slug}
-              className="rounded-[14px] border p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4 suttro-transition hover:shadow-md"
+              className="rounded-[14px] border p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4 suttro-transition hover:shadow-md"
               style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}
             >
               {/* Thumbnail */}
               <div
-                className="w-full sm:w-40 h-[90px] rounded-[10px] shrink-0 relative overflow-hidden group/thumb"
+                className="w-full md:w-40 h-[90px] rounded-[10px] shrink-0 relative overflow-hidden group/thumb"
                 style={{ background: 'var(--player-bg)' }}
               >
                 {cls.youtubeId ? (

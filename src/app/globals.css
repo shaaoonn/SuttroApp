@@ -153,6 +153,25 @@ body {
   color: var(--player-text);
 }
 
+/* Bottom nav spacing — push footer above bottom nav on mobile */
+@media (max-width: 1023px) {
+  body {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Touch-friendly targets on mobile */
+@media (max-width: 1023px) {
+  button, a {
+    min-height: 44px;
+  }
+
+  /* Exempt inline elements inside paragraphs/cards */
+  p a, span a, .inline-link {
+    min-height: auto;
+  }
+}
+
 /* Animation easing */
 .suttro-transition {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);

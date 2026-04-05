@@ -31,9 +31,9 @@ export default function Footer() {
       style={{ background: 'var(--suttro-deep)', borderColor: 'rgba(255,255,255,0.08)' }}
     >
       <div className="mx-auto max-w-6xl px-4 py-12">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand column */}
-          <div className="col-span-2 sm:col-span-1">
+          <div className="col-span-2 md:col-span-1">
             <h3 className="text-xl font-bold text-white mb-2">সূত্র</h3>
             <p className="text-xs text-white/40 mb-1">suttro.app</p>
             <p className="text-sm text-white/60 mt-3 leading-relaxed">
@@ -99,7 +99,7 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div
-          className="mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/30"
+          className="mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/30"
           style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
         >
           <p>&copy; {new Date().getFullYear()} সূত্র | suttro.app — EJOSB IT</p>

@@ -27,7 +27,7 @@ export default function AboutPage() {
 
         {/* Teacher story */}
         <section
-          className="rounded-[14px] border p-6 sm:p-8 mb-10"
+          className="rounded-[14px] border p-6 md:p-8 mb-10"
           style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}
         >
           <h2 className="text-xl font-semibold mb-3" style={{ color: 'var(--suttro-deep)' }}>
@@ -57,7 +57,7 @@ export default function AboutPage() {
 
         {/* Vision */}
         <section
-          className="rounded-[14px] p-6 sm:p-8 text-center"
+          className="rounded-[14px] p-6 md:p-8 text-center"
           style={{ background: 'var(--suttro-sky)' }}
         >
           <p className="text-lg font-semibold mb-2" style={{ color: 'var(--suttro-deep)' }}>

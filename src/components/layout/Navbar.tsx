@@ -52,7 +52,7 @@ export default function Navbar() {
               সূত্র
             </span>
             <span
-              className="hidden lg:inline text-xs"
+              className="hidden lg:inline text-sm"
               style={{ color: 'var(--suttro-muted)' }}
             >
               suttro.app

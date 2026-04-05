@@ -53,7 +53,7 @@ export default function SimulationCard({ config, slug }: SimulationCardProps) {
         >
           {config.title.bn}
         </h3>
-        <p className="text-sm mb-4" style={{ color: 'var(--suttro-muted)' }}>
+        <p className="text-base mb-4" style={{ color: 'var(--suttro-muted)' }}>
           {config.title.en} · ক্লাস {config.nctb.class}
         </p>
 

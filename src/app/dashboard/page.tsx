@@ -39,20 +39,20 @@ export default function DashboardPage() {
 
   return (
     <div style={{ background: 'var(--suttro-surface)' }}>
-      <div className="mx-auto max-w-6xl px-4 py-12">
+      <div className="mx-auto max-w-6xl px-6 py-12">
         {/* Header */}
         <div className="flex items-start justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-1" style={{ color: 'var(--suttro-deep)' }}>
               ড্যাশবোর্ড
             </h1>
-            <p className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
+            <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
               {user.phone ? `${user.phone} — ` : ''}তোমার শেখার অগ্রগতি এক নজরে।
             </p>
           </div>
           <button
             onClick={() => signOut()}
-            className="px-4 py-2 rounded-[10px] text-sm font-medium border suttro-transition hover:bg-black/5"
+            className="px-5 py-2.5 rounded-[10px] text-base font-medium border suttro-transition hover:bg-black/5"
             style={{ borderColor: 'var(--suttro-border)', color: 'var(--suttro-muted)' }}
           >
             লগ আউট
@@ -78,7 +78,7 @@ export default function DashboardPage() {
               >
                 {stat.value}
               </div>
-              <div className="text-xs" style={{ color: 'var(--suttro-muted)' }}>
+              <div className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
                 {stat.label}
               </div>
             </div>
@@ -102,10 +102,10 @@ export default function DashboardPage() {
                 className="flex items-center justify-between p-3 rounded-[10px] hover:bg-black/5 suttro-transition"
               >
                 <div>
-                  <div className="text-sm font-medium" style={{ color: 'var(--suttro-text)' }}>
+                  <div className="text-base font-medium" style={{ color: 'var(--suttro-text)' }}>
                     {item.title}
                   </div>
-                  <div className="text-xs" style={{ color: 'var(--suttro-muted)' }}>
+                  <div className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
                     {item.subject}
                   </div>
                 </div>
@@ -124,7 +124,7 @@ export default function DashboardPage() {
             </h2>
             <div className="text-center py-8">
               <div className="text-3xl mb-3">📥</div>
-              <p className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
+              <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
                 কোনো ডাউনলোড নেই। সিমুলেশন পেজ থেকে ডাউনলোড করো।
               </p>
             </div>
@@ -139,7 +139,7 @@ export default function DashboardPage() {
             style={{ background: 'var(--suttro-sky)' }}
           >
             <div className="text-2xl mb-2">🔬</div>
-            <div className="text-sm font-medium" style={{ color: 'var(--suttro-deep)' }}>
+            <div className="text-base font-medium" style={{ color: 'var(--suttro-deep)' }}>
               সিমুলেশন
             </div>
           </Link>
@@ -149,7 +149,7 @@ export default function DashboardPage() {
             style={{ background: 'var(--suttro-sky)' }}
           >
             <div className="text-2xl mb-2">📹</div>
-            <div className="text-sm font-medium" style={{ color: 'var(--suttro-deep)' }}>
+            <div className="text-base font-medium" style={{ color: 'var(--suttro-deep)' }}>
               ক্লাস আর্কাইভ
             </div>
           </Link>
@@ -159,7 +159,7 @@ export default function DashboardPage() {
             style={{ background: 'var(--suttro-sky)' }}
           >
             <div className="text-2xl mb-2">💎</div>
-            <div className="text-sm font-medium" style={{ color: 'var(--suttro-deep)' }}>
+            <div className="text-base font-medium" style={{ color: 'var(--suttro-deep)' }}>
               প্রিমিয়াম
             </div>
           </Link>

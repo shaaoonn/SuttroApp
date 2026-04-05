@@ -78,7 +78,7 @@ export default function Home() {
           {/* Live simulation in hero */}
           <div className="max-w-4xl mx-auto">
             <HeroSimulation />
-            <p className="text-center text-xs text-white/30 mt-3">
+            <p className="text-center text-sm text-white/30 mt-3">
               এটাই সূত্র — নিজে চালিয়ে দেখো &#9757;
             </p>
           </div>
@@ -215,7 +215,7 @@ export default function Home() {
                   )}
                   {/* Subject badge */}
                   <div
-                    className="absolute top-3 left-3 px-2 py-0.5 rounded text-xs font-medium text-white"
+                    className="absolute top-3 left-3 px-2.5 py-1 rounded text-sm font-medium text-white"
                     style={{ background: SUBJECT_COLORS[cls.subject] }}
                   >
                     {SUBJECT_LABELS[cls.subject]}
@@ -230,7 +230,7 @@ export default function Home() {
                     </div>
                   </div>
                   {/* Duration badge */}
-                  <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded text-[10px] font-medium text-white bg-black/70">
+                  <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded text-sm font-medium text-white bg-black/70">
                     {cls.duration}
                   </div>
                 </div>

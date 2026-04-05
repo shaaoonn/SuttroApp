@@ -37,7 +37,7 @@ export default function SimulationsPage() {
           <p className="text-base font-medium mb-1" style={{ color: 'var(--suttro-deep)' }}>
             ৬টি বিষয়ে ১৩টি সিমুলেশন প্রস্তুত
           </p>
-          <p className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
+          <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
             প্রতিটি সিমুলেশন NCTB পাঠ্যবইয়ের অধ্যায়ের সাথে সরাসরি যুক্ত।
             আরও নতুন সিমুলেশন শীঘ্রই আসছে।
           </p>

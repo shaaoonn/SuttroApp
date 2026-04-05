@@ -63,12 +63,12 @@ export default function AboutPage() {
           <p className="text-lg font-semibold mb-2" style={{ color: 'var(--suttro-deep)' }}>
             বিজ্ঞান পড়া নয়, বিজ্ঞান করা।
           </p>
-          <p className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
+          <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
             সূত্র-র ভিশন — বাংলাদেশের প্রতিটি শিক্ষার্থীর হাতে interactive science lab।
           </p>
           <Link
             href="/simulations"
-            className="inline-flex items-center mt-4 px-6 py-2.5 rounded-[10px] text-sm font-medium text-white suttro-transition"
+            className="inline-flex items-center mt-4 px-6 py-3 rounded-[10px] text-base font-medium text-white suttro-transition"
             style={{ background: 'var(--suttro-primary)' }}
           >
             সিমুলেশন দেখো &rarr;

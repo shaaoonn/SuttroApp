@@ -223,9 +223,9 @@ export default async function ClassPlayerPage({ params }: ClassPageProps) {
 
   return (
     <div style={{ background: 'var(--suttro-surface)' }}>
-      <div className="mx-auto max-w-6xl px-4 py-6">
+      <div className="mx-auto max-w-6xl px-6 py-6">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm mb-4" style={{ color: 'var(--suttro-muted)' }}>
+        <nav className="flex items-center gap-2 text-base mb-4" style={{ color: 'var(--suttro-muted)' }}>
           <Link href="/classes" className="hover:underline">ক্লাস আর্কাইভ</Link>
           <span>&rsaquo;</span>
           {cls && (
@@ -260,7 +260,7 @@ export default async function ClassPlayerPage({ params }: ClassPageProps) {
             >
               <div className="text-center">
                 <div className="text-5xl mb-4 opacity-40">▶</div>
-                <p className="text-white/60 text-sm mb-2">
+                <p className="text-white/60 text-base mb-2">
                   {cls ? 'ভিডিও শীঘ্রই আপলোড হবে' : 'ক্লাস পাওয়া যায়নি'}
                 </p>
               </div>
@@ -278,12 +278,12 @@ export default async function ClassPlayerPage({ params }: ClassPageProps) {
               <>
                 <div className="flex items-center gap-3 mb-4">
                   <span
-                    className="px-2.5 py-1 rounded text-xs font-medium text-white"
+                    className="px-2.5 py-1 rounded text-sm font-medium text-white"
                     style={{ background: SUBJECT_COLORS[cls.subject] || '#666' }}
                   >
                     {cls.subject} · অধ্যায় {cls.chapter}
                   </span>
-                  <span className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
+                  <span className="text-base" style={{ color: 'var(--suttro-muted)' }}>
                     ক্লাস {cls.classLevel} · {cls.date} · {cls.duration}
                   </span>
                 </div>
@@ -291,10 +291,10 @@ export default async function ClassPlayerPage({ params }: ClassPageProps) {
                   className="rounded-[14px] border p-5"
                   style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}
                 >
-                  <h3 className="text-sm font-semibold mb-2" style={{ color: 'var(--suttro-deep)' }}>
+                  <h3 className="text-base font-semibold mb-2" style={{ color: 'var(--suttro-deep)' }}>
                     ক্লাসের বিষয়বস্তু
                   </h3>
-                  <p className="text-sm leading-relaxed" style={{ color: 'var(--suttro-text)' }}>
+                  <p className="text-base leading-relaxed" style={{ color: 'var(--suttro-text)' }}>
                     {cls.description}
                   </p>
                 </div>
@@ -309,13 +309,13 @@ export default async function ClassPlayerPage({ params }: ClassPageProps) {
               style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}
             >
               <button
-                className="w-full py-2.5 rounded-[10px] text-sm font-medium mb-2 suttro-transition hover:opacity-90"
+                className="w-full py-2.5 rounded-[10px] text-base font-medium mb-2 suttro-transition hover:opacity-90"
                 style={{ background: 'var(--suttro-primary)', color: 'white' }}
               >
                 &#8599; শেয়ার করো
               </button>
               <button
-                className="w-full py-2.5 rounded-[10px] text-sm font-medium suttro-transition"
+                className="w-full py-2.5 rounded-[10px] text-base font-medium suttro-transition"
                 style={{ border: '1.5px solid var(--suttro-border)', color: 'var(--suttro-text)' }}
               >
                 &#11015; অফলাইন ডাউনলোড
@@ -328,12 +328,12 @@ export default async function ClassPlayerPage({ params }: ClassPageProps) {
                 className="rounded-[14px] p-5"
                 style={{ background: 'var(--suttro-sky)' }}
               >
-                <h3 className="text-sm font-semibold mb-2" style={{ color: 'var(--suttro-deep)' }}>
+                <h3 className="text-base font-semibold mb-2" style={{ color: 'var(--suttro-deep)' }}>
                   সম্পর্কিত সিমুলেশন
                 </h3>
                 <Link
                   href={`/sim/${cls.relatedSim.slug}`}
-                  className="flex items-center justify-between text-sm suttro-transition hover:opacity-80"
+                  className="flex items-center justify-between text-base suttro-transition hover:opacity-80"
                   style={{ color: 'var(--suttro-primary)' }}
                 >
                   <span>{cls.relatedSim.label}</span>

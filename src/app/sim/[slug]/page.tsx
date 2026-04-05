@@ -69,9 +69,9 @@ export default async function SimPage({ params }: SimPageProps) {
 
   return (
     <div style={{ background: 'var(--suttro-surface)' }}>
-      <div className="mx-auto max-w-6xl px-4 py-6">
+      <div className="mx-auto max-w-6xl px-6 py-6">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm mb-4" style={{ color: 'var(--suttro-muted)' }}>
+        <nav className="flex items-center gap-2 text-base mb-4" style={{ color: 'var(--suttro-muted)' }}>
           <Link href="/simulations" className="hover:underline">সিমুলেশন</Link>
           <span>&rsaquo;</span>
           <span>{SUBJECT_LABELS[sim.config.subject]}</span>
@@ -91,7 +91,7 @@ export default async function SimPage({ params }: SimPageProps) {
             <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--suttro-deep)' }}>
               {sim.config.title.bn}
             </h1>
-            <p className="text-sm mb-4" style={{ color: 'var(--suttro-muted)' }}>
+            <p className="text-base mb-4" style={{ color: 'var(--suttro-muted)' }}>
               {sim.config.title.en} · NCTB ক্লাস {sim.config.nctb.class}, অধ্যায় {sim.config.nctb.chapter}
             </p>
 
@@ -101,18 +101,18 @@ export default async function SimPage({ params }: SimPageProps) {
                 className="rounded-[14px] border p-5 mb-6"
                 style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}
               >
-                <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--suttro-deep)' }}>
+                <h3 className="text-base font-semibold mb-3" style={{ color: 'var(--suttro-deep)' }}>
                   সম্পর্কিত সূত্র
                 </h3>
                 {sim.config.formulas.map((f, i) => (
                   <div key={i} className="flex items-baseline gap-3 mb-2 last:mb-0">
                     <span
-                      className="font-mono text-sm px-2 py-1 rounded"
+                      className="font-mono text-base px-2.5 py-1 rounded"
                       style={{ background: 'var(--suttro-sky)', color: 'var(--suttro-deep)' }}
                     >
                       {f.expression}
                     </span>
-                    <span className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
+                    <span className="text-base" style={{ color: 'var(--suttro-muted)' }}>
                       {f.description.bn}
                     </span>
                   </div>
@@ -125,12 +125,12 @@ export default async function SimPage({ params }: SimPageProps) {
               className="rounded-[14px] border p-5"
               style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}
             >
-              <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--suttro-deep)' }}>
+              <h3 className="text-base font-semibold mb-3" style={{ color: 'var(--suttro-deep)' }}>
                 ভ্যারিয়েবল
               </h3>
               <div className="space-y-2">
                 {sim.config.variables.map((v) => (
-                  <div key={v.id} className="flex justify-between text-sm">
+                  <div key={v.id} className="flex justify-between text-base">
                     <span style={{ color: 'var(--suttro-text)' }}>{v.label.bn}</span>
                     <span className="font-mono" style={{ color: 'var(--suttro-muted)' }}>
                       {v.min}–{v.max} {v.unit}
@@ -149,13 +149,13 @@ export default async function SimPage({ params }: SimPageProps) {
               style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}
             >
               <button
-                className="w-full py-2.5 rounded-[10px] text-sm font-medium mb-2 suttro-transition hover:opacity-90"
+                className="w-full py-2.5 rounded-[10px] text-base font-medium mb-2 suttro-transition hover:opacity-90"
                 style={{ background: 'var(--suttro-primary)', color: 'white' }}
               >
                 &#8599; শেয়ার করো
               </button>
               <button
-                className="w-full py-2.5 rounded-[10px] text-sm font-medium suttro-transition"
+                className="w-full py-2.5 rounded-[10px] text-base font-medium suttro-transition"
                 style={{ border: '1.5px solid var(--suttro-border)', color: 'var(--suttro-text)' }}
               >
                 &#11015; অফলাইন ডাউনলোড
@@ -167,10 +167,10 @@ export default async function SimPage({ params }: SimPageProps) {
               className="rounded-[14px] p-5"
               style={{ background: 'var(--suttro-sky)' }}
             >
-              <h3 className="text-sm font-semibold mb-2" style={{ color: 'var(--suttro-deep)' }}>
+              <h3 className="text-base font-semibold mb-2" style={{ color: 'var(--suttro-deep)' }}>
                 NCTB রেফারেন্স
               </h3>
-              <p className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
+              <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
                 ক্লাস {sim.config.nctb.class} · {SUBJECT_LABELS[sim.config.subject]} · অধ্যায় {sim.config.nctb.chapter}
               </p>
             </div>

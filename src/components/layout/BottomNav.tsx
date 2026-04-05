@@ -83,7 +83,7 @@ export default function BottomNav() {
               <span className={isActive ? 'opacity-100' : 'opacity-60'}>
                 {item.icon}
               </span>
-              <span className="text-[10px] font-medium leading-tight">
+              <span className="text-xs font-medium leading-tight">
                 {item.label}
               </span>
             </Link>

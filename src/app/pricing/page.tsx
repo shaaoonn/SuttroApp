@@ -40,12 +40,12 @@ const PLANS = [
 export default function PricingPage() {
   return (
     <div style={{ background: 'var(--suttro-surface)' }}>
-      <div className="mx-auto max-w-4xl px-4 py-12">
+      <div className="mx-auto max-w-4xl px-6 py-12">
         <div className="text-center mb-10">
           <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--suttro-deep)' }}>
             প্রাইসিং
           </h1>
-          <p className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
+          <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
             ফ্রি দিয়ে শুরু করো — আপগ্রেড করো যখন দরকার।
           </p>
         </div>
@@ -63,7 +63,7 @@ export default function PricingPage() {
             >
               {plan.highlight && (
                 <span
-                  className="inline-block px-3 py-1 rounded-full text-xs font-medium text-white mb-4"
+                  className="inline-block px-3 py-1.5 rounded-full text-sm font-medium text-white mb-4"
                   style={{ background: 'var(--suttro-accent)' }}
                 >
                   জনপ্রিয়
@@ -76,13 +76,13 @@ export default function PricingPage() {
                 <span className="text-3xl font-bold" style={{ color: 'var(--suttro-deep)' }}>
                   {plan.price}
                 </span>
-                <span className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
+                <span className="text-base" style={{ color: 'var(--suttro-muted)' }}>
                   {plan.period}
                 </span>
               </div>
               <ul className="space-y-3 mb-8">
                 {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm" style={{ color: 'var(--suttro-text)' }}>
+                  <li key={f} className="flex items-start gap-2 text-base" style={{ color: 'var(--suttro-text)' }}>
                     <span style={{ color: 'var(--suttro-primary-light)' }}>&#10003;</span>
                     {f}
                   </li>
@@ -90,7 +90,7 @@ export default function PricingPage() {
               </ul>
               <Link
                 href={plan.ctaHref}
-                className="block text-center py-3 rounded-[10px] text-sm font-medium suttro-transition"
+                className="block text-center py-3 rounded-[10px] text-base font-medium suttro-transition"
                 style={
                   plan.highlight
                     ? { background: 'var(--suttro-primary)', color: 'white' }

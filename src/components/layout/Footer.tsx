@@ -39,7 +39,7 @@ export default function Footer() {
             <p className="text-base text-white/60 mt-3 leading-relaxed">
               বিজ্ঞান দেখো, বিজ্ঞান বোঝো।
             </p>
-            <p className="text-xs text-white/30 mt-2">
+            <p className="text-sm text-white/30 mt-2">
               NCTB ক্লাস ৯-১০
             </p>
           </div>
@@ -99,7 +99,7 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div
-          className="mt-10 pt-6 flex flex-col lg:flex-row items-center justify-between gap-4 text-xs text-white/30"
+          className="mt-10 pt-6 flex flex-col lg:flex-row items-center justify-between gap-4 text-sm text-white/30"
           style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
         >
           <p>&copy; {new Date().getFullYear()} সূত্র | suttro.app — EJOSB IT</p>

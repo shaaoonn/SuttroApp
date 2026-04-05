@@ -27,7 +27,7 @@ export default function ClassesPage() {
           <p className="text-base font-medium mb-2" style={{ color: 'var(--suttro-deep)' }}>
             প্রতিদিন নতুন ক্লাস যোগ হচ্ছে
           </p>
-          <p className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
+          <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
             ৬টি বিষয়ে ১৩টি ক্লাস রেকর্ডিং এখন দেখার জন্য প্রস্তুত।
             প্রতিটি ক্লাসের সাথে ইন্টারেক্টিভ সিমুলেশন লিঙ্ক করা আছে।
           </p>

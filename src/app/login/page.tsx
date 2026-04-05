@@ -130,7 +130,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading || phone.length < 10}
-                className="w-full py-3 rounded-[10px] text-sm font-medium text-white suttro-transition hover:opacity-90 disabled:opacity-50"
+                className="w-full py-3 rounded-[10px] text-base font-medium text-white suttro-transition hover:opacity-90 disabled:opacity-50"
                 style={{ background: 'var(--suttro-primary)' }}
               >
                 {loading ? 'পাঠানো হচ্ছে...' : 'OTP পাঠাও'}
@@ -160,14 +160,14 @@ export default function LoginPage() {
                 />
               </div>
 
-              <p className="text-xs mb-4" style={{ color: 'var(--suttro-muted)' }}>
+              <p className="text-sm mb-4" style={{ color: 'var(--suttro-muted)' }}>
                 {fullPhone} নম্বরে পাঠানো হয়েছে
               </p>
 
               <button
                 type="submit"
                 disabled={loading || otp.length < 6}
-                className="w-full py-3 rounded-[10px] text-sm font-medium text-white suttro-transition hover:opacity-90 disabled:opacity-50"
+                className="w-full py-3 rounded-[10px] text-base font-medium text-white suttro-transition hover:opacity-90 disabled:opacity-50"
                 style={{ background: 'var(--suttro-primary)' }}
               >
                 {loading ? 'যাচাই হচ্ছে...' : 'লগ ইন করো'}
@@ -176,7 +176,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => { setStep('phone'); setOtp(''); setError(null); }}
-                className="w-full py-2.5 mt-2 rounded-[10px] text-sm font-medium suttro-transition"
+                className="w-full py-2.5 mt-2 rounded-[10px] text-base font-medium suttro-transition"
                 style={{ color: 'var(--suttro-muted)' }}
               >
                 &larr; নম্বর বদলাও
@@ -184,7 +184,7 @@ export default function LoginPage() {
             </form>
           )}
 
-          <p className="text-xs text-center mt-4" style={{ color: 'var(--suttro-muted)' }}>
+          <p className="text-sm text-center mt-4" style={{ color: 'var(--suttro-muted)' }}>
             কোনো পাসওয়ার্ড লাগবে না — শুধু OTP দিয়ে লগ ইন।
           </p>
         </div>

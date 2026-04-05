@@ -110,12 +110,12 @@ export default function SimulationsFilter({ simulations }: SimulationsFilterProp
           className="flex flex-wrap items-center gap-2 mb-6 p-3 rounded-[10px]"
           style={{ background: 'var(--suttro-sky)' }}
         >
-          <span className="text-xs font-medium mr-1" style={{ color: 'var(--suttro-muted)' }}>
+          <span className="text-base font-medium mr-1" style={{ color: 'var(--suttro-muted)' }}>
             অধ্যায়:
           </span>
           <button
             onClick={() => setActiveChapter(null)}
-            className="px-3 py-1.5 rounded-full text-xs font-medium suttro-transition"
+            className="px-3 py-1.5 rounded-full text-sm font-medium suttro-transition"
             style={{
               background: activeChapter === null ? SUBJECT_COLORS[activeSubject] : 'var(--suttro-white)',
               color: activeChapter === null ? 'white' : 'var(--suttro-text)',
@@ -131,7 +131,7 @@ export default function SimulationsFilter({ simulations }: SimulationsFilterProp
               <button
                 key={ch}
                 onClick={() => setActiveChapter(isActive ? null : ch)}
-                className="px-3 py-1.5 rounded-full text-xs font-medium suttro-transition"
+                className="px-3 py-1.5 rounded-full text-sm font-medium suttro-transition"
                 style={{
                   background: isActive ? SUBJECT_COLORS[activeSubject] : 'var(--suttro-white)',
                   color: isActive ? 'white' : 'var(--suttro-text)',
@@ -149,12 +149,12 @@ export default function SimulationsFilter({ simulations }: SimulationsFilterProp
       {/* Active filter summary */}
       {(activeSubject || activeChapter !== null) && (
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-xs" style={{ color: 'var(--suttro-muted)' }}>
+          <span className="text-base" style={{ color: 'var(--suttro-muted)' }}>
             {filtered.length}টি সিমুলেশন পাওয়া গেছে
           </span>
           <button
             onClick={() => { setActiveSubject(null); setActiveChapter(null); }}
-            className="text-xs px-2 py-0.5 rounded-full suttro-transition hover:opacity-80"
+            className="text-base px-2.5 py-1 rounded-full suttro-transition hover:opacity-80"
             style={{ background: 'var(--suttro-sky)', color: 'var(--suttro-primary)' }}
           >
             ফিল্টার মুছো &times;
@@ -166,12 +166,12 @@ export default function SimulationsFilter({ simulations }: SimulationsFilterProp
       {filtered.length === 0 ? (
         <div className="rounded-[14px] p-10 text-center" style={{ background: 'var(--suttro-sky)' }}>
           <div className="text-3xl mb-3">🔬</div>
-          <p className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
+          <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
             এই ফিল্টারে কোনো সিমুলেশন পাওয়া যায়নি।
           </p>
         </div>
       ) : (
-        <div className="grid lg:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-6">
           {filtered.map((sim) => {
             const thumb = SIM_THUMBNAILS[sim.slug];
             return (
@@ -208,7 +208,7 @@ export default function SimulationsFilter({ simulations }: SimulationsFilterProp
 
                   {/* Subject badge */}
                   <div
-                    className="absolute top-3 left-3 px-2 py-0.5 rounded text-xs font-medium text-white"
+                    className="absolute top-3 left-3 px-2 py-0.5 rounded text-sm font-medium text-white"
                     style={{ background: SUBJECT_COLORS[sim.config.subject] }}
                   >
                     {SUBJECT_LABELS[sim.config.subject]} · অধ্যায় {sim.config.nctb.chapter}
@@ -225,7 +225,7 @@ export default function SimulationsFilter({ simulations }: SimulationsFilterProp
                   <h3 className="text-lg font-semibold mb-1" style={{ color: 'var(--suttro-deep)' }}>
                     {sim.config.title.bn}
                   </h3>
-                  <p className="text-sm mb-3" style={{ color: 'var(--suttro-muted)' }}>
+                  <p className="text-base mb-3" style={{ color: 'var(--suttro-muted)' }}>
                     {sim.config.title.en} · ক্লাস {sim.config.nctb.class}
                   </p>
 
@@ -235,7 +235,7 @@ export default function SimulationsFilter({ simulations }: SimulationsFilterProp
                       {sim.config.formulas.slice(0, 3).map((f, i) => (
                         <span
                           key={i}
-                          className="font-mono text-xs px-2 py-1 rounded"
+                          className="font-mono text-sm px-2 py-1 rounded"
                           style={{ background: 'var(--suttro-sky)', color: 'var(--suttro-deep)' }}
                         >
                           {f.expression}
@@ -245,7 +245,7 @@ export default function SimulationsFilter({ simulations }: SimulationsFilterProp
                   )}
 
                   <span
-                    className="text-sm font-medium inline-flex items-center gap-2 suttro-transition"
+                    className="text-base font-medium inline-flex items-center gap-2 suttro-transition"
                     style={{ color: 'var(--suttro-primary)' }}
                   >
                     সিমুলেশন চালাও

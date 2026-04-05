@@ -104,14 +104,14 @@ export default function ClassesFilter() {
           style={{ background: 'var(--suttro-sky)' }}
         >
           <span
-            className="text-xs font-medium mr-1"
+            className="text-base font-medium mr-1"
             style={{ color: 'var(--suttro-muted)' }}
           >
             অধ্যায়:
           </span>
           <button
             onClick={() => setActiveChapter(null)}
-            className="px-3 py-1.5 rounded-full text-xs font-medium suttro-transition"
+            className="px-3 py-1.5 rounded-full text-sm font-medium suttro-transition"
             style={{
               background: activeChapter === null ? SUBJECT_COLORS[activeSubject] : 'var(--suttro-white)',
               color: activeChapter === null ? 'white' : 'var(--suttro-text)',
@@ -127,7 +127,7 @@ export default function ClassesFilter() {
               <button
                 key={ch}
                 onClick={() => setActiveChapter(isActive ? null : ch)}
-                className="px-3 py-1.5 rounded-full text-xs font-medium suttro-transition"
+                className="px-3 py-1.5 rounded-full text-sm font-medium suttro-transition"
                 style={{
                   background: isActive ? SUBJECT_COLORS[activeSubject] : 'var(--suttro-white)',
                   color: isActive ? 'white' : 'var(--suttro-text)',
@@ -145,12 +145,12 @@ export default function ClassesFilter() {
       {/* Active filter summary */}
       {(activeSubject || activeChapter !== null) && (
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-xs" style={{ color: 'var(--suttro-muted)' }}>
+          <span className="text-base" style={{ color: 'var(--suttro-muted)' }}>
             {filtered.length}টি ক্লাস পাওয়া গেছে
           </span>
           <button
             onClick={() => { setActiveSubject(null); setActiveChapter(null); }}
-            className="text-xs px-2 py-0.5 rounded-full suttro-transition hover:opacity-80"
+            className="text-base px-2.5 py-1 rounded-full suttro-transition hover:opacity-80"
             style={{ background: 'var(--suttro-sky)', color: 'var(--suttro-primary)' }}
           >
             ফিল্টার মুছো &times;
@@ -166,7 +166,7 @@ export default function ClassesFilter() {
             style={{ background: 'var(--suttro-sky)' }}
           >
             <div className="text-3xl mb-3">📭</div>
-            <p className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
+            <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
               এই ফিল্টারে কোনো ক্লাস পাওয়া যায়নি।
             </p>
           </div>
@@ -207,7 +207,7 @@ export default function ClassesFilter() {
                   </div>
                 </div>
                 {/* Duration badge */}
-                <div className="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 rounded text-[10px] font-medium text-white bg-black/70">
+                <div className="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded text-sm font-medium text-white bg-black/70">
                   {cls.duration}
                 </div>
               </div>
@@ -216,13 +216,13 @@ export default function ClassesFilter() {
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2 mb-1">
                   <span
-                    className="px-2 py-0.5 rounded text-xs font-medium text-white"
+                    className="px-2 py-0.5 rounded text-sm font-medium text-white"
                     style={{ background: SUBJECT_COLORS[cls.subject] }}
                   >
                     {SUBJECT_LABELS[cls.subject]}
                   </span>
                   <span
-                    className="px-2 py-0.5 rounded text-xs font-medium"
+                    className="px-2 py-0.5 rounded text-sm font-medium"
                     style={{ background: SUBJECT_COLORS[cls.subject] + '15', color: SUBJECT_COLORS[cls.subject] }}
                   >
                     অধ্যায় {cls.chapter}
@@ -230,18 +230,18 @@ export default function ClassesFilter() {
                       ? ` · ${CHAPTER_NAMES[cls.subject][cls.chapter]}`
                       : ''}
                   </span>
-                  <span className="text-xs" style={{ color: 'var(--suttro-muted)' }}>
+                  <span className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
                     ক্লাস {cls.classLevel}
                   </span>
                 </div>
                 <h3
-                  className="text-base font-semibold mb-1 truncate"
+                  className="text-lg font-semibold mb-1 truncate"
                   style={{ color: 'var(--suttro-deep)' }}
                 >
                   {cls.title}
                 </h3>
                 <div
-                  className="flex items-center gap-3 text-xs"
+                  className="flex items-center gap-3 text-sm"
                   style={{ color: 'var(--suttro-muted)' }}
                 >
                   <span>{cls.date}</span>
@@ -255,14 +255,14 @@ export default function ClassesFilter() {
                 {cls.available ? (
                   <Link
                     href={`/class/${cls.slug}`}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[10px] text-sm font-medium text-white suttro-transition hover:opacity-90"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-[10px] text-base font-medium text-white suttro-transition hover:opacity-90"
                     style={{ background: 'var(--suttro-primary)' }}
                   >
                     দেখো &rarr;
                   </Link>
                 ) : (
                   <span
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[10px] text-sm"
+                    className="inline-flex items-center gap-1.5 px-5 py-3 rounded-[10px] text-base"
                     style={{ background: 'var(--suttro-sky)', color: 'var(--suttro-muted)' }}
                   >
                     শীঘ্রই আসছে

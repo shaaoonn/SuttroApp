@@ -89,12 +89,26 @@
 
 html {
   overflow-x: hidden;
+  /*
+   * Fluid font scaling for phones with wide CSS viewports (budget Android DPR issue).
+   *
+   * Problem: Budget phones have low DPR (~1.4), making 1080p screens render at
+   * ~770px CSS viewport — content looks tablet-sized but screen is phone-sized.
+   *
+   * Solution: Scale base font proportionally to viewport width using clamp().
+   * At 390px viewport (normal phone): 16px base  (4.1% of viewport)
+   * At 770px viewport (wide phone):   ~31px base  (4.1% of viewport = same proportion!)
+   *
+   * This makes text occupy the SAME physical proportion of screen regardless of DPR.
+   * Formula: font-size = 4.1vw, clamped between 16px minimum and 32px maximum.
+   */
+  font-size: clamp(16px, 4.1vw, 32px);
 }
 
-/* Scale up text for phones with wide CSS viewports (600-1023px) */
-@media (min-width: 600px) and (max-width: 1023px) {
+/* Desktop: reset to standard 16px */
+@media (min-width: 1024px) {
   html {
-    font-size: 137.5%; /* 22px base instead of 16px — everything scales up ~37% */
+    font-size: 16px;
   }
 }
 
@@ -149,10 +163,21 @@ body {
   pointer-events: auto;
 }
 
-/* Reset font-size inside simulation player — exempt from page scaling */
+/* Reset font-size inside simulation player — exempt from page scaling.
+ * Since html uses clamp(16px, 4.1vw, 32px), rem-based Tailwind sizes (text-xs etc.)
+ * would scale up inside the player too. Override them to fixed px values so
+ * simulation controls stay compact regardless of viewport scaling.
+ */
 .suttro-player {
   font-size: 16px;
 }
+.suttro-player .text-xs  { font-size: 12px !important; line-height: 16px !important; }
+.suttro-player .text-sm  { font-size: 14px !important; line-height: 20px !important; }
+.suttro-player .text-base { font-size: 16px !important; line-height: 24px !important; }
+.suttro-player .text-lg  { font-size: 18px !important; line-height: 28px !important; }
+.suttro-player .text-xl  { font-size: 20px !important; line-height: 28px !important; }
+.suttro-player .text-2xl { font-size: 24px !important; line-height: 32px !important; }
+.suttro-player .text-3xl { font-size: 30px !important; line-height: 36px !important; }
 
 /* Control/Readout panels */
 .control-panel,

@@ -41,12 +41,12 @@ const NAV_ITEMS = [
     ),
   },
   {
-    href: '/about',
-    label: 'আমরা',
+    href: '/exams',
+    label: 'পরীক্ষা',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <path d="M12 16v-4M12 8h.01" />
+        <path d="M9 11l3 3L22 4" />
+        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
       </svg>
     ),
   },
@@ -56,7 +56,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   // Hide on simulation/class player pages (fullscreen content)
-  if (pathname.startsWith('/sim/') || pathname.startsWith('/class/')) return null;
+  if (pathname.startsWith('/sim/') || pathname.startsWith('/class/') || pathname.startsWith('/exam/')) return null;
 
   return (
     <nav

@@ -3,6 +3,7 @@ import { simulations } from '@/simulations/registry';
 import SimulationCard from '@/components/ui/SimulationCard';
 import HeroSimulation from '@/components/home/HeroSimulation';
 import { CLASSES, SUBJECT_COLORS, SUBJECT_LABELS, SUBJECT_ICONS, ytThumb } from '@/data/classes';
+import { EXAMS, EXAM_SUBJECT_COLORS, EXAM_SUBJECT_ICONS } from '@/data/exams';
 
 // ─────────────────────────────────────────────
 // Homepage — সূত্র | suttro.app
@@ -36,7 +37,7 @@ const FEATURES = [
 const STATS = [
   { value: '13', label: 'সিমুলেশন' },
   { value: '13', label: 'ভিডিও ক্লাস' },
-  { value: '6', label: 'বিষয়' },
+  { value: '3', label: 'MCQ পরীক্ষা' },
   { value: '৯-১০', label: 'শ্রেণি' },
 ];
 
@@ -255,6 +256,63 @@ export default function Home() {
                 </div>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── MCQ Exams ── */}
+      <section style={{ background: 'var(--suttro-white)' }}>
+        <div className="mx-auto max-w-6xl px-6 py-16">
+          <div className="flex items-center justify-between mb-8">
+            <h2
+              className="text-3xl lg:text-4xl font-bold"
+              style={{ color: 'var(--suttro-deep)' }}
+            >
+              MCQ পরীক্ষা
+            </h2>
+            <Link
+              href="/exams"
+              className="text-base font-medium suttro-transition hover:opacity-80"
+              style={{ color: 'var(--suttro-primary)' }}
+            >
+              সব পরীক্ষা &rarr;
+            </Link>
+          </div>
+          <div className="grid lg:grid-cols-3 gap-5">
+            {EXAMS.slice(0, 3).map((exam) => {
+              const color = EXAM_SUBJECT_COLORS[exam.subject] || '#1B6B4A';
+              return (
+                <Link
+                  key={exam.id}
+                  href={`/exam/${exam.id}`}
+                  className="group rounded-[14px] border overflow-hidden suttro-transition hover:shadow-lg"
+                  style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-surface)' }}
+                >
+                  <div className="h-2" style={{ background: color }} />
+                  <div className="p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-2xl">{EXAM_SUBJECT_ICONS[exam.subject]}</span>
+                      <span className="px-2.5 py-1 rounded text-sm font-medium text-white" style={{ background: color }}>
+                        {exam.subjectBn}
+                      </span>
+                    </div>
+                    <h3
+                      className="text-lg font-semibold mb-2 group-hover:text-[var(--suttro-primary)] suttro-transition"
+                      style={{ color: 'var(--suttro-deep)' }}
+                    >
+                      {exam.title}
+                    </h3>
+                    <div className="flex items-center gap-3 text-base" style={{ color: 'var(--suttro-muted)' }}>
+                      <span>{exam.questions.length} প্রশ্ন</span>
+                      <span>·</span>
+                      <span>{exam.duration} মিনিট</span>
+                      <span>·</span>
+                      <span>{exam.totalMarks} নম্বর</span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>

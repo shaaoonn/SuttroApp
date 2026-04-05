@@ -8,6 +8,7 @@ const FOOTER_LINKS = {
   platform: [
     { href: '/simulations', label: 'সিমুলেশন' },
     { href: '/classes', label: 'ক্লাস আর্কাইভ' },
+    { href: '/exams', label: 'MCQ পরীক্ষা' },
     { href: '/pricing', label: 'প্রাইসিং' },
   ],
   subjects: [

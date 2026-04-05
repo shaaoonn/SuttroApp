@@ -49,12 +49,12 @@ const PanZoomContainer = forwardRef<HTMLDivElement, PanZoomContainerProps>(
     },
     ref,
   ) {
-    // Hand mode: pass all handlers (pan + zoom)
-    // Mouse mode: only pass wheel handler (scroll-zoom always works, like Figma)
+    // Hand mode: pass all handlers (pan + zoom + wheel-zoom)
+    // Mouse mode: NO wheel handler — page scrolls normally, zoom via +/- only
     const canvasHandlers =
       mode === 'hand'
         ? panZoom.handlers
-        : { onWheel: panZoom.handlers.onWheel };
+        : {}; // mouse mode: no pan/zoom handlers on canvas
 
     return (
       // Viewport — fills parent, clips the large canvas

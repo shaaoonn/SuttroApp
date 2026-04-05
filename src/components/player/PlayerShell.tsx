@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, type ReactNode } from 'react';
+import { useRef, useEffect, type ReactNode } from 'react';
 import { useFullscreen } from '@/hooks/useFullscreen';
 import BottomToolbar from './BottomToolbar';
 import type { PanZoomControls } from './BottomToolbar';
@@ -70,6 +70,15 @@ export default function PlayerShell({
 }: PlayerShellProps) {
   const playerRef = useRef<HTMLDivElement>(null);
   const { isFullscreen, toggleFullscreen } = useFullscreen(playerRef);
+
+  // Auto-center simulation when entering/exiting fullscreen
+  useEffect(() => {
+    if (panZoom?.fitToScreen) {
+      // Delay to let fullscreen resize complete before recalculating fit
+      const timer = setTimeout(() => panZoom.fitToScreen(), 150);
+      return () => clearTimeout(timer);
+    }
+  }, [isFullscreen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div

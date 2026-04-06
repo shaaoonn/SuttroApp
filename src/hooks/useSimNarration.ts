@@ -131,6 +131,17 @@ export function useSimNarration({ template, values, soundEnabled }: UseSimNarrat
     };
   }, [values, soundEnabled, template, speak]);
 
+  // Stop playback immediately when sound is toggled off
+  useEffect(() => {
+    if (!soundEnabled) {
+      stopSpeech();
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
+    }
+  }, [soundEnabled, stopSpeech]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {

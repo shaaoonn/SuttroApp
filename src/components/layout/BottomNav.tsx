@@ -20,13 +20,13 @@ const NAV_ITEMS = [
     ),
   },
   {
-    href: '/simulations',
-    label: 'সিমুলেশন',
+    href: '/guide',
+    label: 'গাইড',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <path d="M12 16v-4M12 8h.01" />
-        <path d="M8 12h8" />
+        <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
+        <path d="M8 7h8M8 11h6" />
       </svg>
     ),
   },
@@ -57,6 +57,9 @@ export default function BottomNav() {
 
   // Hide on simulation/class player pages (fullscreen content)
   if (pathname.startsWith('/sim/') || pathname.startsWith('/class/') || pathname.startsWith('/exam/')) return null;
+  // Also hide on guide chapter detail pages (deep content view)
+  const guideDepth = pathname.startsWith('/guide/') ? pathname.split('/').filter(Boolean).length : 0;
+  if (guideDepth >= 3) return null;
 
   return (
     <nav
@@ -70,7 +73,9 @@ export default function BottomNav() {
     >
       <div className="flex items-center justify-around h-[60px]">
         {NAV_ITEMS.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive = item.href === '/'
+            ? pathname === '/'
+            : pathname.startsWith(item.href);
           return (
             <Link
               key={item.href}

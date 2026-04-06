@@ -2,15 +2,15 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import type { ExamPaper } from '@/data/exams';
-import { EXAM_SUBJECT_COLORS, EXAM_SUBJECT_LABELS, EXAM_SUBJECT_ICONS } from '@/data/exams';
+import type { ExamSummary } from '@/lib/data';
+import { SUBJECT_COLORS as EXAM_SUBJECT_COLORS, SUBJECT_LABELS as EXAM_SUBJECT_LABELS, SUBJECT_ICONS as EXAM_SUBJECT_ICONS } from '@/lib/constants';
 
 // ─────────────────────────────────────────────
 // ExamFilter — Browse & filter exam papers
 // ─────────────────────────────────────────────
 
 interface ExamFilterProps {
-  exams: ExamPaper[];
+  exams: ExamSummary[];
 }
 
 export default function ExamFilter({ exams }: ExamFilterProps) {
@@ -121,7 +121,7 @@ export default function ExamFilter({ exams }: ExamFilterProps) {
                   {/* Meta */}
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1.5 text-base" style={{ color: 'var(--suttro-muted)' }}>
-                      <span>📝</span> {exam.questions.length} প্রশ্ন
+                      <span>📝</span> {exam.questionCount} প্রশ্ন
                     </div>
                     <div className="flex items-center gap-1.5 text-base" style={{ color: 'var(--suttro-muted)' }}>
                       <span>⏱</span> {exam.duration} মিনিট

@@ -2,8 +2,10 @@ import Link from 'next/link';
 import { simulations } from '@/simulations/registry';
 import SimulationCard from '@/components/ui/SimulationCard';
 import HeroSimulation from '@/components/home/HeroSimulation';
-import { CLASSES, SUBJECT_COLORS, SUBJECT_LABELS, SUBJECT_ICONS, ytThumb } from '@/data/classes';
-import { EXAMS, EXAM_SUBJECT_COLORS, EXAM_SUBJECT_ICONS } from '@/data/exams';
+import { getClasses, getExams } from '@/lib/data';
+import { SUBJECT_COLORS, SUBJECT_LABELS, SUBJECT_ICONS, ytThumb } from '@/lib/constants';
+
+export const revalidate = 300;
 
 // ─────────────────────────────────────────────
 // Homepage — সূত্র | suttro.app
@@ -37,11 +39,14 @@ const FEATURES = [
 const STATS = [
   { value: '13', label: 'সিমুলেশন' },
   { value: '13', label: 'ভিডিও ক্লাস' },
-  { value: '3', label: 'MCQ পরীক্ষা' },
+  { value: '28', label: 'MCQ পরীক্ষা' },
   { value: '৯-১০', label: 'শ্রেণি' },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const [CLASSES, EXAMS] = await Promise.all([getClasses(), getExams()]);
+  const EXAM_SUBJECT_COLORS = SUBJECT_COLORS;
+  const EXAM_SUBJECT_ICONS = SUBJECT_ICONS;
   return (
     <div className="flex flex-col">
       {/* ── Hero Section ── */}
@@ -303,7 +308,7 @@ export default function Home() {
                       {exam.title}
                     </h3>
                     <div className="flex items-center gap-3 text-base" style={{ color: 'var(--suttro-muted)' }}>
-                      <span>{exam.questions.length} প্রশ্ন</span>
+                      <span>{exam.questionCount} প্রশ্ন</span>
                       <span>·</span>
                       <span>{exam.duration} মিনিট</span>
                       <span>·</span>

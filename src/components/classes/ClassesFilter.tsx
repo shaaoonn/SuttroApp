@@ -2,21 +2,25 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import type { ClassRecording } from '@/data/classes';
 import {
-  CLASSES,
   SUBJECT_COLORS,
   SUBJECT_LABELS,
   SUBJECT_ICONS,
-  CHAPTER_NAMES,
   ytThumb,
-} from '@/data/classes';
+} from '@/lib/constants';
 
 // ─────────────────────────────────────────────
 // Interactive Class Filter — সূত্র
 // Subject tabs + chapter dropdown + animated list
 // ─────────────────────────────────────────────
 
-export default function ClassesFilter() {
+interface ClassesFilterProps {
+  classes: ClassRecording[];
+  chapterNames: Record<string, Record<number, string>>;
+}
+
+export default function ClassesFilter({ classes, chapterNames }: ClassesFilterProps) {
   const [activeSubject, setActiveSubject] = useState<string | null>(null);
   const [activeChapter, setActiveChapter] = useState<number | null>(null);
 
@@ -24,7 +28,7 @@ export default function ClassesFilter() {
   const availableChapters = useMemo(() => {
     if (!activeSubject) return [];
     const chapters = new Set<number>();
-    CLASSES.forEach((cls) => {
+    classes.forEach((cls) => {
       if (cls.subject === activeSubject) chapters.add(cls.chapter);
     });
     return Array.from(chapters).sort((a, b) => a - b);
@@ -32,7 +36,7 @@ export default function ClassesFilter() {
 
   // Filtered classes
   const filtered = useMemo(() => {
-    return CLASSES.filter((cls) => {
+    return classes.filter((cls) => {
       if (activeSubject && cls.subject !== activeSubject) return false;
       if (activeChapter !== null && cls.chapter !== activeChapter) return false;
       return true;
@@ -54,11 +58,11 @@ export default function ClassesFilter() {
   // Count classes per subject
   const subjectCounts = useMemo(() => {
     const counts: Record<string, number> = {};
-    CLASSES.forEach((cls) => {
+    classes.forEach((cls) => {
       counts[cls.subject] = (counts[cls.subject] || 0) + 1;
     });
     return counts;
-  }, []);
+  }, [classes]);
 
   return (
     <>
@@ -73,7 +77,7 @@ export default function ClassesFilter() {
             border: activeSubject === null ? 'none' : '1.5px solid var(--suttro-border)',
           }}
         >
-          সব ({CLASSES.length})
+          সব ({classes.length})
         </button>
         {Object.entries(SUBJECT_LABELS).map(([key, label]) => {
           const isActive = activeSubject === key;
@@ -122,7 +126,7 @@ export default function ClassesFilter() {
           </button>
           {availableChapters.map((ch) => {
             const isActive = activeChapter === ch;
-            const chapterName = CHAPTER_NAMES[activeSubject]?.[ch];
+            const chapterName = chapterNames[activeSubject]?.[ch];
             return (
               <button
                 key={ch}
@@ -226,8 +230,8 @@ export default function ClassesFilter() {
                     style={{ background: SUBJECT_COLORS[cls.subject] + '15', color: SUBJECT_COLORS[cls.subject] }}
                   >
                     অধ্যায় {cls.chapter}
-                    {CHAPTER_NAMES[cls.subject]?.[cls.chapter]
-                      ? ` · ${CHAPTER_NAMES[cls.subject][cls.chapter]}`
+                    {chapterNames[cls.subject]?.[cls.chapter]
+                      ? ` · ${chapterNames[cls.subject][cls.chapter]}`
                       : ''}
                   </span>
                   <span className="text-sm" style={{ color: 'var(--suttro-muted)' }}>

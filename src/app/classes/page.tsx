@@ -1,11 +1,19 @@
 import type { Metadata } from 'next';
+import { getClasses, getChapterNames } from '@/lib/data';
 import ClassesFilter from '@/components/classes/ClassesFilter';
+
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'ক্লাস আর্কাইভ — সূত্র | suttro.app',
 };
 
-export default function ClassesPage() {
+export default async function ClassesPage() {
+  const [classes, chapterNames] = await Promise.all([
+    getClasses(),
+    getChapterNames(),
+  ]);
+
   return (
     <div style={{ background: 'var(--suttro-surface)' }}>
       <div className="mx-auto max-w-6xl px-6 py-12">
@@ -16,7 +24,7 @@ export default function ClassesPage() {
           প্রতিদিনের ক্লাস রেকর্ডিং — বিষয় ও অধ্যায় ধরে ফিল্টার করো, যখন খুশি দেখো।
         </p>
 
-        <ClassesFilter />
+        <ClassesFilter classes={classes} chapterNames={chapterNames} />
 
         {/* Info note */}
         <div

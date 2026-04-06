@@ -20,7 +20,16 @@ let client: SupabaseClient<AnyDB> | null = null;
 export function getSupabase(): SupabaseClient<AnyDB> | null {
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
   if (!client) {
-    client = createClient<AnyDB>(SUPABASE_URL, SUPABASE_ANON_KEY);
+    client = createClient<AnyDB>(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      global: {
+        fetch: (url: RequestInfo | URL, options?: RequestInit) => {
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout
+          return fetch(url, { ...options, signal: controller.signal })
+            .finally(() => clearTimeout(timeout));
+        },
+      },
+    });
   }
   return client;
 }

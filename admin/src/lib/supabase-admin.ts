@@ -39,7 +39,7 @@ export function getSupabaseAdmin(): SupabaseClient<AnyDB> {
 export const supabaseAdmin = new Proxy({} as SupabaseClient<AnyDB>, {
   get(_target, prop: string | symbol) {
     const client = getSupabaseAdmin();
-    const value = (client as Record<string | symbol, unknown>)[prop];
+    const value = (client as unknown as Record<string | symbol, unknown>)[prop];
     return typeof value === 'function'
       ? (value as (...args: unknown[]) => unknown).bind(client)
       : value;

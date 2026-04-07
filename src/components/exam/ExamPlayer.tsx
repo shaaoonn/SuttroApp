@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import type { ExamPaper } from '@/data/exams';
 import { EXAM_SUBJECT_COLORS } from '@/data/exams';
 import ExamResult from './ExamResult';
+import { trackEvent, saveExamAttempt } from '@/lib/analytics';
+import { useAuth } from '@/lib/auth-context';
 
 // ─────────────────────────────────────────────
 // ExamPlayer — MCQ Exam Interface
@@ -17,6 +19,7 @@ interface ExamPlayerProps {
 type ExamState = 'ready' | 'running' | 'finished';
 
 export default function ExamPlayer({ exam }: ExamPlayerProps) {
+  const { session } = useAuth();
   const [state, setState] = useState<ExamState>('ready');
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(
@@ -24,10 +27,12 @@ export default function ExamPlayer({ exam }: ExamPlayerProps) {
   );
   const [timeLeft, setTimeLeft] = useState(exam.duration * 60); // seconds
   const [showPalette, setShowPalette] = useState(false);
+  const hasSavedRef = useRef(false);
 
   const subjectColor = EXAM_SUBJECT_COLORS[exam.subject] || '#1B6B4A';
   const question = exam.questions[currentQ];
   const totalQ = exam.questions.length;
+  const accessToken = session?.access_token;
 
   // ── Timer ──
   useEffect(() => {
@@ -79,6 +84,39 @@ export default function ExamPlayer({ exam }: ExamPlayerProps) {
     setShowPalette(false);
   }, []);
 
+  // ── Save exam attempt when finished ──
+  useEffect(() => {
+    if (state !== 'finished' || hasSavedRef.current) return;
+    hasSavedRef.current = true;
+
+    // Calculate stats
+    let correct = 0, wrong = 0, skipped = 0;
+    exam.questions.forEach((q, i) => {
+      if (answers[i] === null) skipped++;
+      else if (answers[i] === q.correct) correct++;
+      else wrong++;
+    });
+    const score = Math.max(0, correct - wrong * exam.negativeMarking);
+    const durationSeconds = exam.duration * 60 - timeLeft;
+
+    // Save to DB (only for authenticated users)
+    if (accessToken) {
+      saveExamAttempt(
+        {
+          examPaperId: exam.id,
+          score,
+          totalMarks: exam.totalMarks,
+          correctCount: correct,
+          wrongCount: wrong,
+          skippedCount: skipped,
+          durationSeconds,
+          answers,
+        },
+        accessToken,
+      );
+    }
+  }, [state, exam, answers, timeLeft, accessToken]);
+
   // ── Stats ──
   const answeredCount = useMemo(() => answers.filter((a) => a !== null).length, [answers]);
   const unansweredCount = totalQ - answeredCount;
@@ -92,13 +130,18 @@ export default function ExamPlayer({ exam }: ExamPlayerProps) {
   // ── Start ──
   const handleStart = useCallback(() => {
     setState('running');
-  }, []);
+    trackEvent(
+      { eventType: 'exam_started', contentType: 'exam', contentId: exam.id },
+      accessToken,
+    );
+  }, [exam.id, accessToken]);
 
   // ── Retry ──
   const handleRetry = useCallback(() => {
     setAnswers(new Array(exam.questions.length).fill(null));
     setCurrentQ(0);
     setTimeLeft(exam.duration * 60);
+    hasSavedRef.current = false; // Allow saving again on next attempt
     setState('ready');
   }, [exam]);
 

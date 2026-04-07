@@ -1,6 +1,7 @@
 // ─────────────────────────────────────────────
 // Client-side analytics — track user activity
-// Only works for authenticated users
+// Passes auth token via Authorization header
+// since main app uses localStorage (not cookies)
 // ─────────────────────────────────────────────
 
 export type EventType =
@@ -19,11 +20,16 @@ interface TrackPayload {
   metadata?: Record<string, unknown>;
 }
 
-export async function trackEvent(payload: TrackPayload): Promise<void> {
+export async function trackEvent(
+  payload: TrackPayload,
+  accessToken?: string,
+): Promise<void> {
   try {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
     await fetch('/api/track', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(payload),
     });
   } catch {
@@ -42,11 +48,16 @@ interface ExamAttemptPayload {
   answers: (number | null)[];
 }
 
-export async function saveExamAttempt(payload: ExamAttemptPayload): Promise<void> {
+export async function saveExamAttempt(
+  payload: ExamAttemptPayload,
+  accessToken?: string,
+): Promise<void> {
   try {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
     await fetch('/api/exam-attempt', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(payload),
     });
   } catch {

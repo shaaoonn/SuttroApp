@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import VideoPlayerWrapper from '@/components/player/VideoPlayerWrapper';
 import YouTubePlayerWrapper from '@/components/player/YouTubePlayerWrapper';
+import ContentTracker from '@/components/ContentTracker';
 import { getClassBySlug } from '@/lib/data';
 import { SUBJECT_LABELS } from '@/lib/constants';
 
@@ -46,6 +47,9 @@ export default async function ClassPlayerPage({ params }: ClassPageProps) {
   return (
     <div style={{ background: 'var(--suttro-surface)' }}>
       <div className="mx-auto max-w-6xl px-6 py-6">
+        {/* Track class view */}
+        {cls && <ContentTracker eventType="class_opened" contentType="class" contentId={slug} />}
+
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-base mb-4" style={{ color: 'var(--suttro-muted)' }}>
           <Link href="/classes" className="hover:underline">ক্লাস আর্কাইভ</Link>

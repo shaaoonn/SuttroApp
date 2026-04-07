@@ -7,7 +7,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'not configured' }, { status: 503 });
   }
 
-  const { data: { user } } = await sb.auth.getUser();
+  // Get authenticated user from Authorization header
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+  const token = authHeader.slice(7);
+  const { data: { user } } = await sb.auth.getUser(token);
   if (!user) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }

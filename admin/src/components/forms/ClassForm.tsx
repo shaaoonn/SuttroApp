@@ -19,7 +19,7 @@ interface ClassFormData {
   title: string;
   subject_id: string;
   chapter_num: number;
-  class_level: string;
+  class_level: number;
   date_label: string;
   duration: string;
   available: boolean;
@@ -39,7 +39,7 @@ const DEFAULT: ClassFormData = {
   title: '',
   subject_id: 'physics',
   chapter_num: 1,
-  class_level: '9-10',
+  class_level: 10,
   date_label: '',
   duration: '',
   available: true,
@@ -158,12 +158,14 @@ export default function ClassForm({ initialData, isEdit }: ClassFormProps) {
 
         <div>
           <label className="admin-label">শ্রেণি</label>
-          <input
+          <select
             className="admin-input"
             value={form.class_level}
-            onChange={(e) => update('class_level', e.target.value)}
-            placeholder="9-10"
-          />
+            onChange={(e) => update('class_level', Number(e.target.value))}
+          >
+            <option value={9}>৯</option>
+            <option value={10}>১০</option>
+          </select>
         </div>
 
         <div>

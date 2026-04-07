@@ -118,10 +118,10 @@ export default function CQEditor({ collection, questions: initial }: CQEditorPro
       const partsPayload = q.parts.map((p, i) => ({
         cq_id: inserted.id,
         label: p.label,
-        type: p.type,
+        part_type: p.type,
         marks: p.marks,
         question: p.question,
-        answer: p.answer || null,
+        answer: p.answer || '',
         sort_order: i,
       }));
 

@@ -27,6 +27,7 @@ interface AuthState {
 interface AuthContextType extends AuthState {
   sendOTP: (phone: string) => Promise<{ error: string | null }>;
   verifyOTP: (phone: string, token: string) => Promise<{ error: string | null }>;
+  signInWithGoogle: () => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -91,12 +92,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error?.message ?? null };
   };
 
+  const signInWithGoogle = async (): Promise<{ error: string | null }> => {
+    if (!clientRef.current) return { error: 'Auth সেটআপ হয়নি — Supabase credentials দাও' };
+    const { error } = await clientRef.current.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+    return { error: error?.message ?? null };
+  };
+
   const signOut = async () => {
     if (clientRef.current) await clientRef.current.auth.signOut();
   };
 
   return (
-    <AuthContext.Provider value={{ ...state, sendOTP, verifyOTP, signOut }}>
+    <AuthContext.Provider value={{ ...state, sendOTP, verifyOTP, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   );

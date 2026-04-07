@@ -110,19 +110,40 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             {!loading && (
               user ? (
-                <Link
-                  href="/dashboard"
-                  className="hidden lg:inline-flex items-center gap-2 px-4 py-2 rounded-[10px] text-sm font-medium suttro-transition hover:bg-black/5"
-                  style={{ color: 'var(--suttro-primary)' }}
-                >
-                  <span
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                    style={{ background: 'var(--suttro-primary)' }}
+                <div className="hidden lg:flex items-center gap-1">
+                  <Link
+                    href="/dashboard"
+                    className="px-3 py-2 rounded-[10px] text-sm font-medium suttro-transition hover:bg-black/5"
+                    style={{ color: 'var(--suttro-primary)' }}
                   >
-                    {user.phone?.slice(-2) || '?'}
-                  </span>
-                  ড্যাশবোর্ড
-                </Link>
+                    ড্যাশবোর্ড
+                  </Link>
+                  <Link
+                    href="/profile"
+                    className="flex items-center gap-2 px-3 py-2 rounded-[10px] text-sm font-medium suttro-transition hover:bg-black/5"
+                    style={{ color: 'var(--suttro-text)' }}
+                  >
+                    {user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={user.user_metadata.avatar_url || user.user_metadata.picture}
+                        alt=""
+                        className="w-7 h-7 rounded-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <span
+                        className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                        style={{ background: 'var(--suttro-primary)' }}
+                      >
+                        {user.user_metadata?.full_name?.charAt(0)?.toUpperCase()
+                          || user.email?.charAt(0)?.toUpperCase()
+                          || user.phone?.slice(-2)
+                          || '?'}
+                      </span>
+                    )}
+                  </Link>
+                </div>
               ) : (
                 <Link
                   href="/login"
@@ -159,6 +180,7 @@ export default function Navbar() {
         onClose={() => setMobileOpen(false)}
         links={NAV_LINKS}
         subjectLinks={SUBJECT_LINKS}
+        user={user}
       />
     </>
   );

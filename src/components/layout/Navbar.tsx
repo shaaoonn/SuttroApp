@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import MobileMenu from './MobileMenu';
@@ -28,9 +28,21 @@ const SUBJECT_LINKS = [
 ];
 
 export default function Navbar() {
-  const { user, loading } = useAuth();
+  const { user, session, loading } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [subjectOpen, setSubjectOpen] = useState(false);
+  const [streak, setStreak] = useState(0);
+  const [xp, setXp] = useState(0);
+
+  useEffect(() => {
+    if (!session?.access_token) return;
+    fetch('/api/xp', { headers: { Authorization: `Bearer ${session.access_token}` } })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data) { setStreak(data.current_streak ?? 0); setXp(data.total_xp ?? 0); }
+      })
+      .catch(() => {});
+  }, [session?.access_token]);
 
   return (
     <>
@@ -111,6 +123,18 @@ export default function Navbar() {
             {!loading && (
               user ? (
                 <div className="hidden lg:flex items-center gap-1">
+                  {streak > 0 && (
+                    <Link href="/dashboard" className="flex items-center gap-1 px-2 py-1.5 rounded-[8px] text-xs font-medium"
+                      style={{ background: '#fff7ed', color: '#ea580c' }}>
+                      🔥 {streak}
+                    </Link>
+                  )}
+                  {xp > 0 && (
+                    <Link href="/dashboard" className="flex items-center gap-1 px-2 py-1.5 rounded-[8px] text-xs font-medium"
+                      style={{ background: '#ecfdf5', color: '#059669' }}>
+                      ✨ {xp}
+                    </Link>
+                  )}
                   <Link
                     href="/dashboard"
                     className="px-3 py-2 rounded-[10px] text-sm font-medium suttro-transition hover:bg-black/5"

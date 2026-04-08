@@ -114,6 +114,35 @@ export default function ExamPlayer({ exam }: ExamPlayerProps) {
         },
         accessToken,
       );
+
+      // Award XP for completing exam
+      const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` };
+      fetch('/api/xp', {
+        method: 'POST', headers,
+        body: JSON.stringify({ source: 'exam_complete', metadata: { examId: exam.id } }),
+      }).catch(() => {});
+
+      // Bonus XP for high score (80%+)
+      const pct = exam.totalMarks > 0 ? (score / exam.totalMarks) * 100 : 0;
+      if (pct >= 80) {
+        fetch('/api/xp', {
+          method: 'POST', headers,
+          body: JSON.stringify({ source: 'exam_high_score', metadata: { examId: exam.id, score: pct } }),
+        }).catch(() => {});
+      }
+
+      // Add wrong answers to SRS review deck
+      const wrongQuestionIds = exam.questions
+        .filter((q, i) => answers[i] !== null && answers[i] !== q.correct)
+        .map((q) => q.id)
+        .filter((id): id is number => id !== undefined);
+
+      if (wrongQuestionIds.length > 0) {
+        fetch('/api/srs', {
+          method: 'POST', headers,
+          body: JSON.stringify({ action: 'add_wrong', questionIds: wrongQuestionIds }),
+        }).catch(() => {});
+      }
     }
   }, [state, exam, answers, timeLeft, accessToken]);
 

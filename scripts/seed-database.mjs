@@ -3,10 +3,10 @@
 // ============================================
 // Seed Supabase database from static TS data
 // Usage: SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... node scripts/seed-database.mjs
+// Pre-step: npx esbuild src/data/exams.ts src/data/cq.ts src/data/classes.ts --bundle --format=esm --outdir=scripts/.compiled
 // ============================================
 
 import { createClient } from '@supabase/supabase-js';
-import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -25,48 +25,11 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ── Parse static TS files ──
-// Since we can't import .ts directly, we extract data via regex/eval approach.
-// We read the compiled .next output or parse the TS manually.
-// Simpler: use a lightweight TS→JS transpile approach.
+// ── Import compiled data files (pre-compiled by esbuild) ──
 
-// Actually, let's just use the raw TS files and strip types manually.
-// The data files are simple enough (no complex generics).
-
-function stripTypes(code) {
-  return code
-    // Remove export/import statements
-    .replace(/^import\s+.*$/gm, '')
-    // Remove interface/type declarations
-    .replace(/^export\s+(interface|type)\s+\w+[\s\S]*?^}/gm, '')
-    // Remove inline type annotations
-    .replace(/:\s*(Record<[^>]+>|string\[\]|\w+\[\]|\w+|'[^']*'(\s*\|\s*'[^']*')*)/g, '')
-    .replace(/as\s+const/g, '')
-    // Remove export keywords
-    .replace(/^export\s+(const|function)/gm, 'const')
-    // Remove function type annotations
-    .replace(/\)\s*:\s*\w+(\[\])?\s*{/g, ') {')
-    // Remove tuple type annotations like [MCQOption, MCQOption, MCQOption, MCQOption]
-    .replace(/:\s*\[[^\]]+\]/g, '')
-    // Clean generic types in Record<>
-    .replace(/<[^>]+>/g, '');
-}
-
-function loadTSModule(filePath) {
-  const raw = readFileSync(resolve(ROOT, filePath), 'utf-8');
-  const js = stripTypes(raw);
-
-  // Wrap in a function to capture exports
-  const exports = {};
-  const fn = new Function('exports', js + '\nObject.assign(exports, { ' +
-    (js.match(/(?:^|\n)const\s+(\w+)\s*=/g) || [])
-      .map(m => m.match(/const\s+(\w+)/)[1])
-      .join(', ') +
-    ' });'
-  );
-  fn(exports);
-  return exports;
-}
+const { EXAMS } = await import('./.compiled/exams.mjs');
+const { CQ_COLLECTIONS } = await import('./.compiled/cq.mjs');
+const { CLASSES } = await import('./.compiled/classes.mjs');
 
 // ── Subject & Chapter reference data ──
 
@@ -79,7 +42,6 @@ const SUBJECTS = [
   { id: 'english', name_bn: 'ইংরেজি', icon: '📝', color: '#0891B2', sort_order: 6 },
 ];
 
-// Chapter names from classes.ts CHAPTER_NAMES
 const CHAPTER_NAMES = {
   physics: {
     1: 'ভৌত রাশি ও পরিমাপ', 2: 'গতি', 3: 'বল', 4: 'কাজ, ক্ষমতা ও শক্তি',
@@ -115,8 +77,7 @@ const CHAPTER_NAMES = {
   },
 };
 
-// ── Class detail data (from class/[slug]/page.tsx) ──
-// These have extra fields not in classes.ts
+// ── Class detail data (extra fields not in CLASSES) ──
 
 const CLASS_DETAILS = {
   '2026-04-02-ohms-law': {
@@ -176,18 +137,18 @@ const CLASS_DETAILS = {
 // ── Main seed function ──
 
 async function seed() {
-  console.log('🌱 Seeding Suttro database...\n');
+  console.log('Seeding Suttro database...\n');
 
   // 1. Seed subjects
-  console.log('📚 Inserting subjects...');
+  console.log('Inserting subjects...');
   const { error: subErr } = await supabase
     .from('subjects')
     .upsert(SUBJECTS, { onConflict: 'id' });
   if (subErr) throw new Error(`subjects: ${subErr.message}`);
-  console.log(`   ✓ ${SUBJECTS.length} subjects`);
+  console.log(`   OK ${SUBJECTS.length} subjects`);
 
   // 2. Seed chapters
-  console.log('📖 Inserting chapters...');
+  console.log('Inserting chapters...');
   const chapterRows = [];
   for (const [subjectId, chapters] of Object.entries(CHAPTER_NAMES)) {
     for (const [num, name] of Object.entries(chapters)) {
@@ -198,16 +159,14 @@ async function seed() {
       });
     }
   }
-  // Delete existing and re-insert (chapters don't have a natural PK for upsert)
   await supabase.from('chapters').delete().neq('id', 0);
   const { error: chErr } = await supabase.from('chapters').insert(chapterRows);
   if (chErr) throw new Error(`chapters: ${chErr.message}`);
-  console.log(`   ✓ ${chapterRows.length} chapters`);
+  console.log(`   OK ${chapterRows.length} chapters`);
 
-  // 3. Seed classes — parse from static data
-  console.log('📹 Inserting classes...');
-  const classesData = loadClassesFromFile();
-  const classRows = classesData.map(cls => {
+  // 3. Seed classes
+  console.log('Inserting classes...');
+  const classRows = CLASSES.map(cls => {
     const detail = CLASS_DETAILS[cls.slug] || {};
     return {
       slug: cls.slug,
@@ -232,14 +191,14 @@ async function seed() {
       .upsert(row, { onConflict: 'slug' });
     if (error) throw new Error(`class ${row.slug}: ${error.message}`);
   }
-  console.log(`   ✓ ${classRows.length} classes`);
+  console.log(`   OK ${classRows.length} classes`);
 
   // 4. Seed exams + MCQ questions
-  console.log('📝 Inserting exams & MCQ questions...');
-  const exams = loadExamsFromFile();
+  console.log('Inserting exams & MCQ questions...');
+  console.log(`   Found ${EXAMS.length} exams in compiled data`);
   let totalQuestions = 0;
 
-  for (const exam of exams) {
+  for (const exam of EXAMS) {
     // Insert exam paper
     const { error: examErr } = await supabase
       .from('exam_papers')
@@ -281,15 +240,14 @@ async function seed() {
     }
     totalQuestions += questionRows.length;
   }
-  console.log(`   ✓ ${exams.length} exams, ${totalQuestions} questions`);
+  console.log(`   OK ${EXAMS.length} exams, ${totalQuestions} questions`);
 
   // 5. Seed CQ collections + creative questions + parts
-  console.log('📖 Inserting CQ collections...');
-  const cqCollections = loadCQFromFile();
+  console.log('Inserting CQ collections...');
   let totalCQs = 0;
   let totalParts = 0;
 
-  for (const col of cqCollections) {
+  for (const col of CQ_COLLECTIONS) {
     // Insert collection
     const { error: colErr } = await supabase
       .from('cq_collections')
@@ -302,7 +260,6 @@ async function seed() {
     if (colErr) throw new Error(`cq collection ${col.id}: ${colErr.message}`);
 
     // Delete existing questions for this collection
-    // Need to get existing CQ IDs first to delete parts
     const { data: existingCQs } = await supabase
       .from('creative_questions')
       .select('id')
@@ -336,223 +293,23 @@ async function seed() {
         answer: p.answer,
         sort_order: i,
       }));
-      const { error: pErr } = await supabase.from('cq_parts').insert(partRows);
-      if (pErr) throw new Error(`CQ parts: ${pErr.message}`);
-      totalParts += partRows.length;
+
+      if (partRows.length > 0) {
+        const { error: pErr } = await supabase.from('cq_parts').insert(partRows);
+        if (pErr) throw new Error(`CQ parts: ${pErr.message}`);
+        totalParts += partRows.length;
+      }
       totalCQs++;
     }
   }
-  console.log(`   ✓ ${cqCollections.length} collections, ${totalCQs} questions, ${totalParts} parts`);
+  console.log(`   OK ${CQ_COLLECTIONS.length} collections, ${totalCQs} questions, ${totalParts} parts`);
 
-  console.log('\n✅ Seed complete!');
-}
-
-// ── File parsers ──
-// These parse the TS source files by evaluating the data portions
-
-function loadClassesFromFile() {
-  const raw = readFileSync(resolve(ROOT, 'src/data/classes.ts'), 'utf-8');
-
-  // Extract the CLASSES array
-  const match = raw.match(/export const CLASSES[\s\S]*?=\s*\[([\s\S]*)\];/);
-  if (!match) throw new Error('Could not find CLASSES array');
-
-  // Evaluate as JavaScript
-  const arrStr = '[' + match[1] + ']';
-  const cleaned = arrStr
-    .replace(/\/\/[^\n]*/g, '') // remove single-line comments
-    .replace(/'/g, '"')         // single to double quotes
-    .replace(/(\w+):/g, '"$1":') // unquoted keys to quoted
-    .replace(/,\s*([}\]])/g, '$1') // trailing commas
-    .replace(/"subject":\s*"(\w[\w-]*)"/g, '"subject": "$1"'); // keep subject as-is
-
-  try {
-    return JSON.parse(cleaned);
-  } catch {
-    // Fallback: manual extraction
-    console.warn('   ⚠ JSON parse failed for classes, using manual extraction');
-    return extractClassesManual(raw);
-  }
-}
-
-function extractClassesManual(raw) {
-  const classes = [];
-  const regex = /{\s*slug:\s*'([^']+)',\s*title:\s*'([^']+)',\s*subject:\s*'([^']+)',\s*chapter:\s*(\d+),\s*classLevel:\s*(\d+),\s*date:\s*'([^']+)',\s*duration:\s*'([^']+)',\s*available:\s*(true|false),\s*youtubeId:\s*(?:'([^']*)'|null)/g;
-  let m;
-  while ((m = regex.exec(raw)) !== null) {
-    classes.push({
-      slug: m[1], title: m[2], subject: m[3], chapter: Number(m[4]),
-      classLevel: Number(m[5]), date: m[6], duration: m[7],
-      available: m[8] === 'true', youtubeId: m[9] || null,
-    });
-  }
-  return classes;
-}
-
-function loadExamsFromFile() {
-  const raw = readFileSync(resolve(ROOT, 'src/data/exams.ts'), 'utf-8');
-
-  // Extract exam papers using regex
-  const exams = [];
-  const examRegex = /{\s*id:\s*'([^']+)',\s*title:\s*'([^']+)',\s*subject:\s*'([^']+)',\s*subjectBn:\s*'([^']+)',\s*year:\s*(\d+),\s*(?:board:\s*'([^']*)',\s*)?classLevel:\s*(\d+),\s*duration:\s*(\d+),\s*totalMarks:\s*(\d+),\s*negativeMarking:\s*([\d.]+),\s*questions:\s*\[/g;
-
-  let examMatch;
-  while ((examMatch = examRegex.exec(raw)) !== null) {
-    const exam = {
-      id: examMatch[1],
-      title: examMatch[2],
-      subject: examMatch[3],
-      subjectBn: examMatch[4],
-      year: Number(examMatch[5]),
-      board: examMatch[6] || null,
-      classLevel: Number(examMatch[7]),
-      duration: Number(examMatch[8]),
-      totalMarks: Number(examMatch[9]),
-      negativeMarking: Number(examMatch[10]),
-      questions: [],
-    };
-
-    // Find the questions array for this exam
-    const startIdx = examMatch.index + examMatch[0].length;
-    const questionsStr = extractBalancedBracket(raw, startIdx - 1);
-
-    // Parse individual questions
-    const qRegex = /{\s*id:\s*(\d+),\s*question:\s*'((?:[^'\\]|\\.)*)'/g;
-    let qMatch;
-    let questionBuf = questionsStr;
-
-    // More robust: split by { id: N, and parse each
-    const questionBlocks = questionsStr.split(/(?=\{\s*id:\s*\d+,\s*question:)/);
-
-    for (const block of questionBlocks) {
-      if (!block.trim().startsWith('{')) continue;
-
-      const idM = block.match(/id:\s*(\d+)/);
-      const questionM = block.match(/question:\s*'((?:[^'\\]|\\')*)'/);
-      const optsM = block.match(/opts\(\s*'((?:[^'\\]|\\')*)'\s*,\s*'((?:[^'\\]|\\')*)'\s*,\s*'((?:[^'\\]|\\')*)'\s*,\s*'((?:[^'\\]|\\')*)'\s*\)/);
-      const correctM = block.match(/correct:\s*(\d)/);
-      const explM = block.match(/explanation:\s*'((?:[^'\\]|\\')*)'/);
-      const chapM = block.match(/chapter:\s*(\d+)/);
-
-      if (!idM || !questionM || !correctM) continue;
-
-      const unescape = (s) => s.replace(/\\'/g, "'").replace(/\\\\/g, '\\');
-
-      const q = {
-        id: Number(idM[1]),
-        question: unescape(questionM[1]),
-        options: optsM ? [
-          { label: 'ক', text: unescape(optsM[1]) },
-          { label: 'খ', text: unescape(optsM[2]) },
-          { label: 'গ', text: unescape(optsM[3]) },
-          { label: 'ঘ', text: unescape(optsM[4]) },
-        ] : [],
-        correct: Number(correctM[1]),
-        explanation: explM ? unescape(explM[1]) : undefined,
-        chapter: chapM ? Number(chapM[1]) : undefined,
-      };
-      exam.questions.push(q);
-    }
-
-    exams.push(exam);
-  }
-
-  return exams;
-}
-
-function extractBalancedBracket(str, startIdx) {
-  let depth = 0;
-  let start = -1;
-  for (let i = startIdx; i < str.length; i++) {
-    if (str[i] === '[') {
-      if (depth === 0) start = i;
-      depth++;
-    } else if (str[i] === ']') {
-      depth--;
-      if (depth === 0) return str.slice(start, i + 1);
-    }
-  }
-  return '';
-}
-
-function loadCQFromFile() {
-  const raw = readFileSync(resolve(ROOT, 'src/data/cq.ts'), 'utf-8');
-
-  const collections = [];
-  // Find CQ_COLLECTIONS array entries
-  const colRegex = /{\s*id:\s*'([^']+)',\s*subject:\s*'([^']+)',\s*subjectBn:\s*'([^']+)',\s*classLevel:\s*(\d+),\s*questions:\s*\[/g;
-
-  let colMatch;
-  while ((colMatch = colRegex.exec(raw)) !== null) {
-    const col = {
-      id: colMatch[1],
-      subject: colMatch[2],
-      subjectBn: colMatch[3],
-      classLevel: Number(colMatch[4]),
-      questions: [],
-    };
-
-    // Extract questions array
-    const startIdx = colMatch.index + colMatch[0].length - 1;
-    const questionsStr = extractBalancedBracket(raw, startIdx);
-
-    // Parse each CQ block
-    // Pattern: { id: N, chapter: N, stem: '...', parts: cqParts(...), source: '...' }
-    // Or: { id: N, chapter: N, stem: '...', parts: cqParts(...) }
-    const cqBlocks = questionsStr.split(/(?=\{\s*id:\s*\d+,\s*chapter:)/);
-
-    for (const block of cqBlocks) {
-      if (!block.trim().startsWith('{')) continue;
-
-      const idM = block.match(/id:\s*(\d+)/);
-      const chapM = block.match(/chapter:\s*(\d+)/);
-      const stemM = block.match(/stem:\s*'((?:[^'\\]|\\')*)'/);
-      const sourceM = block.match(/source:\s*'((?:[^'\\]|\\')*)'/);
-
-      if (!idM || !chapM || !stemM) continue;
-
-      const unescape = (s) => s.replace(/\\'/g, "'").replace(/\\\\/g, '\\');
-
-      // Extract cqParts arguments
-      const partsM = block.match(/cqParts\(([\s\S]*?)\)\s*[,}]/);
-      const parts = [];
-
-      if (partsM) {
-        // Parse the 8 string arguments to cqParts
-        const argsStr = partsM[1];
-        const argRegex = /'((?:[^'\\]|\\')*)'/g;
-        const args = [];
-        let argMatch;
-        while ((argMatch = argRegex.exec(argsStr)) !== null) {
-          args.push(unescape(argMatch[1]));
-        }
-
-        if (args.length >= 8) {
-          parts.push({ label: 'ক', type: 'জ্ঞানমূলক', marks: 1, question: args[0], answer: args[1] });
-          parts.push({ label: 'খ', type: 'অনুধাবনমূলক', marks: 2, question: args[2], answer: args[3] });
-          parts.push({ label: 'গ', type: 'প্রয়োগমূলক', marks: 3, question: args[4], answer: args[5] });
-          parts.push({ label: 'ঘ', type: 'উচ্চতর দক্ষতা', marks: 4, question: args[6], answer: args[7] });
-        }
-      }
-
-      col.questions.push({
-        id: Number(idM[1]),
-        chapter: Number(chapM[1]),
-        stem: unescape(stemM[1]),
-        parts,
-        source: sourceM ? unescape(sourceM[1]) : undefined,
-      });
-    }
-
-    collections.push(col);
-  }
-
-  return collections;
+  console.log('\nSeed complete!');
 }
 
 // ── Run ──
 
 seed().catch((err) => {
-  console.error('\n❌ Seed failed:', err.message);
+  console.error('\nSeed failed:', err.message);
   process.exit(1);
 });

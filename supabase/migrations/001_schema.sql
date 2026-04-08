@@ -195,7 +195,7 @@ CREATE POLICY "Admin manage chapters" ON chapters FOR ALL USING (is_admin());
 ALTER TABLE class_recordings ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public read published classes" ON class_recordings FOR SELECT USING (is_published = true);
 CREATE POLICY "Admin read all classes" ON class_recordings FOR SELECT USING (is_admin());
-CREATE POLICY "Admin manage classes" ON class_recordings FOR INSERT USING (is_admin());
+CREATE POLICY "Admin manage classes" ON class_recordings FOR INSERT WITH CHECK (is_admin());
 CREATE POLICY "Admin update classes" ON class_recordings FOR UPDATE USING (is_admin());
 CREATE POLICY "Admin delete classes" ON class_recordings FOR DELETE USING (is_admin());
 
@@ -203,7 +203,7 @@ CREATE POLICY "Admin delete classes" ON class_recordings FOR DELETE USING (is_ad
 ALTER TABLE exam_papers ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public read published exams" ON exam_papers FOR SELECT USING (is_published = true);
 CREATE POLICY "Admin read all exams" ON exam_papers FOR SELECT USING (is_admin());
-CREATE POLICY "Admin manage exams" ON exam_papers FOR INSERT USING (is_admin());
+CREATE POLICY "Admin manage exams" ON exam_papers FOR INSERT WITH CHECK (is_admin());
 CREATE POLICY "Admin update exams" ON exam_papers FOR UPDATE USING (is_admin());
 CREATE POLICY "Admin delete exams" ON exam_papers FOR DELETE USING (is_admin());
 
@@ -214,7 +214,7 @@ CREATE POLICY "Public read questions" ON mcq_questions FOR SELECT
     SELECT 1 FROM exam_papers WHERE id = exam_paper_id AND is_published = true
   ));
 CREATE POLICY "Admin read all questions" ON mcq_questions FOR SELECT USING (is_admin());
-CREATE POLICY "Admin manage questions" ON mcq_questions FOR INSERT USING (is_admin());
+CREATE POLICY "Admin manage questions" ON mcq_questions FOR INSERT WITH CHECK (is_admin());
 CREATE POLICY "Admin update questions" ON mcq_questions FOR UPDATE USING (is_admin());
 CREATE POLICY "Admin delete questions" ON mcq_questions FOR DELETE USING (is_admin());
 
@@ -222,7 +222,7 @@ CREATE POLICY "Admin delete questions" ON mcq_questions FOR DELETE USING (is_adm
 ALTER TABLE cq_collections ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public read published cq" ON cq_collections FOR SELECT USING (is_published = true);
 CREATE POLICY "Admin read all cq" ON cq_collections FOR SELECT USING (is_admin());
-CREATE POLICY "Admin manage cq" ON cq_collections FOR INSERT USING (is_admin());
+CREATE POLICY "Admin manage cq" ON cq_collections FOR INSERT WITH CHECK (is_admin());
 CREATE POLICY "Admin update cq" ON cq_collections FOR UPDATE USING (is_admin());
 CREATE POLICY "Admin delete cq" ON cq_collections FOR DELETE USING (is_admin());
 
@@ -233,7 +233,7 @@ CREATE POLICY "Public read creative questions" ON creative_questions FOR SELECT
     SELECT 1 FROM cq_collections WHERE id = collection_id AND is_published = true
   ));
 CREATE POLICY "Admin read all creative questions" ON creative_questions FOR SELECT USING (is_admin());
-CREATE POLICY "Admin manage creative questions" ON creative_questions FOR INSERT USING (is_admin());
+CREATE POLICY "Admin manage creative questions" ON creative_questions FOR INSERT WITH CHECK (is_admin());
 CREATE POLICY "Admin update creative questions" ON creative_questions FOR UPDATE USING (is_admin());
 CREATE POLICY "Admin delete creative questions" ON creative_questions FOR DELETE USING (is_admin());
 
@@ -246,7 +246,7 @@ CREATE POLICY "Public read cq parts" ON cq_parts FOR SELECT
     WHERE cq.id = cq_id AND cc.is_published = true
   ));
 CREATE POLICY "Admin read all cq parts" ON cq_parts FOR SELECT USING (is_admin());
-CREATE POLICY "Admin manage cq parts" ON cq_parts FOR INSERT USING (is_admin());
+CREATE POLICY "Admin manage cq parts" ON cq_parts FOR INSERT WITH CHECK (is_admin());
 CREATE POLICY "Admin update cq parts" ON cq_parts FOR UPDATE USING (is_admin());
 CREATE POLICY "Admin delete cq parts" ON cq_parts FOR DELETE USING (is_admin());
 
@@ -280,15 +280,15 @@ CREATE POLICY "Admin read all attempts" ON exam_attempts FOR SELECT USING (is_ad
 -- Auto-create profile on user signup
 -- ============================================
 
-CREATE OR REPLACE FUNCTION handle_new_user()
+CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO profiles (id, phone)
-  VALUES (NEW.id, NEW.phone)
+  INSERT INTO public.profiles (id, phone)
+  VALUES (NEW.id, NULLIF(NEW.phone, ''))
   ON CONFLICT (id) DO NOTHING;
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users

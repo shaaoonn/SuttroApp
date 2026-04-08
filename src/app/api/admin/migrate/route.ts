@@ -2,20 +2,43 @@ import { NextRequest, NextResponse } from 'next/server';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
+// Extract UUID from SUPABASE_URL for Coolify container name patterns
+function getCoolifyUUID(): string {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const match = url.match(/supabasekong-([a-z0-9]+)\./);
+  return match ? match[1] : '';
+}
+
 // Common Coolify/Supabase Docker hostnames to try
-const DB_HOST_CANDIDATES = [
-  'supabase-db',
-  'db',
-  'postgres',
-  'postgresql',
-  'supabasedb',
-];
+function getDbHostCandidates(): string[] {
+  const uuid = getCoolifyUUID();
+  const hosts = [
+    'supabase-db',
+    'db',
+    'postgres',
+    'postgresql',
+    'supabasedb',
+  ];
+  if (uuid) {
+    // Coolify uses {service}-{uuid} pattern for container names
+    hosts.unshift(
+      `supabasedb-${uuid}`,
+      `supabase-db-${uuid}`,
+      `db-${uuid}`,
+      `postgres-${uuid}`,
+      `supabase_db_${uuid}`,
+    );
+  }
+  return hosts;
+}
 
 // Common Supabase default passwords
 const DB_PASSWORD_CANDIDATES = [
   'your-super-secret-and-long-postgres-password',
   'postgres',
   'supabase',
+  'password',
+  'super-secret-password',
 ];
 
 async function tryConnect(connectionString: string) {
@@ -37,8 +60,22 @@ async function findDatabase(explicitUrl?: string) {
     }
   }
 
+  // 1b. Try env vars that might contain DB info
+  for (const envVar of ['POSTGRES_URL', 'PG_DATABASE_URL', 'SUPABASE_DB_URL', 'DB_URL']) {
+    const val = process.env[envVar];
+    if (val) {
+      try {
+        const client = await tryConnect(val);
+        return { client, url: `${envVar} env var` };
+      } catch {
+        // Try next
+      }
+    }
+  }
+
   // 2. Auto-discover: try common hostnames + passwords
-  for (const host of DB_HOST_CANDIDATES) {
+  const hostCandidates = getDbHostCandidates();
+  for (const host of hostCandidates) {
     for (const password of DB_PASSWORD_CANDIDATES) {
       for (const user of ['supabase_admin', 'postgres']) {
         const url = `postgresql://${user}:${encodeURIComponent(password)}@${host}:5432/postgres`;
@@ -67,7 +104,7 @@ export async function POST(req: NextRequest) {
   if (!result) {
     return NextResponse.json({
       error: 'Could not connect to database. Tried auto-discovery and DATABASE_URL.',
-      tried: DB_HOST_CANDIDATES,
+      tried: getDbHostCandidates(),
     }, { status: 500 });
   }
 
@@ -164,9 +201,17 @@ export async function GET(req: NextRequest) {
     if (result) await result.client.end().catch(() => {});
   }
 
+  // Collect DB-related env var names (not values) for debugging
+  const dbEnvVars = Object.keys(process.env)
+    .filter(k => /postgres|database|db_|pg_|supabase.*db/i.test(k))
+    .map(k => k);
+
   return NextResponse.json({
     databaseUrlConfigured: hasDbUrl,
     dbDiscovery,
+    dbEnvVarNames: dbEnvVars,
+    coolifyUUID: getCoolifyUUID(),
+    triedHosts: getDbHostCandidates(),
     tables: status,
     migrationNeeded: Object.values(status).some(v => !v),
   });

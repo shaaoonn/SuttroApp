@@ -100,7 +100,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const result = await findDatabase(process.env.DATABASE_URL);
+  // Allow passing DATABASE_URL in body for one-time setup
+  let bodyData: { sql?: string; databaseUrl?: string } = {};
+  try {
+    bodyData = await req.json();
+  } catch {
+    // No body
+  }
+
+  const dbUrl = bodyData.databaseUrl || process.env.DATABASE_URL;
+  const result = await findDatabase(dbUrl);
   if (!result) {
     return NextResponse.json({
       error: 'Could not connect to database. Tried auto-discovery and DATABASE_URL.',
@@ -116,13 +125,7 @@ export async function POST(req: NextRequest) {
     try {
       sql = readFileSync(resolve(process.cwd(), 'supabase/migrations/002_features.sql'), 'utf-8');
     } catch {
-      // If file not found (Docker), try reading from body
-      try {
-        const body = await req.json();
-        sql = body.sql;
-      } catch {
-        sql = '';
-      }
+      sql = bodyData.sql || '';
       if (!sql) {
         await client.end();
         return NextResponse.json(
@@ -211,6 +214,7 @@ export async function GET(req: NextRequest) {
     dbDiscovery,
     dbEnvVarNames: dbEnvVars,
     coolifyUUID: getCoolifyUUID(),
+    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || '(not set)',
     triedHosts: getDbHostCandidates(),
     tables: status,
     migrationNeeded: Object.values(status).some(v => !v),

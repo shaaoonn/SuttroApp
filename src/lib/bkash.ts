@@ -1,21 +1,33 @@
 // bKash Payment Gateway — Tokenized Checkout API
+// Note: env vars are read via functions (not module-level constants)
+// to prevent Next.js webpack from replacing them at build time.
 
-const BKASH_BASE_URL = process.env.BKASH_BASE_URL || 'https://tokenized.pay.bka.sh/v1.2.0-beta';
-const BKASH_USERNAME = process.env.BKASH_USERNAME || '';
-const BKASH_PASSWORD = process.env.BKASH_PASSWORD || '';
-const BKASH_APP_KEY = process.env.BKASH_APP_KEY || '';
-const BKASH_APP_SECRET = process.env.BKASH_APP_SECRET || '';
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://suttro.app';
+function env(key: string, fallback = ''): string {
+  return process.env[key] || fallback;
+}
+
+function getConfig() {
+  return {
+    baseUrl: env('BKASH_BASE_URL', 'https://tokenized.pay.bka.sh/v1.2.0-beta'),
+    username: env('BKASH_USERNAME'),
+    password: env('BKASH_PASSWORD'),
+    appKey: env('BKASH_APP_KEY'),
+    appSecret: env('BKASH_APP_SECRET'),
+    appUrl: env('NEXT_PUBLIC_APP_URL', 'https://suttro.app'),
+  };
+}
 
 function validateCredentials() {
+  const cfg = getConfig();
   const missing: string[] = [];
-  if (!BKASH_USERNAME) missing.push('BKASH_USERNAME');
-  if (!BKASH_PASSWORD) missing.push('BKASH_PASSWORD');
-  if (!BKASH_APP_KEY) missing.push('BKASH_APP_KEY');
-  if (!BKASH_APP_SECRET) missing.push('BKASH_APP_SECRET');
+  if (!cfg.username) missing.push('BKASH_USERNAME');
+  if (!cfg.password) missing.push('BKASH_PASSWORD');
+  if (!cfg.appKey) missing.push('BKASH_APP_KEY');
+  if (!cfg.appSecret) missing.push('BKASH_APP_SECRET');
   if (missing.length > 0) {
     throw new Error(`bKash কনফিগারেশন অসম্পূর্ণ — সার্ভারে ${missing.join(', ')} সেট করা হয়নি।`);
   }
+  return cfg;
 }
 
 interface BkashTokenResponse {
@@ -80,19 +92,19 @@ async function getToken(): Promise<string> {
 }
 
 async function grantToken(): Promise<string> {
-  validateCredentials();
+  const cfg = validateCredentials();
 
-  const res = await fetch(`${BKASH_BASE_URL}/tokenized/checkout/token/grant`, {
+  const res = await fetch(`${cfg.baseUrl}/tokenized/checkout/token/grant`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      username: BKASH_USERNAME,
-      password: BKASH_PASSWORD,
+      username: cfg.username,
+      password: cfg.password,
     },
     body: JSON.stringify({
-      app_key: BKASH_APP_KEY,
-      app_secret: BKASH_APP_SECRET,
+      app_key: cfg.appKey,
+      app_secret: cfg.appSecret,
     }),
   });
 
@@ -112,17 +124,19 @@ async function grantToken(): Promise<string> {
 }
 
 async function refreshToken(refreshTkn: string): Promise<string> {
-  const res = await fetch(`${BKASH_BASE_URL}/tokenized/checkout/token/refresh`, {
+  const cfg = getConfig();
+
+  const res = await fetch(`${cfg.baseUrl}/tokenized/checkout/token/refresh`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      username: BKASH_USERNAME,
-      password: BKASH_PASSWORD,
+      username: cfg.username,
+      password: cfg.password,
     },
     body: JSON.stringify({
-      app_key: BKASH_APP_KEY,
-      app_secret: BKASH_APP_SECRET,
+      app_key: cfg.appKey,
+      app_secret: cfg.appSecret,
       refresh_token: refreshTkn,
     }),
   });
@@ -149,18 +163,20 @@ export async function createPayment(
 ): Promise<BkashCreatePaymentResponse> {
   const token = await getToken();
 
-  const res = await fetch(`${BKASH_BASE_URL}/tokenized/checkout/create`, {
+  const cfg = getConfig();
+
+  const res = await fetch(`${cfg.baseUrl}/tokenized/checkout/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
       Authorization: token,
-      'X-APP-Key': BKASH_APP_KEY,
+      'X-APP-Key': cfg.appKey,
     },
     body: JSON.stringify({
       mode: '0011',
       payerReference: invoiceNumber,
-      callbackURL: `${APP_URL}/api/payment/bkash/callback?paymentId=${paymentId}`,
+      callbackURL: `${cfg.appUrl}/api/payment/bkash/callback?paymentId=${paymentId}`,
       amount: amount.toFixed(2),
       currency: 'BDT',
       intent: 'sale',
@@ -180,13 +196,15 @@ export async function createPayment(
 export async function executePayment(bkashPaymentID: string): Promise<BkashExecutePaymentResponse> {
   const token = await getToken();
 
-  const res = await fetch(`${BKASH_BASE_URL}/tokenized/checkout/execute`, {
+  const cfg = getConfig();
+
+  const res = await fetch(`${cfg.baseUrl}/tokenized/checkout/execute`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
       Authorization: token,
-      'X-APP-Key': BKASH_APP_KEY,
+      'X-APP-Key': cfg.appKey,
     },
     body: JSON.stringify({ paymentID: bkashPaymentID }),
   });
@@ -198,13 +216,15 @@ export async function executePayment(bkashPaymentID: string): Promise<BkashExecu
 export async function queryPayment(bkashPaymentID: string) {
   const token = await getToken();
 
-  const res = await fetch(`${BKASH_BASE_URL}/tokenized/checkout/payment/status`, {
+  const cfg = getConfig();
+
+  const res = await fetch(`${cfg.baseUrl}/tokenized/checkout/payment/status`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
       Authorization: token,
-      'X-APP-Key': BKASH_APP_KEY,
+      'X-APP-Key': cfg.appKey,
     },
     body: JSON.stringify({ paymentID: bkashPaymentID }),
   });

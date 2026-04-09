@@ -93,16 +93,35 @@ export default function ReviewPage() {
           <h1 className="text-xl font-bold mb-2" style={{ color: 'var(--suttro-deep)' }}>
             রিভিউ সম্পন্ন!
           </h1>
-          <p className="mb-1" style={{ color: 'var(--suttro-text)' }}>
-            ✓ {stats.correct} সঠিক, ✗ {stats.wrong} ভুল
-          </p>
-          <p className="text-sm mb-6" style={{ color: 'var(--suttro-muted)' }}>
+          <div className="flex justify-center gap-6 mb-3">
+            <div>
+              <p className="text-2xl font-bold" style={{ color: '#16a34a' }}>{stats.correct}</p>
+              <p className="text-xs" style={{ color: 'var(--suttro-muted)' }}>সঠিক</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold" style={{ color: '#dc2626' }}>{stats.wrong}</p>
+              <p className="text-xs" style={{ color: 'var(--suttro-muted)' }}>ভুল</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold" style={{ color: 'var(--suttro-primary)' }}>
+                {stats.correct + stats.wrong > 0 ? Math.round((stats.correct / (stats.correct + stats.wrong)) * 100) : 0}%
+              </p>
+              <p className="text-xs" style={{ color: 'var(--suttro-muted)' }}>নির্ভুলতা</p>
+            </div>
+          </div>
+          <p className="text-sm mb-6" style={{ color: 'var(--suttro-primary)' }}>
             +15 XP অর্জিত
           </p>
-          <Link href="/dashboard" className="inline-block px-6 py-3 rounded-[10px] text-white font-medium"
-            style={{ background: 'var(--suttro-primary)' }}>
-            ড্যাশবোর্ড দেখো
-          </Link>
+          <div className="space-y-3">
+            <Link href="/dashboard" className="block text-center py-3 rounded-[10px] text-white font-medium"
+              style={{ background: 'var(--suttro-primary)' }}>
+              ড্যাশবোর্ড দেখো
+            </Link>
+            <Link href="/guide" className="block text-center py-3 rounded-[10px] font-medium"
+              style={{ color: 'var(--suttro-primary)', border: '1.5px solid var(--suttro-primary)' }}>
+              অনুশীলন করো →
+            </Link>
+          </div>
         </div>
       </div>
     );

@@ -69,7 +69,7 @@ export default function PracticePage() {
         }),
       }).catch(() => {});
 
-      // Award XP
+      // Award XP for correct answer
       if (isCorrect) {
         fetch('/api/xp', {
           method: 'POST',
@@ -78,6 +78,16 @@ export default function PracticePage() {
             Authorization: `Bearer ${session.access_token}`,
           },
           body: JSON.stringify({ source: 'practice_question' }),
+        }).catch(() => {});
+      } else {
+        // Add wrong answer to SRS review deck
+        fetch('/api/srs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ action: 'add_wrong', questionIds: [q.id] }),
         }).catch(() => {});
       }
     }

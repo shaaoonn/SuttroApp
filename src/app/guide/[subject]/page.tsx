@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getGuide, getSubjectGuide } from '@/lib/data';
-import ChapterMastery from '@/components/guide/ChapterMastery';
+import { getSubjectGuide } from '@/lib/data';
+import ChapterMasteryLoader from '@/components/guide/ChapterMasteryLoader';
 
 export const revalidate = 300;
 
@@ -65,8 +65,8 @@ export default async function SubjectGuidePage({ params }: { params: Promise<{ s
           </div>
         </div>
 
-        {/* User's mastery progress (client component) */}
-        <ChapterMastery
+        {/* User's mastery progress (client component — lazy loaded) */}
+        <ChapterMasteryLoader
           subjectId={subject}
           totalChapters={guide.chapters.length}
           color={guide.color}

@@ -1,11 +1,22 @@
 // bKash Payment Gateway — Tokenized Checkout API
 
 const BKASH_BASE_URL = process.env.BKASH_BASE_URL || 'https://tokenized.pay.bka.sh/v1.2.0-beta';
-const BKASH_USERNAME = process.env.BKASH_USERNAME!;
-const BKASH_PASSWORD = process.env.BKASH_PASSWORD!;
-const BKASH_APP_KEY = process.env.BKASH_APP_KEY!;
-const BKASH_APP_SECRET = process.env.BKASH_APP_SECRET!;
+const BKASH_USERNAME = process.env.BKASH_USERNAME || '';
+const BKASH_PASSWORD = process.env.BKASH_PASSWORD || '';
+const BKASH_APP_KEY = process.env.BKASH_APP_KEY || '';
+const BKASH_APP_SECRET = process.env.BKASH_APP_SECRET || '';
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://suttro.app';
+
+function validateCredentials() {
+  const missing: string[] = [];
+  if (!BKASH_USERNAME) missing.push('BKASH_USERNAME');
+  if (!BKASH_PASSWORD) missing.push('BKASH_PASSWORD');
+  if (!BKASH_APP_KEY) missing.push('BKASH_APP_KEY');
+  if (!BKASH_APP_SECRET) missing.push('BKASH_APP_SECRET');
+  if (missing.length > 0) {
+    throw new Error(`bKash কনফিগারেশন অসম্পূর্ণ — সার্ভারে ${missing.join(', ')} সেট করা হয়নি।`);
+  }
+}
 
 interface BkashTokenResponse {
   statusCode: string;
@@ -69,6 +80,8 @@ async function getToken(): Promise<string> {
 }
 
 async function grantToken(): Promise<string> {
+  validateCredentials();
+
   const res = await fetch(`${BKASH_BASE_URL}/tokenized/checkout/token/grant`, {
     method: 'POST',
     headers: {
@@ -86,7 +99,7 @@ async function grantToken(): Promise<string> {
   const data: BkashTokenResponse = await res.json();
 
   if (data.statusCode !== '0000') {
-    throw new Error(`bKash token error: ${data.statusMessage}`);
+    throw new Error(`bKash টোকেন ত্রুটি (${data.statusCode || 'unknown'}): ${data.statusMessage || 'সার্ভার থেকে কোনো বার্তা পাওয়া যায়নি'}`);
   }
 
   tokenCache = {
@@ -117,7 +130,7 @@ async function refreshToken(refreshTkn: string): Promise<string> {
   const data: BkashTokenResponse = await res.json();
 
   if (data.statusCode !== '0000') {
-    throw new Error(`bKash refresh error: ${data.statusMessage}`);
+    throw new Error(`bKash রিফ্রেশ ত্রুটি (${data.statusCode || 'unknown'}): ${data.statusMessage || 'সার্ভার থেকে কোনো বার্তা পাওয়া যায়নি'}`);
   }
 
   tokenCache = {
@@ -158,7 +171,7 @@ export async function createPayment(
   const data: BkashCreatePaymentResponse = await res.json();
 
   if (data.statusCode !== '0000') {
-    throw new Error(`bKash create error: ${data.statusMessage}`);
+    throw new Error(`bKash পেমেন্ট তৈরি ত্রুটি (${data.statusCode || 'unknown'}): ${data.statusMessage || 'সার্ভার থেকে কোনো বার্তা পাওয়া যায়নি'}`);
   }
 
   return data;

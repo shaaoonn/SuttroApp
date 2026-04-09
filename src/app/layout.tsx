@@ -53,6 +53,14 @@ export const metadata: Metadata = {
     "সাধারণ গণিত", "উচ্চতর গণিত", "ইংরেজি",
   ],
   manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/icons/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: { url: "/apple-touch-icon.png", sizes: "180x180" },
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -65,6 +73,13 @@ export const metadata: Metadata = {
     siteName: "সূত্র",
     locale: "bn_BD",
     type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "সূত্র — বিজ্ঞান দেখো, বিজ্ঞান বোঝো" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "সূত্র | suttro.app",
+    description: "বিজ্ঞান দেখো, বিজ্ঞান বোঝো। ক্লাস ৯-১০ ইন্টারেক্টিভ সায়েন্স সিমুলেশন।",
+    images: ["/twitter-image.png"],
   },
 };
 

@@ -1,4 +1,4 @@
-// bKash Payment Gateway — Regular Checkout (URL-based) API
+// bKash Payment Gateway — Checkout (URL-based) API
 // IMPORTANT: We import from 'node:process' to bypass Turbopack's
 // compile-time inlining of process.env values. Without this,
 // env vars are replaced with empty strings during Docker build
@@ -11,7 +11,7 @@ function env(key: string, fallback = ''): string {
 
 function getConfig() {
   return {
-    baseUrl: env('BKASH_BASE_URL', 'https://checkout.pay.bka.sh/v1.2.0-beta'),
+    baseUrl: env('BKASH_BASE_URL', 'https://tokenized.pay.bka.sh/v1.2.0-beta'),
     username: env('BKASH_USERNAME'),
     password: env('BKASH_PASSWORD'),
     appKey: env('BKASH_APP_KEY'),
@@ -97,7 +97,7 @@ async function getToken(): Promise<string> {
 async function grantToken(): Promise<string> {
   const cfg = validateCredentials();
 
-  const url = `${cfg.baseUrl}/checkout/token/grant`;
+  const url = `${cfg.baseUrl}/tokenized/checkout/token/grant`;
   console.log('[bKash] Token grant URL:', url);
   console.log('[bKash] Username:', cfg.username);
   console.log('[bKash] AppKey (first 6):', cfg.appKey.substring(0, 6) + '...');
@@ -143,7 +143,7 @@ async function grantToken(): Promise<string> {
 async function refreshToken(refreshTkn: string): Promise<string> {
   const cfg = getConfig();
 
-  const res = await fetch(`${cfg.baseUrl}/checkout/token/refresh`, {
+  const res = await fetch(`${cfg.baseUrl}/tokenized/checkout/token/refresh`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -182,7 +182,7 @@ export async function createPayment(
 
   const cfg = getConfig();
 
-  const res = await fetch(`${cfg.baseUrl}/checkout/payment/create`, {
+  const res = await fetch(`${cfg.baseUrl}/tokenized/checkout/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -215,7 +215,7 @@ export async function executePayment(bkashPaymentID: string): Promise<BkashExecu
 
   const cfg = getConfig();
 
-  const res = await fetch(`${cfg.baseUrl}/checkout/payment/execute/${bkashPaymentID}`, {
+  const res = await fetch(`${cfg.baseUrl}/tokenized/checkout/execute`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -223,6 +223,7 @@ export async function executePayment(bkashPaymentID: string): Promise<BkashExecu
       Authorization: token,
       'X-APP-Key': cfg.appKey,
     },
+    body: JSON.stringify({ paymentID: bkashPaymentID }),
   });
 
   const data: BkashExecutePaymentResponse = await res.json();
@@ -234,7 +235,7 @@ export async function queryPayment(bkashPaymentID: string) {
 
   const cfg = getConfig();
 
-  const res = await fetch(`${cfg.baseUrl}/checkout/payment/query/${bkashPaymentID}`, {
+  const res = await fetch(`${cfg.baseUrl}/tokenized/checkout/payment/status`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -242,6 +243,7 @@ export async function queryPayment(bkashPaymentID: string) {
       Authorization: token,
       'X-APP-Key': cfg.appKey,
     },
+    body: JSON.stringify({ paymentID: bkashPaymentID }),
   });
 
   return res.json();

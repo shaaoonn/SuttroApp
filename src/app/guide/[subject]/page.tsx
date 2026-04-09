@@ -93,7 +93,7 @@ export default async function SubjectGuidePage({ params }: { params: Promise<{ s
 
                   {/* Content badges */}
                   {ch.total > 0 ? (
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       {CONTENT_BADGES.map((badge) => {
                         const count = ch.content[badge.key];
                         if (count === 0) return null;
@@ -107,6 +107,16 @@ export default async function SubjectGuidePage({ params }: { params: Promise<{ s
                           </span>
                         );
                       })}
+                      {ch.content.mcq > 0 && (
+                        <Link
+                          href={`/practice/${subject}/${ch.chapter}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="px-2.5 py-0.5 rounded text-xs font-medium suttro-transition hover:opacity-80"
+                          style={{ background: 'var(--suttro-primary)', color: 'white' }}
+                        >
+                          অনুশীলন →
+                        </Link>
+                      )}
                     </div>
                   ) : (
                     <span className="text-sm" style={{ color: 'var(--suttro-muted)' }}>

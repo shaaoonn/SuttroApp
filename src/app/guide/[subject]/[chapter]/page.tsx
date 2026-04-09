@@ -77,9 +77,20 @@ export default async function ChapterPage({ params }: PageProps) {
               {chInfo.name}
             </h1>
           </div>
-          <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
-            {guide.subjectBn} — অধ্যায় {chNum}
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
+              {guide.subjectBn} — অধ্যায় {chNum}
+            </p>
+            {mcqs.length > 0 && (
+              <Link
+                href={`/practice/${subject}/${chNum}`}
+                className="px-4 py-1.5 rounded-[8px] text-sm font-medium suttro-transition hover:opacity-90"
+                style={{ background: guide.color, color: 'white' }}
+              >
+                অনুশীলন করো →
+              </Link>
+            )}
+          </div>
         </div>
 
         {/* Content view (client component) */}

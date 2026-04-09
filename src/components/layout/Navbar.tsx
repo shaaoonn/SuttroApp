@@ -12,19 +12,20 @@ import MobileMenu from './MobileMenu';
 // ─────────────────────────────────────────────
 
 const NAV_LINKS = [
+  { href: '/guide', label: 'গাইড' },
+  { href: '/exams', label: 'পরীক্ষা' },
   { href: '/simulations', label: 'সিমুলেশন' },
-  { href: '/classes', label: 'ক্লাস আর্কাইভ' },
-  { href: '/about', label: 'আমাদের সম্পর্কে' },
+  { href: '/classes', label: 'ক্লাস' },
+  { href: '/daily', label: 'চ্যালেঞ্জ' },
   { href: '/pricing', label: 'প্রাইসিং' },
 ];
 
 const SUBJECT_LINKS = [
-  { href: '/simulations?subject=physics', label: 'পদার্থবিজ্ঞান', color: 'bg-physics' },
-  { href: '/simulations?subject=chemistry', label: 'রসায়ন', color: 'bg-chemistry' },
-  { href: '/simulations?subject=biology', label: 'জীববিজ্ঞান', color: 'bg-biology' },
-  { href: '/simulations?subject=math', label: 'সাধারণ গণিত', color: 'bg-subject-math' },
-  { href: '/simulations?subject=higher-math', label: 'উচ্চতর গণিত', color: 'bg-subject-higher-math' },
-  { href: '/simulations?subject=english', label: 'ইংরেজি', color: 'bg-subject-english' },
+  { href: '/guide/physics', label: 'পদার্থবিজ্ঞান', color: 'bg-physics', icon: '⚡' },
+  { href: '/guide/chemistry', label: 'রসায়ন', color: 'bg-chemistry', icon: '🧪' },
+  { href: '/guide/biology', label: 'জীববিজ্ঞান', color: 'bg-biology', icon: '🧬' },
+  { href: '/guide/math', label: 'সাধারণ গণিত', color: 'bg-subject-math', icon: '📐' },
+  { href: '/guide/higher-math', label: 'উচ্চতর গণিত', color: 'bg-subject-higher-math', icon: '📊' },
 ];
 
 export default function Navbar() {
@@ -98,10 +99,18 @@ export default function Navbar() {
                       className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-black/5 suttro-transition"
                       style={{ color: 'var(--suttro-text)' }}
                     >
-                      <span className={`w-2.5 h-2.5 rounded-full ${s.color}`} />
+                      <span className="text-base">{s.icon}</span>
                       {s.label}
                     </Link>
                   ))}
+                  <div className="border-t my-1" style={{ borderColor: 'var(--suttro-border)' }} />
+                  <Link
+                    href="/guide"
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium hover:bg-black/5 suttro-transition"
+                    style={{ color: 'var(--suttro-primary)' }}
+                  >
+                    📚 সব বিষয় দেখো
+                  </Link>
                 </div>
               )}
             </div>

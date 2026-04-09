@@ -28,9 +28,31 @@ export default function MobileMenu({ open, onClose, links, subjectLinks, user }:
       style={{ background: 'rgba(250, 251, 249, 0.98)', backdropFilter: 'blur(12px)' }}
     >
       <div className="flex flex-col pt-20 px-6 gap-2">
+        {/* Main actions */}
+        <div className="flex flex-wrap gap-2 mt-2 mb-4">
+          {[
+            { href: '/guide', icon: '📚', label: 'গাইড', primary: true },
+            { href: '/exams', icon: '📝', label: 'পরীক্ষা', primary: true },
+            { href: '/daily', icon: '🎯', label: 'চ্যালেঞ্জ', primary: true },
+            { href: '/review', icon: '🧠', label: 'রিভিউ', primary: false },
+          ].map((a) => (
+            <Link
+              key={a.href}
+              href={a.href}
+              onClick={onClose}
+              className="flex items-center gap-2 px-5 py-3 rounded-[10px] text-base font-medium suttro-transition"
+              style={a.primary
+                ? { background: 'var(--suttro-primary)', color: 'white' }
+                : { background: 'var(--suttro-sky)', color: 'var(--suttro-deep)' }}
+            >
+              {a.icon} {a.label}
+            </Link>
+          ))}
+        </div>
+
         {/* Subject section */}
         <p
-          className="text-sm font-semibold uppercase tracking-wider mt-4 mb-2"
+          className="text-sm font-semibold uppercase tracking-wider mt-2 mb-2"
           style={{ color: 'var(--suttro-muted)' }}
         >
           বিষয়
@@ -48,13 +70,13 @@ export default function MobileMenu({ open, onClose, links, subjectLinks, user }:
           ))}
         </div>
 
-        {/* Nav links */}
-        {links.map((link) => (
+        {/* Other links */}
+        {links.filter((l) => !['/guide', '/exams', '/daily'].includes(l.href)).map((link) => (
           <Link
             key={link.href}
             href={link.href}
             onClick={onClose}
-            className="flex items-center py-4 px-4 rounded-[10px] text-lg hover:bg-black/5 suttro-transition"
+            className="flex items-center py-3 px-4 rounded-[10px] text-base hover:bg-black/5 suttro-transition"
             style={{ color: 'var(--suttro-text)' }}
           >
             {link.label}
@@ -64,28 +86,46 @@ export default function MobileMenu({ open, onClose, links, subjectLinks, user }:
         {/* User section */}
         {user ? (
           <>
-            <div className="mt-4 border-t pt-4" style={{ borderColor: 'var(--suttro-border)' }}>
+            <div className="mt-3 border-t pt-3" style={{ borderColor: 'var(--suttro-border)' }}>
               {displayId && (
-                <p className="text-sm mb-3 px-4" style={{ color: 'var(--suttro-muted)' }}>
+                <p className="text-sm mb-2 px-4" style={{ color: 'var(--suttro-muted)' }}>
                   {displayId}
                 </p>
               )}
-              <Link
-                href="/dashboard"
-                onClick={onClose}
-                className="flex items-center py-4 px-4 rounded-[10px] text-lg hover:bg-black/5 suttro-transition"
-                style={{ color: 'var(--suttro-primary)' }}
-              >
-                📊 ড্যাশবোর্ড
-              </Link>
-              <Link
-                href="/profile"
-                onClick={onClose}
-                className="flex items-center py-4 px-4 rounded-[10px] text-lg hover:bg-black/5 suttro-transition"
-                style={{ color: 'var(--suttro-text)' }}
-              >
-                👤 প্রোফাইল
-              </Link>
+              <div className="flex gap-2 flex-wrap">
+                <Link
+                  href="/dashboard"
+                  onClick={onClose}
+                  className="flex items-center gap-2 py-3 px-4 rounded-[10px] text-base hover:bg-black/5 suttro-transition"
+                  style={{ color: 'var(--suttro-primary)' }}
+                >
+                  📊 ড্যাশবোর্ড
+                </Link>
+                <Link
+                  href="/achievements"
+                  onClick={onClose}
+                  className="flex items-center gap-2 py-3 px-4 rounded-[10px] text-base hover:bg-black/5 suttro-transition"
+                  style={{ color: 'var(--suttro-text)' }}
+                >
+                  🎖️ ব্যাজ
+                </Link>
+                <Link
+                  href="/leaderboard"
+                  onClick={onClose}
+                  className="flex items-center gap-2 py-3 px-4 rounded-[10px] text-base hover:bg-black/5 suttro-transition"
+                  style={{ color: 'var(--suttro-text)' }}
+                >
+                  🏆 লিডারবোর্ড
+                </Link>
+                <Link
+                  href="/profile"
+                  onClick={onClose}
+                  className="flex items-center gap-2 py-3 px-4 rounded-[10px] text-base hover:bg-black/5 suttro-transition"
+                  style={{ color: 'var(--suttro-text)' }}
+                >
+                  👤 প্রোফাইল
+                </Link>
+              </div>
             </div>
           </>
         ) : (

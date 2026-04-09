@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { href: '/exams', label: 'MCQ পরীক্ষা', icon: '📝' },
   { href: '/cq', label: 'সৃজনশীল', icon: '📖' },
   { href: '/questions/import', label: 'CSV ইম্পোর্ট', icon: '📥' },
+  { href: '/plans', label: 'প্ল্যান ও মূল্য', icon: '💰' },
   { href: '/users', label: 'ইউজার', icon: '👤' },
   { href: '/analytics', label: 'অ্যানালিটিক্স', icon: '📈' },
 ];

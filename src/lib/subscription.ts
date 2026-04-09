@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SupabaseClient = any;
 
-export type PlanId = 'free' | 'premium' | 'pro';
+export type PlanId = string; // Dynamic — no longer restricted to 'free' | 'premium' | 'pro'
 
 export interface SubscriptionStatus {
   plan: PlanId;
@@ -20,6 +20,47 @@ export interface PlanFeatures {
   certificates?: boolean;
   offline?: boolean;
   priority_support?: boolean;
+  [key: string]: unknown;   // Allow custom features from DB
+}
+
+const DEFAULT_FREE_FEATURES: PlanFeatures = {
+  exams_per_day: 3,
+  practice_per_day: 10,
+  ai_questions_per_day: 3,
+  videos: 5,
+  ads: true,
+};
+
+// Cache plan data from DB (refreshed every 5 minutes)
+let planCache: { data: Map<string, { name_bn: string; features: PlanFeatures }>; expiresAt: number } | null = null;
+
+async function loadPlans(supabase: SupabaseClient): Promise<Map<string, { name_bn: string; features: PlanFeatures }>> {
+  // Return cache if fresh
+  if (planCache && Date.now() < planCache.expiresAt) {
+    return planCache.data;
+  }
+
+  const { data: plans } = await supabase
+    .from('subscription_plans')
+    .select('id, name_bn, features')
+    .eq('is_active', true);
+
+  const map = new Map<string, { name_bn: string; features: PlanFeatures }>();
+
+  // Always have a free fallback
+  map.set('free', { name_bn: 'ফ্রি', features: DEFAULT_FREE_FEATURES });
+
+  if (plans) {
+    for (const p of plans) {
+      map.set(p.id, {
+        name_bn: p.name_bn,
+        features: { ...DEFAULT_FREE_FEATURES, ...p.features },
+      });
+    }
+  }
+
+  planCache = { data: map, expiresAt: Date.now() + 5 * 60 * 1000 };
+  return map;
 }
 
 export async function getSubscriptionStatus(
@@ -35,6 +76,9 @@ export async function getSubscriptionStatus(
   const plan = (profile?.subscription_plan ?? 'free') as PlanId;
   const expiresAt = profile?.subscription_expires_at;
 
+  // Load features from DB
+  const plans = await loadPlans(supabase);
+
   // Check if expired
   if (plan !== 'free' && expiresAt) {
     const now = new Date();
@@ -46,22 +90,24 @@ export async function getSubscriptionStatus(
         .update({ subscription_plan: 'free', subscription_expires_at: null })
         .eq('id', userId);
 
+      const freePlan = plans.get('free')!;
       return {
         plan: 'free',
-        planName: 'ফ্রি',
+        planName: freePlan.name_bn,
         isActive: true,
         expiresAt: null,
-        features: FREE_FEATURES,
+        features: freePlan.features,
       };
     }
   }
 
+  const planData = plans.get(plan) ?? plans.get('free')!;
   return {
     plan,
-    planName: PLAN_NAMES[plan],
+    planName: planData.name_bn,
     isActive: true,
     expiresAt,
-    features: PLAN_FEATURES[plan],
+    features: planData.features,
   };
 }
 
@@ -96,45 +142,3 @@ export function canAccess(features: PlanFeatures, resource: string, count?: numb
     default: return true;
   }
 }
-
-const PLAN_NAMES: Record<PlanId, string> = {
-  free: 'ফ্রি',
-  premium: 'প্রিমিয়াম',
-  pro: 'প্রো',
-};
-
-const FREE_FEATURES: PlanFeatures = {
-  exams_per_day: 3,
-  practice_per_day: 10,
-  ai_questions_per_day: 3,
-  videos: 5,
-  ads: true,
-};
-
-const PREMIUM_FEATURES: PlanFeatures = {
-  exams_per_day: -1,
-  practice_per_day: -1,
-  ai_questions_per_day: 20,
-  videos: -1,
-  ads: false,
-  certificates: true,
-};
-
-const PRO_FEATURES: PlanFeatures = {
-  exams_per_day: -1,
-  practice_per_day: -1,
-  ai_questions_per_day: 50,
-  videos: -1,
-  ads: false,
-  certificates: true,
-  offline: true,
-  priority_support: true,
-};
-
-const PLAN_FEATURES: Record<PlanId, PlanFeatures> = {
-  free: FREE_FEATURES,
-  premium: PREMIUM_FEATURES,
-  pro: PRO_FEATURES,
-};
-
-export { PLAN_NAMES, PLAN_FEATURES };

@@ -6,13 +6,19 @@ import ChapterMasteryLoader from '@/components/guide/ChapterMasteryLoader';
 export const revalidate = 300;
 
 export async function generateMetadata({ params }: { params: Promise<{ subject: string }> }) {
-  const { subject } = await params;
-  const guide = await getSubjectGuide(subject);
-  if (!guide) return { title: 'পাওয়া যায়নি — সূত্র' };
-  return {
-    title: `${guide.subjectBn} গাইড — সূত্র | suttro.app`,
-    description: `${guide.subjectBn} — ${guide.chapters.length} অধ্যায়ের সব কন্টেন্ট এক জায়গায়।`,
-  };
+  try {
+    const { subject } = await params;
+    console.log('[guide/subject] generateMetadata for:', subject);
+    const guide = await getSubjectGuide(subject);
+    if (!guide) return { title: 'পাওয়া যায়নি — সূত্র' };
+    return {
+      title: `${guide.subjectBn} গাইড — সূত্র | suttro.app`,
+      description: `${guide.subjectBn} — ${guide.chapters.length} অধ্যায়ের সব কন্টেন্ট এক জায়গায়।`,
+    };
+  } catch (e) {
+    console.error('[guide/subject] generateMetadata error:', e);
+    return { title: 'Error — সূত্র' };
+  }
 }
 
 // Content type badge config
@@ -24,8 +30,22 @@ const CONTENT_BADGES = [
 ];
 
 export default async function SubjectGuidePage({ params }: { params: Promise<{ subject: string }> }) {
-  const { subject } = await params;
-  const guide = await getSubjectGuide(subject);
+  let subject: string;
+  try {
+    const p = await params;
+    subject = p.subject;
+  } catch (e) {
+    console.error('[guide/subject] params error:', e);
+    throw e;
+  }
+
+  let guide;
+  try {
+    guide = await getSubjectGuide(subject);
+  } catch (e) {
+    console.error('[guide/subject] getSubjectGuide error:', e);
+    throw e;
+  }
   if (!guide) notFound();
 
   return (

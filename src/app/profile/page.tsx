@@ -302,16 +302,41 @@ export default function ProfilePage() {
               </div>
               <div className="flex items-center justify-between py-3">
                 <span className="text-sm" style={{ color: 'var(--suttro-muted)' }}>সাবস্ক্রিপশন</span>
-                <span
-                  className="text-sm font-medium px-3 py-1 rounded-full"
-                  style={{
-                    background: profile?.subscription_plan === 'free' ? 'var(--suttro-sky)' : '#ECFDF5',
-                    color: profile?.subscription_plan === 'free' ? 'var(--suttro-muted)' : '#059669',
-                  }}
-                >
-                  {profile?.subscription_plan === 'free' ? 'ফ্রি' : 'প্রিমিয়াম'}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span
+                    className="text-sm font-medium px-3 py-1 rounded-full"
+                    style={{
+                      background: profile?.subscription_plan === 'pro' ? '#EDE9FE'
+                        : profile?.subscription_plan === 'premium' ? '#ECFDF5'
+                        : 'var(--suttro-sky)',
+                      color: profile?.subscription_plan === 'pro' ? '#7C3AED'
+                        : profile?.subscription_plan === 'premium' ? '#059669'
+                        : 'var(--suttro-muted)',
+                    }}
+                  >
+                    {profile?.subscription_plan === 'pro' ? 'প্রো'
+                      : profile?.subscription_plan === 'premium' ? 'প্রিমিয়াম'
+                      : 'ফ্রি'}
+                  </span>
+                  {profile?.subscription_plan === 'free' && (
+                    <Link
+                      href="/pricing"
+                      className="text-xs font-medium suttro-transition hover:opacity-80"
+                      style={{ color: 'var(--suttro-primary)' }}
+                    >
+                      আপগ্রেড →
+                    </Link>
+                  )}
+                </div>
               </div>
+              {profile?.subscription_expires_at && profile.subscription_plan !== 'free' && (
+                <div className="flex items-center justify-between py-3 border-t" style={{ borderColor: 'var(--suttro-border)' }}>
+                  <span className="text-sm" style={{ color: 'var(--suttro-muted)' }}>মেয়াদ শেষ</span>
+                  <span className="text-sm font-medium" style={{ color: 'var(--suttro-text)' }}>
+                    {new Date(profile.subscription_expires_at).toLocaleDateString('bn-BD')}
+                  </span>
+                </div>
+              )}
             </div>
           )}
         </div>

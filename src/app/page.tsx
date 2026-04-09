@@ -21,26 +21,26 @@ const FEATURES = [
   },
   {
     icon: '📹',
-    title: 'ডেইলি ক্লাস রেকর্ডিং',
+    title: 'ভিডিও ক্লাস',
     desc: '১০ বছরের অভিজ্ঞ শিক্ষকের ক্লাস — যখন খুশি দেখো, বারবার দেখো।',
   },
   {
-    icon: '📖',
-    title: 'NCTB চ্যাপ্টার-ম্যাপড',
-    desc: 'প্রতিটি সিমুলেশন NCTB বইয়ের অধ্যায়ের সাথে সরাসরি যুক্ত।',
+    icon: '📝',
+    title: 'MCQ অনুশীলন',
+    desc: '৮৪০+ MCQ প্রশ্ন — অধ্যায়ভিত্তিক অনুশীলন ও পূর্ণাঙ্গ পরীক্ষা।',
   },
   {
-    icon: '📱',
-    title: 'মোবাইল + অফলাইন',
-    desc: 'ফোনে চলে, ইন্টারনেট ছাড়াও চলে — ডাউনলোড করে রাখো।',
+    icon: '🧠',
+    title: 'স্পেসড রিপিটিশন',
+    desc: 'ভুল উত্তর অটো-রিভিউ ডেকে যোগ হয় — বৈজ্ঞানিক পদ্ধতিতে মনে রাখো।',
   },
 ];
 
 const STATS = [
   { value: '13', label: 'সিমুলেশন' },
-  { value: '13', label: 'ভিডিও ক্লাস' },
-  { value: '28', label: 'MCQ পরীক্ষা' },
-  { value: '৯-১০', label: 'শ্রেণি' },
+  { value: '840+', label: 'MCQ প্রশ্ন' },
+  { value: '28', label: 'পরীক্ষা' },
+  { value: '18', label: 'ব্যাজ' },
 ];
 
 export default async function Home() {
@@ -143,6 +143,56 @@ export default async function Home() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Gamification / Learning Features ── */}
+      <section style={{ background: 'var(--suttro-white)' }}>
+        <div className="mx-auto max-w-6xl px-6 py-16">
+          <h2
+            className="text-3xl lg:text-4xl font-bold text-center mb-3"
+            style={{ color: 'var(--suttro-deep)' }}
+          >
+            শেখো, খেলো, জিতো
+          </h2>
+          <p className="text-base text-center mb-10" style={{ color: 'var(--suttro-muted)' }}>
+            XP অর্জন করো, স্ট্রিক ধরে রাখো, ব্যাজ সংগ্রহ করো — প্রতিদিন।
+          </p>
+          <div className="grid lg:grid-cols-3 gap-6">
+            <Link href="/daily"
+              className="rounded-[14px] border p-6 suttro-transition hover:shadow-lg hover:-translate-y-1"
+              style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-surface)' }}>
+              <div className="text-4xl mb-3">🎯</div>
+              <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--suttro-deep)' }}>
+                দৈনিক চ্যালেঞ্জ
+              </h3>
+              <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
+                প্রতিদিন ৫টি নতুন প্রশ্ন — সব সঠিক হলে বোনাস XP!
+              </p>
+            </Link>
+            <Link href="/achievements"
+              className="rounded-[14px] border p-6 suttro-transition hover:shadow-lg hover:-translate-y-1"
+              style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-surface)' }}>
+              <div className="text-4xl mb-3">🎖️</div>
+              <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--suttro-deep)' }}>
+                ব্যাজ ও অ্যাচিভমেন্ট
+              </h3>
+              <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
+                ১৮টি ব্যাজ — পরীক্ষা দাও, স্ট্রিক রাখো, মাস্টার হও।
+              </p>
+            </Link>
+            <Link href="/leaderboard"
+              className="rounded-[14px] border p-6 suttro-transition hover:shadow-lg hover:-translate-y-1"
+              style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-surface)' }}>
+              <div className="text-4xl mb-3">🏆</div>
+              <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--suttro-deep)' }}>
+                লিডারবোর্ড
+              </h3>
+              <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
+                সাপ্তাহিক ও সর্বকালীন — তোমার র‍্যাংকিং দেখো।
+              </p>
+            </Link>
           </div>
         </div>
       </section>
@@ -342,15 +392,24 @@ export default async function Home() {
             আজই শুরু করো
           </h2>
           <p className="text-lg text-white/60 mb-8">
-            ফ্রি সিমুলেশন চালাও — কোনো অ্যাকাউন্ট লাগবে না।
+            সিমুলেশন, ক্লাস, MCQ সব ফ্রি — লগ ইন করে অগ্রগতি ট্র্যাক করো।
           </p>
-          <Link
-            href="/simulations"
-            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-[12px] text-lg font-semibold suttro-transition hover:opacity-90"
-            style={{ background: 'var(--suttro-accent)', color: 'var(--suttro-deep)' }}
-          >
-            সিমুলেশন চালাও &rarr;
-          </Link>
+          <div className="flex flex-col lg:flex-row gap-3 justify-center">
+            <Link
+              href="/guide"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-[12px] text-lg font-semibold suttro-transition hover:opacity-90"
+              style={{ background: 'var(--suttro-accent)', color: 'var(--suttro-deep)' }}
+            >
+              গাইড দেখো &rarr;
+            </Link>
+            <Link
+              href="/login"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-[12px] text-lg font-semibold suttro-transition hover:bg-white/15"
+              style={{ color: 'white', border: '1.5px solid rgba(255,255,255,0.25)' }}
+            >
+              লগ ইন করো
+            </Link>
+          </div>
         </div>
       </section>
     </div>

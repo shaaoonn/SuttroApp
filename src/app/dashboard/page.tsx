@@ -71,6 +71,7 @@ const EVENT_LABELS: Record<string, string> = {
   sim_opened: 'সিমুলেশন ব্যবহার',
   cq_viewed: 'সৃজনশীল দেখেছ',
   subscription_activated: 'সাবস্ক্রিপশন সক্রিয়',
+  daily_challenge_completed: 'দৈনিক চ্যালেঞ্জ সম্পন্ন',
 };
 
 const EVENT_ICONS: Record<string, string> = {
@@ -80,6 +81,7 @@ const EVENT_ICONS: Record<string, string> = {
   sim_opened: '🔬',
   cq_viewed: '📖',
   subscription_activated: '💎',
+  daily_challenge_completed: '🎯',
 };
 
 function formatDuration(seconds: number): string {

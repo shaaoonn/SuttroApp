@@ -12,6 +12,12 @@ interface Question {
   explanation: string | null;
 }
 
+interface EarnedBadge {
+  id: string;
+  name: string;
+  icon: string;
+}
+
 type Phase = 'loading' | 'ready' | 'playing' | 'finished' | 'already_done';
 
 export default function DailyChallengePage() {
@@ -22,6 +28,7 @@ export default function DailyChallengePage() {
   const [revealed, setRevealed] = useState(false);
   const [phase, setPhase] = useState<Phase>('loading');
   const [score, setScore] = useState(0);
+  const [earnedBadges, setEarnedBadges] = useState<EarnedBadge[]>([]);
 
   const loadChallenge = useCallback(async () => {
     const headers: Record<string, string> = {};
@@ -78,7 +85,14 @@ export default function DailyChallengePage() {
             Authorization: `Bearer ${session.access_token}`,
           },
           body: JSON.stringify({ score: correct, total: questions.length }),
-        }).catch(() => {});
+        })
+          .then((r) => r.ok ? r.json() : null)
+          .then((data) => {
+            if (data?.badges?.length > 0) {
+              setEarnedBadges(data.badges);
+            }
+          })
+          .catch(() => {});
       }
     }
   }
@@ -153,11 +167,24 @@ export default function DailyChallengePage() {
             {score}/{questions.length}
           </p>
           <p className="mb-1" style={{ color: 'var(--suttro-text)' }}>{pct}% সঠিক</p>
-          <p className="text-sm mb-6" style={{ color: 'var(--suttro-muted)' }}>
+          <p className="text-sm mb-4" style={{ color: 'var(--suttro-primary)' }}>
             {score === questions.length
               ? '+50 XP বোনাস!'
-              : `+25 XP অর্জিত`}
+              : '+25 XP অর্জিত'}
           </p>
+          {earnedBadges.length > 0 && (
+            <div className="mb-6 p-3 rounded-[12px]" style={{ background: '#fffbeb', border: '1.5px solid #f59e0b' }}>
+              <p className="text-sm font-bold mb-2" style={{ color: '#92400e' }}>🎖️ নতুন ব্যাজ!</p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {earnedBadges.map((b) => (
+                  <span key={b.id} className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium"
+                    style={{ background: 'rgba(255,255,255,0.8)', color: '#92400e' }}>
+                    {b.icon} {b.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="space-y-3">
             <Link href="/dashboard" className="block py-3 rounded-[10px] text-white font-medium"
               style={{ background: 'var(--suttro-primary)' }}>

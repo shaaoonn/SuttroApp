@@ -97,7 +97,12 @@ async function getToken(): Promise<string> {
 async function grantToken(): Promise<string> {
   const cfg = validateCredentials();
 
-  const res = await fetch(`${cfg.baseUrl}/checkout/token/grant`, {
+  const url = `${cfg.baseUrl}/checkout/token/grant`;
+  console.log('[bKash] Token grant URL:', url);
+  console.log('[bKash] Username:', cfg.username);
+  console.log('[bKash] AppKey (first 6):', cfg.appKey.substring(0, 6) + '...');
+
+  const res = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -111,7 +116,16 @@ async function grantToken(): Promise<string> {
     }),
   });
 
-  const data: BkashTokenResponse = await res.json();
+  const rawText = await res.text();
+  console.log('[bKash] Token response status:', res.status);
+  console.log('[bKash] Token response body:', rawText.substring(0, 500));
+
+  let data: BkashTokenResponse;
+  try {
+    data = JSON.parse(rawText);
+  } catch {
+    throw new Error(`bKash API থেকে অবৈধ রেসপন্স (HTTP ${res.status}): ${rawText.substring(0, 200)}`);
+  }
 
   if (data.statusCode !== '0000') {
     throw new Error(`bKash টোকেন ত্রুটি (${data.statusCode || 'unknown'}): ${data.statusMessage || 'সার্ভার থেকে কোনো বার্তা পাওয়া যায়নি'}`);

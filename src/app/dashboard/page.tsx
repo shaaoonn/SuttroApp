@@ -48,6 +48,22 @@ interface XPStats {
   todayXP: number;
 }
 
+interface SubjectProgress {
+  subjectId: string;
+  avgMastery: number;
+  totalAttempted: number;
+  totalCorrect: number;
+  chaptersStudied: number;
+}
+
+const SUBJECT_META: Record<string, { bn: string; icon: string; color: string }> = {
+  physics: { bn: 'পদার্থবিজ্ঞান', icon: '⚡', color: '#2563EB' },
+  chemistry: { bn: 'রসায়ন', icon: '🧪', color: '#7C3AED' },
+  biology: { bn: 'জীববিজ্ঞান', icon: '🧬', color: '#059669' },
+  math: { bn: 'গণিত', icon: '📐', color: '#DC2626' },
+  'higher-math': { bn: 'উচ্চতর গণিত', icon: '📊', color: '#EA580C' },
+};
+
 const EVENT_LABELS: Record<string, string> = {
   exam_started: 'পরীক্ষা শুরু',
   exam_completed: 'পরীক্ষা শেষ',
@@ -99,6 +115,7 @@ export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [xpStats, setXpStats] = useState<XPStats | null>(null);
   const [srsCount, setSrsCount] = useState(0);
+  const [subjectProgress, setSubjectProgress] = useState<SubjectProgress[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
@@ -109,15 +126,17 @@ export default function DashboardPage() {
     if (!session?.access_token) return;
     const headers = { Authorization: `Bearer ${session.access_token}` };
 
-    const [dashRes, xpRes, srsRes] = await Promise.all([
+    const [dashRes, xpRes, srsRes, progressRes] = await Promise.all([
       fetch('/api/dashboard', { headers }).then((r) => r.ok ? r.json() : null).catch(() => null),
       fetch('/api/xp', { headers }).then((r) => r.ok ? r.json() : null).catch(() => null),
       fetch('/api/srs', { headers }).then((r) => r.ok ? r.json() : null).catch(() => null),
+      fetch('/api/chapter-progress', { headers }).then((r) => r.ok ? r.json() : null).catch(() => null),
     ]);
 
     if (dashRes) setData(dashRes);
     if (xpRes) setXpStats(xpRes);
     if (srsRes) setSrsCount(srsRes.totalDue ?? 0);
+    if (progressRes) setSubjectProgress(progressRes.subjects ?? []);
     setDataLoading(false);
   }, [session?.access_token]);
 
@@ -261,6 +280,55 @@ export default function DashboardPage() {
             </div>
           ))}
         </div>
+
+        {/* Subject Progress */}
+        {subjectProgress.length > 0 && (
+          <div className="rounded-[14px] border p-6 mb-6"
+            style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold" style={{ color: 'var(--suttro-deep)' }}>
+                বিষয়ভিত্তিক অগ্রগতি
+              </h2>
+              <Link href="/guide" className="text-sm font-medium suttro-transition hover:opacity-80"
+                style={{ color: 'var(--suttro-primary)' }}>
+                গাইড দেখো &rarr;
+              </Link>
+            </div>
+            <div className="space-y-4">
+              {subjectProgress.map((sp) => {
+                const meta = SUBJECT_META[sp.subjectId] || { bn: sp.subjectId, icon: '📚', color: 'var(--suttro-primary)' };
+                return (
+                  <Link key={sp.subjectId} href={`/guide/${sp.subjectId}`}
+                    className="block suttro-transition hover:opacity-90">
+                    <div className="flex items-center gap-3 mb-1.5">
+                      <span className="text-lg">{meta.icon}</span>
+                      <span className="text-sm font-medium flex-1" style={{ color: 'var(--suttro-deep)' }}>
+                        {meta.bn}
+                      </span>
+                      <span className="text-sm font-bold" style={{ color: meta.color }}>
+                        {sp.avgMastery}%
+                      </span>
+                    </div>
+                    <div className="w-full h-2.5 rounded-full" style={{ background: 'var(--suttro-sky)' }}>
+                      <div
+                        className="h-full rounded-full transition-all"
+                        style={{ width: `${Math.min(sp.avgMastery, 100)}%`, background: meta.color }}
+                      />
+                    </div>
+                    <div className="flex justify-between mt-1">
+                      <span className="text-xs" style={{ color: 'var(--suttro-muted)' }}>
+                        {sp.totalCorrect}/{sp.totalAttempted} সঠিক
+                      </span>
+                      <span className="text-xs" style={{ color: 'var(--suttro-muted)' }}>
+                        {sp.chaptersStudied} অধ্যায়
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Content Grid */}
         <div className="grid lg:grid-cols-2 gap-6">

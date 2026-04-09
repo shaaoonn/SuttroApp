@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import type { ExamPaper } from '@/data/exams';
 import { EXAM_SUBJECT_COLORS } from '@/data/exams';
 import ExamResult from './ExamResult';
-import { trackEvent, saveExamAttempt } from '@/lib/analytics';
+import { trackEvent, saveExamAttempt, type EarnedBadge } from '@/lib/analytics';
 import { useAuth } from '@/lib/auth-context';
 
 // ─────────────────────────────────────────────
@@ -28,6 +28,7 @@ export default function ExamPlayer({ exam }: ExamPlayerProps) {
   const [timeLeft, setTimeLeft] = useState(exam.duration * 60); // seconds
   const [showPalette, setShowPalette] = useState(false);
   const hasSavedRef = useRef(false);
+  const [earnedBadges, setEarnedBadges] = useState<EarnedBadge[]>([]);
 
   const subjectColor = EXAM_SUBJECT_COLORS[exam.subject] || '#1B6B4A';
   const question = exam.questions[currentQ];
@@ -113,7 +114,11 @@ export default function ExamPlayer({ exam }: ExamPlayerProps) {
           answers,
         },
         accessToken,
-      );
+      ).then((result) => {
+        if (result.badges && result.badges.length > 0) {
+          setEarnedBadges(result.badges);
+        }
+      });
 
       // Award XP for completing exam
       const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` };
@@ -241,6 +246,7 @@ export default function ExamPlayer({ exam }: ExamPlayerProps) {
         answers={answers}
         timeUsed={exam.duration * 60 - timeLeft}
         onRetry={handleRetry}
+        earnedBadges={earnedBadges}
       />
     );
   }

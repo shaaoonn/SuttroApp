@@ -48,19 +48,30 @@ interface ExamAttemptPayload {
   answers: (number | null)[];
 }
 
+export interface EarnedBadge {
+  id: string;
+  name: string;
+  icon: string;
+}
+
 export async function saveExamAttempt(
   payload: ExamAttemptPayload,
   accessToken?: string,
-): Promise<void> {
+): Promise<{ badges?: EarnedBadge[] }> {
   try {
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     if (accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
-    await fetch('/api/exam-attempt', {
+    const res = await fetch('/api/exam-attempt', {
       method: 'POST',
       headers,
       body: JSON.stringify(payload),
     });
+    if (res.ok) {
+      const data = await res.json();
+      return { badges: data.badges ?? [] };
+    }
   } catch {
     // Silent fail
   }
+  return {};
 }

@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import type { ExamPaper } from '@/data/exams';
 import { EXAM_SUBJECT_COLORS } from '@/data/exams';
+import type { EarnedBadge } from '@/lib/analytics';
 
 // ─────────────────────────────────────────────
 // ExamResult — Score display + review mode
@@ -14,9 +15,10 @@ interface ExamResultProps {
   answers: (number | null)[];
   timeUsed: number; // seconds
   onRetry: () => void;
+  earnedBadges?: EarnedBadge[];
 }
 
-export default function ExamResult({ exam, answers, timeUsed, onRetry }: ExamResultProps) {
+export default function ExamResult({ exam, answers, timeUsed, onRetry, earnedBadges }: ExamResultProps) {
   const [showReview, setShowReview] = useState(false);
   const subjectColor = EXAM_SUBJECT_COLORS[exam.subject] || '#1B6B4A';
 
@@ -108,6 +110,24 @@ export default function ExamResult({ exam, answers, timeUsed, onRetry }: ExamRes
         {stats.wrong > 0 && (
           <div className="mt-4 p-3 rounded-[10px] text-base" style={{ background: '#FEF3C7', color: '#92400E' }}>
             নেগেটিভ মার্কিং: {stats.wrong} × {exam.negativeMarking} = -{(stats.wrong * exam.negativeMarking).toFixed(2)} নম্বর কাটা হয়েছে
+          </div>
+        )}
+
+        {/* Earned badges */}
+        {earnedBadges && earnedBadges.length > 0 && (
+          <div className="mt-6 p-4 rounded-[14px]" style={{ background: 'linear-gradient(135deg, #FEF3C7, #FFFBEB)', border: '2px solid #F59E0B' }}>
+            <p className="text-sm font-bold mb-3" style={{ color: '#92400E' }}>
+              🎖️ নতুন ব্যাজ অর্জিত!
+            </p>
+            <div className="flex flex-wrap gap-3 justify-center">
+              {earnedBadges.map((b) => (
+                <div key={b.id} className="flex items-center gap-2 px-3 py-2 rounded-[10px]"
+                  style={{ background: 'rgba(255,255,255,0.8)' }}>
+                  <span className="text-xl">{b.icon}</span>
+                  <span className="text-sm font-medium" style={{ color: '#92400E' }}>{b.name}</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

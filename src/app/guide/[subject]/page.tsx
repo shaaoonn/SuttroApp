@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getGuide, getSubjectGuide } from '@/lib/data';
+import ChapterMastery from '@/components/guide/ChapterMastery';
 
 export const revalidate = 300;
 
@@ -63,6 +64,13 @@ export default async function SubjectGuidePage({ params }: { params: Promise<{ s
             })}
           </div>
         </div>
+
+        {/* User's mastery progress (client component) */}
+        <ChapterMastery
+          subjectId={subject}
+          totalChapters={guide.chapters.length}
+          color={guide.color}
+        />
 
         {/* Chapter cards */}
         <div className="space-y-4">

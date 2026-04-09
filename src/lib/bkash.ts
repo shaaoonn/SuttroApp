@@ -1,9 +1,12 @@
 // bKash Payment Gateway — Tokenized Checkout API
-// Note: env vars are read via functions (not module-level constants)
-// to prevent Next.js webpack from replacing them at build time.
+// IMPORTANT: We import from 'node:process' to bypass Turbopack's
+// compile-time inlining of process.env values. Without this,
+// env vars are replaced with empty strings during Docker build
+// (where the secrets aren't available).
+import { env as processEnv } from 'node:process';
 
 function env(key: string, fallback = ''): string {
-  return process.env[key] || fallback;
+  return processEnv[key] || fallback;
 }
 
 function getConfig() {
@@ -18,12 +21,6 @@ function getConfig() {
 }
 
 function validateCredentials() {
-  // Debug: log env var availability
-  const debugKeys = ['BKASH_USERNAME', 'BKASH_PASSWORD', 'BKASH_APP_KEY', 'BKASH_APP_SECRET', 'BKASH_BASE_URL'];
-  const debugInfo = debugKeys.map(k => `${k}=${process.env[k] ? 'SET(' + String(process.env[k]).length + ')' : 'MISSING'}`);
-  console.log('[bKash debug] env vars:', debugInfo.join(', '));
-  console.log('[bKash debug] process.env type:', typeof process.env, 'keys sample:', Object.keys(process.env).filter(k => k.includes('BKASH')).join(','));
-
   const cfg = getConfig();
   const missing: string[] = [];
   if (!cfg.username) missing.push('BKASH_USERNAME');
@@ -31,7 +28,6 @@ function validateCredentials() {
   if (!cfg.appKey) missing.push('BKASH_APP_KEY');
   if (!cfg.appSecret) missing.push('BKASH_APP_SECRET');
   if (missing.length > 0) {
-    console.error('[bKash debug] cfg values:', JSON.stringify({ username: cfg.username, password: cfg.password ? 'SET' : 'EMPTY', appKey: cfg.appKey, appSecret: cfg.appSecret ? 'SET' : 'EMPTY' }));
     throw new Error(`bKash কনফিগারেশন অসম্পূর্ণ — সার্ভারে ${missing.join(', ')} সেট করা হয়নি।`);
   }
   return cfg;

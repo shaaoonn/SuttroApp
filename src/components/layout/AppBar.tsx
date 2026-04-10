@@ -28,6 +28,9 @@ const PAGE_TITLES: Record<string, string> = {
   '/about': 'আমাদের সম্পর্কে',
   '/payment/success': 'পেমেন্ট সফল',
   '/payment/failed': 'পেমেন্ট ব্যর্থ',
+  '/privacy': 'গোপনীয়তা নীতি',
+  '/terms': 'শর্তাবলী',
+  '/onboarding': 'শুরু করো',
 };
 
 function getTitle(pathname: string): string {
@@ -40,8 +43,8 @@ function getTitle(pathname: string): string {
   return 'সূত্র';
 }
 
-// Pages where AppBar should be hidden (immersive content)
-const HIDDEN_PATHS = ['/sim/'];
+// Pages where AppBar should be hidden (immersive content + auth screens)
+const HIDDEN_PATHS = ['/sim/', '/login', '/onboarding'];
 
 // Main tab routes — no back button needed
 const TAB_ROUTES = ['/', '/guide', '/exams', '/dashboard'];

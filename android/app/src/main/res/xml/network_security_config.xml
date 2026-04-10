@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">suttro.app</domain>
+        <domain includeSubdomains="true">api.suttro.app</domain>
+        <domain includeSubdomains="true">googleapis.com</domain>
+        <domain includeSubdomains="true">accounts.google.com</domain>
+        <domain includeSubdomains="true">gstatic.com</domain>
+    </domain-config>
+    <!-- Self-hosted Supabase via Coolify (HTTP internal) -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">sslip.io</domain>
+    </domain-config>
+</network-security-config>

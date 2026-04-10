@@ -5,6 +5,7 @@ import AppBar from "@/components/layout/AppBar";
 import Footer from "@/components/layout/Footer";
 import BottomNav from "@/components/layout/BottomNav";
 import PWARegister from "@/components/PWARegister";
+import AuthGate from "@/components/AuthGate";
 import { AuthProvider } from "@/lib/auth-context";
 import "./globals.css";
 
@@ -96,13 +97,15 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-bengali">
         <AuthProvider>
-          {/* Desktop: website navbar — Mobile: native app bar */}
-          <div className="hidden lg:block"><Navbar /></div>
-          <AppBar />
-          <main className="flex-1 flex flex-col">{children}</main>
-          {/* Desktop only: footer */}
-          <div className="hidden lg:block"><Footer /></div>
-          <BottomNav />
+          <AuthGate>
+            {/* Desktop: website navbar — Mobile: native app bar */}
+            <div className="hidden lg:block"><Navbar /></div>
+            <AppBar />
+            <main className="flex-1 flex flex-col">{children}</main>
+            {/* Desktop only: footer */}
+            <div className="hidden lg:block"><Footer /></div>
+            <BottomNav />
+          </AuthGate>
           <PWARegister />
         </AuthProvider>
       </body>

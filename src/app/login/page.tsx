@@ -54,7 +54,11 @@ export default function LoginPage() {
     try {
       const { error: authError } = await verifyOTP(fullPhone, otp);
       if (authError) setError(authError);
-      else router.push('/dashboard');
+      else {
+        // Check if onboarding is needed
+        const done = localStorage.getItem('suttro_onboarding_done');
+        router.push(done ? '/' : '/onboarding');
+      }
     } catch {
       setError('নেটওয়ার্ক সমস্যা — আবার চেষ্টা করো');
     } finally {

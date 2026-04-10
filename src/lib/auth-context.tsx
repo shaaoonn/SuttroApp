@@ -94,13 +94,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithGoogle = async (): Promise<{ error: string | null }> => {
     if (!clientRef.current) return { error: 'Auth সেটআপ হয়নি — Supabase credentials দাও' };
-    const { error } = await clientRef.current.auth.signInWithOAuth({
+
+    // Use skipBrowserRedirect to prevent Supabase from auto-navigating
+    // This ensures the WebView (Capacitor) handles the redirect properly
+    const { data, error } = await clientRef.current.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/dashboard`,
+        redirectTo: `${window.location.origin}/onboarding`,
+        skipBrowserRedirect: true,
       },
     });
-    return { error: error?.message ?? null };
+
+    if (error) return { error: error.message };
+
+    // Manually navigate — keeps it inside WebView in Capacitor
+    if (data?.url) {
+      window.location.href = data.url;
+    }
+
+    return { error: null };
   };
 
   const signOut = async () => {

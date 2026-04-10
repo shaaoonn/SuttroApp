@@ -79,11 +79,13 @@ const NAV_ITEMS = [
 export default function BottomNav() {
   const pathname = usePathname();
 
-  // Hide on immersive content pages
+  // Hide on immersive content pages and auth/onboarding screens
   if (
     pathname.startsWith('/sim/') ||
     pathname.startsWith('/class/') ||
-    pathname.startsWith('/exam/')
+    pathname.startsWith('/exam/') ||
+    pathname === '/login' ||
+    pathname === '/onboarding'
   ) return null;
 
   return (

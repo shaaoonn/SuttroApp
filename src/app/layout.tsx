@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Hind_Siliguri, DM_Serif_Display, DM_Sans, JetBrains_Mono } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
+import AppBar from "@/components/layout/AppBar";
 import Footer from "@/components/layout/Footer";
 import BottomNav from "@/components/layout/BottomNav";
 import PWARegister from "@/components/PWARegister";
@@ -95,9 +96,12 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-bengali">
         <AuthProvider>
-          <Navbar />
+          {/* Desktop: website navbar — Mobile: native app bar */}
+          <div className="hidden lg:block"><Navbar /></div>
+          <AppBar />
           <main className="flex-1 flex flex-col">{children}</main>
-          <Footer />
+          {/* Desktop only: footer */}
+          <div className="hidden lg:block"><Footer /></div>
           <BottomNav />
           <PWARegister />
         </AuthProvider>

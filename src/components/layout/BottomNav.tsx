@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 // ─────────────────────────────────────────────
-// BottomNav — App-like bottom navigation bar
-// Shows on mobile only (hidden on lg: and above)
+// BottomNav — 4-tab native-style bottom bar
+// Standard mobile pattern: Home, Learn, Test, Me
 // ─────────────────────────────────────────────
 
 const NAV_ITEMS = [
@@ -13,30 +13,30 @@ const NAV_ITEMS = [
     href: '/',
     label: 'হোম',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
         <polyline points="9 22 9 12 15 12 15 22" />
+      </svg>
+    ),
+    iconFilled: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
       </svg>
     ),
   },
   {
     href: '/guide',
-    label: 'গাইড',
+    label: 'শেখো',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
-        <path d="M8 7h8M8 11h6" />
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" />
+        <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
       </svg>
     ),
-  },
-  {
-    href: '/classes',
-    label: 'ক্লাস',
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="23 7 16 12 23 17 23 7" />
-        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+    iconFilled: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" />
+        <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
       </svg>
     ),
   },
@@ -44,19 +44,33 @@ const NAV_ITEMS = [
     href: '/exams',
     label: 'পরীক্ষা',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M9 11l3 3L22 4" />
-        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <path d="M9 15l2 2 4-4" />
+      </svg>
+    ),
+    iconFilled: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+        <polyline points="14 2 14 8 20 8" fill="none" stroke="white" />
+        <path d="M9 15l2 2 4-4" fill="none" stroke="white" />
       </svg>
     ),
   },
   {
-    href: '/daily',
-    label: 'চ্যালেঞ্জ',
+    href: '/dashboard',
+    label: 'আমি',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <path d="M12 8v4l3 3" />
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    ),
+    iconFilled: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
       </svg>
     ),
   },
@@ -65,23 +79,25 @@ const NAV_ITEMS = [
 export default function BottomNav() {
   const pathname = usePathname();
 
-  // Hide on simulation/class player pages (fullscreen content)
-  if (pathname.startsWith('/sim/') || pathname.startsWith('/class/') || pathname.startsWith('/exam/')) return null;
-  // Also hide on guide chapter detail pages (deep content view)
-  const guideDepth = pathname.startsWith('/guide/') ? pathname.split('/').filter(Boolean).length : 0;
-  if (guideDepth >= 3) return null;
+  // Hide on immersive content pages
+  if (
+    pathname.startsWith('/sim/') ||
+    pathname.startsWith('/class/') ||
+    pathname.startsWith('/exam/')
+  ) return null;
 
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 lg:hidden border-t"
       style={{
-        background: 'rgba(255, 255, 255, 0.97)',
-        backdropFilter: 'blur(12px)',
-        borderColor: '#F0F4F3',
+        background: 'rgba(255, 255, 255, 0.98)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        borderColor: '#E2E8F0',
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       }}
     >
-      <div className="flex items-center justify-around h-[60px]">
+      <div className="flex items-center justify-around h-[56px]">
         {NAV_ITEMS.map((item) => {
           const isActive = item.href === '/'
             ? pathname === '/'
@@ -90,15 +106,14 @@ export default function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className="flex flex-col items-center justify-center gap-0.5 w-16 h-[56px] rounded-lg suttro-transition"
-              style={{
-                color: isActive ? '#0D9488' : '#CBD5E1',
-              }}
+              className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full active:opacity-70 suttro-transition"
+              style={{ color: isActive ? '#0D9488' : '#94A3B8' }}
             >
-              <span className={isActive ? 'opacity-100' : 'opacity-60'}>
-                {item.icon}
-              </span>
-              <span className="text-xs font-medium leading-tight">
+              {isActive ? item.iconFilled : item.icon}
+              <span
+                className="text-[10px] font-semibold leading-tight"
+                style={{ letterSpacing: '0.01em' }}
+              >
                 {item.label}
               </span>
             </Link>

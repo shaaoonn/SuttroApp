@@ -168,19 +168,28 @@ DECLARE
   v_items_completed INTEGER := 0;
   v_items_total INTEGER := 0;
 BEGIN
-  -- Count total items and total possible marks
+  -- Count total items that have been graded (auto or manual).
+  -- Skip ungraded manual items so students aren't penalized while waiting for review.
   SELECT COUNT(*), COALESCE(SUM(marks), 0)
   INTO v_items_total, v_marks_possible
-  FROM daily_lesson_items
-  WHERE lesson_id = p_lesson_id AND marks > 0;
+  FROM daily_lesson_items i
+  WHERE i.lesson_id = p_lesson_id AND i.marks > 0
+    AND (
+      i.item_type IN ('video', 'simulation', 'pdf', 'image', 'note', 'mcq_set')
+      OR EXISTS (
+        SELECT 1 FROM daily_submissions s
+        WHERE s.item_id = i.id AND s.user_id = p_user_id
+          AND (s.marks_given IS NOT NULL OR s.mcq_score IS NOT NULL)
+      )
+    );
 
-  -- Sum up earned marks from submissions
+  -- Sum up earned marks from completed submissions
   SELECT COUNT(*), COALESCE(SUM(
     CASE
       WHEN s.mcq_score IS NOT NULL THEN
         (s.mcq_score::numeric / NULLIF(s.mcq_total, 0)::numeric) * i.marks
       WHEN s.marks_given IS NOT NULL THEN s.marks_given
-      WHEN s.is_completed AND i.marks > 0 THEN i.marks
+      WHEN s.is_completed AND i.item_type IN ('video', 'simulation', 'pdf', 'image', 'note') THEN i.marks
       ELSE 0
     END
   ), 0)

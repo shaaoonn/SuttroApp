@@ -4,6 +4,9 @@ import { usePathname } from 'next/navigation';
 
 const PAGE_TITLES: Record<string, string> = {
   '/': 'ড্যাশবোর্ড',
+  '/daily-lessons': 'আজকের পড়া',
+  '/daily-lessons/new': 'নতুন পড়া তৈরি',
+  '/daily-lessons/reviews': 'জমা মূল্যায়ন',
   '/classes': 'ক্লাস ম্যানেজমেন্ট',
   '/classes/new': 'নতুন ক্লাস তৈরি',
   '/exams': 'MCQ পরীক্ষা',

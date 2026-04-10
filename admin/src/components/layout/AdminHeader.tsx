@@ -14,6 +14,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/cq': 'সৃজনশীল প্রশ্ন',
   '/questions/import': 'CSV ইম্পোর্ট',
   '/users': 'ইউজার ম্যানেজমেন্ট',
+  '/content': 'সাইট কন্টেন্ট',
   '/analytics': 'অ্যানালিটিক্স',
 };
 

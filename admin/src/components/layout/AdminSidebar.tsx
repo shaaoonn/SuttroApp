@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { href: '/questions/import', label: 'CSV ইম্পোর্ট', icon: '📥' },
   { href: '/plans', label: 'প্ল্যান ও মূল্য', icon: '💰' },
   { href: '/users', label: 'ইউজার', icon: '👤' },
+  { href: '/content', label: 'সাইট কন্টেন্ট', icon: '✏️' },
   { href: '/analytics', label: 'অ্যানালিটিক্স', icon: '📈' },
 ];
 

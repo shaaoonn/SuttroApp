@@ -92,12 +92,20 @@ function ytThumb(videoId: string): string {
   return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 }
 
+type ContentMap = Record<string, string>;
+
 export default function DesktopHome({
   classes,
   exams,
+  content = {},
+  quicklinks = {},
+  subjects = {},
 }: {
   classes: ClassInfo[];
   exams: ExamInfo[];
+  content?: ContentMap;
+  quicklinks?: ContentMap;
+  subjects?: ContentMap;
 }) {
   const { user } = useAuth();
 
@@ -115,12 +123,12 @@ export default function DesktopHome({
           <h1 className="text-2xl font-bold" style={{ color: '#134E4A' }}>
             {user
               ? `👋 স্বাগতম, ${firstName || 'শিক্ষার্থী'}!`
-              : '👋 বিজ্ঞান দেখো, বিজ্ঞান বোঝো'}
+              : `👋 ${content.welcome_guest_title || 'বিজ্ঞান দেখো, বিজ্ঞান বোঝো'}`}
           </h1>
           <p className="text-base mt-1" style={{ color: '#5F9EA0' }}>
             {user
-              ? 'আজ কী শিখবে? তোমার পড়াশোনা শুরু করো।'
-              : 'ক্লাস ৯-১০ ইন্টারেক্টিভ সায়েন্স — NCTB পাঠ্যবইয়ের প্রতিটি অধ্যায়।'}
+              ? (content.welcome_logged_in || 'আজ কী শিখবে? তোমার পড়াশোনা শুরু করো।')
+              : (content.welcome_guest_subtitle || 'ক্লাস ৯-১০ ইন্টারেক্টিভ সায়েন্স — NCTB পাঠ্যবইয়ের প্রতিটি অধ্যায়।')}
           </p>
         </div>
 
@@ -167,17 +175,17 @@ export default function DesktopHome({
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-base font-semibold" style={{ color: '#1E40AF' }}>
-                আজকের পড়া
+                {content.daily_study_title || 'আজকের পড়া'}
               </div>
               <div className="text-sm" style={{ color: '#60A5FA' }}>
-                ক্লাস, MCQ, বাড়ির কাজ
+                {content.daily_study_subtitle || 'ক্লাস, MCQ, বাড়ির কাজ'}
               </div>
             </div>
             <span
               className="px-4 py-2 rounded-xl text-sm font-semibold text-white flex-shrink-0"
               style={{ background: 'linear-gradient(135deg, #0D9488, #14B8A6)' }}
             >
-              শুরু
+              {content.start_btn || 'শুরু'}
             </span>
           </Link>
 
@@ -196,7 +204,7 @@ export default function DesktopHome({
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-base font-semibold" style={{ color: '#92400E' }}>
-                  নতুন ক্লাস!
+                  {content.new_class_label || 'নতুন ক্লাস!'}
                 </div>
                 <div className="text-sm truncate" style={{ color: '#B45309' }}>
                   {classes[0].title} — {classes[0].duration}
@@ -238,14 +246,14 @@ export default function DesktopHome({
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold" style={{ color: '#134E4A' }}>
-                সাম্প্রতিক ক্লাস
+                {content.recent_classes_title || 'সাম্প্রতিক ক্লাস'}
               </h2>
               <Link
                 href="/classes"
                 className="text-sm font-medium suttro-transition hover:opacity-80"
                 style={{ color: '#0D9488' }}
               >
-                সব ক্লাস &rarr;
+                {content.all_classes_link || 'সব ক্লাস'} &rarr;
               </Link>
             </div>
             <div className="grid grid-cols-3 gap-4">
@@ -299,14 +307,14 @@ export default function DesktopHome({
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold" style={{ color: '#134E4A' }}>
-                MCQ পরীক্ষা
+                {content.mcq_section_title || 'MCQ পরীক্ষা'}
               </h2>
               <Link
                 href="/exams"
                 className="text-sm font-medium suttro-transition hover:opacity-80"
                 style={{ color: '#0D9488' }}
               >
-                সব পরীক্ষা &rarr;
+                {content.all_exams_link || 'সব পরীক্ষা'} &rarr;
               </Link>
             </div>
             <div className="grid grid-cols-3 gap-4">
@@ -348,7 +356,7 @@ export default function DesktopHome({
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-base font-semibold text-white suttro-transition hover:opacity-90"
             style={{ background: 'linear-gradient(135deg, #0D9488, #14B8A6)', boxShadow: '0 4px 14px rgba(13,148,136,0.25)' }}
           >
-            🔬 সিমুলেশন চালাও &rarr;
+            🔬 {content.sim_cta || 'সিমুলেশন চালাও'} &rarr;
           </Link>
         </div>
       </div>

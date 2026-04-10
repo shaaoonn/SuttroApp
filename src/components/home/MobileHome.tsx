@@ -81,15 +81,20 @@ const QUICK_LINKS = [
   },
 ];
 
+type ContentMap = Record<string, string>;
+
 interface MobileHomeProps {
   latestClass: {
     title: string;
     slug: string;
     duration: string;
   } | null;
+  content?: ContentMap;
+  quicklinks?: ContentMap;
+  subjects?: ContentMap;
 }
 
-export default function MobileHome({ latestClass }: MobileHomeProps) {
+export default function MobileHome({ latestClass, content = {}, quicklinks = {} }: MobileHomeProps) {
   const { user } = useAuth();
   const displayName =
     user?.user_metadata?.full_name ||
@@ -116,12 +121,12 @@ export default function MobileHome({ latestClass }: MobileHomeProps) {
           className="text-xl font-bold mb-1"
           style={{ color: '#134E4A', lineHeight: 1.3 }}
         >
-          {user ? 'আজ কী শিখবে?' : 'বিজ্ঞান দেখো, বিজ্ঞান বোঝো'}
+          {user ? 'আজ কী শিখবে?' : (content.welcome_guest_title || 'বিজ্ঞান দেখো, বিজ্ঞান বোঝো')}
         </h1>
         <p className="text-sm mb-4" style={{ color: '#5F9EA0' }}>
           {user
             ? 'তোমার streak চলছে — দারুণ!'
-            : 'ক্লাস ৯-১০ ইন্টারেক্টিভ সিমুলেশন'}
+            : (content.mobile_guest_subtitle || 'ক্লাস ৯-১০ ইন্টারেক্টিভ সিমুলেশন')}
         </p>
         <div className="flex gap-2 justify-center">
           <Link
@@ -132,7 +137,7 @@ export default function MobileHome({ latestClass }: MobileHomeProps) {
               boxShadow: '0 4px 14px rgba(13,148,136,0.25)',
             }}
           >
-            সিমুলেশন চালাও
+            {content.sim_cta || 'সিমুলেশন চালাও'}
           </Link>
           <Link
             href={user ? '/classes' : '/login'}
@@ -191,7 +196,7 @@ export default function MobileHome({ latestClass }: MobileHomeProps) {
               className="text-sm font-semibold"
               style={{ color: '#134E4A' }}
             >
-              আজকের প্রগ্রেস
+              {content.today_progress || 'আজকের প্রগ্রেস'}
             </span>
             <span
               className="text-[13px] font-medium"
@@ -239,7 +244,7 @@ export default function MobileHome({ latestClass }: MobileHomeProps) {
                 className="text-sm font-semibold"
                 style={{ color: '#92400E' }}
               >
-                নতুন ক্লাস!
+                {content.new_class_label || 'নতুন ক্লাস!'}
               </div>
               <div
                 className="text-xs truncate"
@@ -270,10 +275,10 @@ export default function MobileHome({ latestClass }: MobileHomeProps) {
               className="text-sm font-semibold"
               style={{ color: '#1E40AF' }}
             >
-              আজকের পড়া
+              {content.daily_study_title || 'আজকের পড়া'}
             </div>
             <div className="text-xs" style={{ color: '#60A5FA' }}>
-              ক্লাস, MCQ, বাড়ির কাজ
+              {content.daily_study_subtitle || 'ক্লাস, MCQ, বাড়ির কাজ'}
             </div>
           </div>
           <span
@@ -283,7 +288,7 @@ export default function MobileHome({ latestClass }: MobileHomeProps) {
               boxShadow: '0 4px 14px rgba(13,148,136,0.25)',
             }}
           >
-            শুরু
+            {content.start_btn || 'শুরু'}
           </span>
         </Link>
 

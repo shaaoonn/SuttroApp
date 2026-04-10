@@ -1,6 +1,7 @@
 import MobileHome from '@/components/home/MobileHome';
 import DesktopHome from '@/components/home/DesktopHome';
 import { getClasses, getExams } from '@/lib/data';
+import { getSiteContent, type ContentMap } from '@/lib/site-content';
 
 export const revalidate = 300;
 
@@ -12,7 +13,13 @@ export const revalidate = 300;
 // ─────────────────────────────────────────────
 
 export default async function Home() {
-  const [CLASSES, EXAMS] = await Promise.all([getClasses(), getExams()]);
+  const [CLASSES, EXAMS, homeContent, quicklinksContent, subjectsContent] = await Promise.all([
+    getClasses(),
+    getExams(),
+    getSiteContent('home'),
+    getSiteContent('quicklinks'),
+    getSiteContent('subjects'),
+  ]);
 
   // Latest class for the mobile "new class" card
   const latestClass = CLASSES[0]
@@ -44,14 +51,14 @@ export default async function Home() {
           Mobile: App-style home
           ═══════════════════════════════════════ */}
       <div className="lg:hidden">
-        <MobileHome latestClass={latestClass} />
+        <MobileHome latestClass={latestClass} content={homeContent} quicklinks={quicklinksContent} subjects={subjectsContent} />
       </div>
 
       {/* ═══════════════════════════════════════
           Desktop logged-in: Dashboard
           ═══════════════════════════════════════ */}
       <div className="hidden lg:block">
-        <DesktopHome classes={classesForDesktop} exams={examsForDesktop} />
+        <DesktopHome classes={classesForDesktop} exams={examsForDesktop} content={homeContent} quicklinks={quicklinksContent} subjects={subjectsContent} />
       </div>
     </div>
   );

@@ -1,9 +1,11 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { getSupabase } from '@/lib/supabase-server';
+import { createClient } from '@supabase/supabase-js';
+import { syncAllProfiles, isSheetsConfigured } from '@/lib/google-sheets';
 
 // ─────────────────────────────────────────────
 // Profile API — GET & PATCH user profile
 // Requires Authorization header
+// Uses service-role key to bypass RLS for profile ops
 // ─────────────────────────────────────────────
 
 function getUser(request: NextRequest) {
@@ -12,8 +14,15 @@ function getUser(request: NextRequest) {
   return authHeader.slice(7);
 }
 
+function getAdminSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key, { auth: { autoRefreshToken: false, persistSession: false } });
+}
+
 export async function GET(request: NextRequest) {
-  const sb = getSupabase();
+  const sb = getAdminSupabase();
   if (!sb) return NextResponse.json({ error: 'not configured' }, { status: 503 });
 
   const token = getUser(request);
@@ -41,6 +50,12 @@ export async function GET(request: NextRequest) {
       subscription_plan: 'free',
     };
     await sb.from('profiles').upsert(newProfile);
+
+    // Background sync to Google Sheets (new user created)
+    if (isSheetsConfigured()) {
+      syncAllProfiles().catch(() => {});
+    }
+
     return NextResponse.json({
       ...newProfile,
       email: user.email || null,
@@ -58,7 +73,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  const sb = getSupabase();
+  const sb = getAdminSupabase();
   if (!sb) return NextResponse.json({ error: 'not configured' }, { status: 503 });
 
   const token = getUser(request);
@@ -83,6 +98,11 @@ export async function PATCH(request: NextRequest) {
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  // Background sync to Google Sheets (profile updated)
+  if (isSheetsConfigured()) {
+    syncAllProfiles().catch(() => {});
   }
 
   return NextResponse.json(data);

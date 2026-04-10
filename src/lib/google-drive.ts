@@ -5,41 +5,41 @@ import { Readable } from 'stream';
 // Google Drive Integration for Suttro App
 //
 // Architecture:
-//   - Service Account authenticates server-to-server
-//   - Shared root folder in user's Google Drive (5TB)
-//   - Files uploaded by service account, stored in user's quota
+//   - OAuth2 refresh token authenticates as the user's own Google account
+//   - Files stored in user's Google Drive (5TB quota)
 //   - "Anyone with link" permission for app access
 //   - Folders auto-organized: content/{date}/{subject}/
 //                              submissions/{date}/{student}/
 //   - Auto-cleanup of files older than 30 days
 //
 // Setup:
-//   1. Google Cloud Console → Create project → Enable Drive API
-//   2. Create Service Account → Download JSON key
-//   3. Google Drive → Create "Suttro" folder → Share with SA email (Editor)
-//   4. Set env vars: GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY, GOOGLE_DRIVE_ROOT_FOLDER_ID
+//   1. Google Cloud Console → Create OAuth2 credentials
+//   2. Get refresh token via OAuth Playground
+//   3. Set env vars: GOOGLE_OAUTH_CLIENT_ID, GOOGLE_OAUTH_CLIENT_SECRET,
+//                    GOOGLE_OAUTH_REFRESH_TOKEN, GOOGLE_DRIVE_ROOT_FOLDER_ID
 // ─────────────────────────────────────────────
 
 let driveClient: drive_v3.Drive | null = null;
 
-function getDrive(): drive_v3.Drive {
-  if (driveClient) return driveClient;
+function getOAuth2Client() {
+  const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
+  const refreshToken = process.env.GOOGLE_OAUTH_REFRESH_TOKEN;
 
-  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const key = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
-
-  if (!email || !key) {
-    throw new Error('Google Drive credentials not configured. Set GOOGLE_SERVICE_ACCOUNT_EMAIL and GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY');
+  if (!clientId || !clientSecret || !refreshToken) {
+    throw new Error(
+      'Google OAuth2 credentials not configured. Set GOOGLE_OAUTH_CLIENT_ID, GOOGLE_OAUTH_CLIENT_SECRET, and GOOGLE_OAUTH_REFRESH_TOKEN'
+    );
   }
 
-  const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: email,
-      private_key: key.replace(/\\n/g, '\n'), // Handle escaped newlines in env var
-    },
-    scopes: ['https://www.googleapis.com/auth/drive'],
-  });
+  const oauth2 = new google.auth.OAuth2(clientId, clientSecret);
+  oauth2.setCredentials({ refresh_token: refreshToken });
+  return oauth2;
+}
 
+function getDrive(): drive_v3.Drive {
+  if (driveClient) return driveClient;
+  const auth = getOAuth2Client();
   driveClient = google.drive({ version: 'v3', auth });
   return driveClient;
 }
@@ -306,7 +306,7 @@ export async function checkConnection(): Promise<{ ok: boolean; error?: string }
     const drive = getDrive();
     const rootId = getRootFolderId();
 
-    const res = await drive.files.get({
+    await drive.files.get({
       fileId: rootId,
       fields: 'id, name',
     });
@@ -331,4 +331,16 @@ export function getServeUrl(fileId: string, mimeType: string): string {
     return `https://drive.google.com/file/d/${fileId}/preview`;
   }
   return `https://drive.google.com/uc?id=${fileId}&export=download`;
+}
+
+/**
+ * Check if Google Drive is configured
+ */
+export function isDriveConfigured(): boolean {
+  return !!(
+    process.env.GOOGLE_OAUTH_CLIENT_ID &&
+    process.env.GOOGLE_OAUTH_CLIENT_SECRET &&
+    process.env.GOOGLE_OAUTH_REFRESH_TOKEN &&
+    process.env.GOOGLE_DRIVE_ROOT_FOLDER_ID
+  );
 }

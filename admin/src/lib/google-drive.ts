@@ -3,29 +3,30 @@ import { Readable } from 'stream';
 
 // ─────────────────────────────────────────────
 // Google Drive for Admin Panel
-// Shares the same service account as the main app
+// Uses OAuth2 refresh token (same as main app)
 // ─────────────────────────────────────────────
 
 let driveClient: drive_v3.Drive | null = null;
 
-function getDrive(): drive_v3.Drive {
-  if (driveClient) return driveClient;
+function getOAuth2Client() {
+  const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
+  const refreshToken = process.env.GOOGLE_OAUTH_REFRESH_TOKEN;
 
-  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const key = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
-
-  if (!email || !key) {
-    throw new Error('Google Drive credentials not configured');
+  if (!clientId || !clientSecret || !refreshToken) {
+    throw new Error(
+      'Google OAuth2 credentials not configured. Set GOOGLE_OAUTH_CLIENT_ID, GOOGLE_OAUTH_CLIENT_SECRET, and GOOGLE_OAUTH_REFRESH_TOKEN'
+    );
   }
 
-  const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: email,
-      private_key: key.replace(/\\n/g, '\n'),
-    },
-    scopes: ['https://www.googleapis.com/auth/drive'],
-  });
+  const oauth2 = new google.auth.OAuth2(clientId, clientSecret);
+  oauth2.setCredentials({ refresh_token: refreshToken });
+  return oauth2;
+}
 
+function getDrive(): drive_v3.Drive {
+  if (driveClient) return driveClient;
+  const auth = getOAuth2Client();
   driveClient = google.drive({ version: 'v3', auth });
   return driveClient;
 }
@@ -145,7 +146,10 @@ export async function deleteAdminFile(fileId: string): Promise<void> {
 
 /** Check if Google Drive is configured */
 export function isGDriveConfigured(): boolean {
-  return !!(process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL &&
-    process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY &&
-    process.env.GOOGLE_DRIVE_ROOT_FOLDER_ID);
+  return !!(
+    process.env.GOOGLE_OAUTH_CLIENT_ID &&
+    process.env.GOOGLE_OAUTH_CLIENT_SECRET &&
+    process.env.GOOGLE_OAUTH_REFRESH_TOKEN &&
+    process.env.GOOGLE_DRIVE_ROOT_FOLDER_ID
+  );
 }

@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import Link from 'next/link';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import SyncSheetsButton from '@/components/SyncSheetsButton';
 
 async function getUsers() {
   const { data } = await supabaseAdmin
@@ -17,9 +18,12 @@ export default async function UsersPage() {
 
   return (
     <div className="space-y-6">
-      <p className="text-sm" style={{ color: 'var(--admin-muted)' }}>
-        মোট {users.length}+ ইউজার
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="text-sm" style={{ color: 'var(--admin-muted)' }}>
+          মোট {users.length}+ ইউজার
+        </p>
+        <SyncSheetsButton />
+      </div>
 
       <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">

@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     if (!isGDriveConfigured()) {
       return NextResponse.json({
         error: 'Google Drive সেটআপ করা হয়নি',
-        hint: 'GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY, GOOGLE_DRIVE_ROOT_FOLDER_ID সেট করুন',
+        hint: 'GOOGLE_OAUTH_CLIENT_ID, GOOGLE_OAUTH_CLIENT_SECRET, GOOGLE_OAUTH_REFRESH_TOKEN, GOOGLE_DRIVE_ROOT_FOLDER_ID সেট করুন',
       }, { status: 503 });
     }
 

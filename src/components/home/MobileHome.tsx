@@ -251,29 +251,29 @@ export default function MobileHome({ latestClass }: MobileHomeProps) {
           </Link>
         )}
 
-        {/* Daily Challenge */}
+        {/* আজকের পড়া */}
         <Link
           href="/daily"
           className="rounded-xl p-3 flex items-center gap-3 suttro-transition active:scale-[0.98]"
-          style={{ background: 'white', border: '1px solid #DDD6FE' }}
+          style={{ background: 'white', border: '1px solid #BFDBFE' }}
         >
           <div
             className="w-9 h-9 rounded-[10px] flex items-center justify-center text-white text-sm flex-shrink-0"
             style={{
-              background: 'linear-gradient(135deg, #7C3AED, #A78BFA)',
+              background: 'linear-gradient(135deg, #3B82F6, #60A5FA)',
             }}
           >
-            ★
+            📖
           </div>
           <div className="flex-1 min-w-0">
             <div
               className="text-sm font-semibold"
-              style={{ color: '#5B21B6' }}
+              style={{ color: '#1E40AF' }}
             >
-              আজকের চ্যালেঞ্জ
+              আজকের পড়া
             </div>
-            <div className="text-xs" style={{ color: '#A78BFA' }}>
-              ৫টি প্রশ্ন — ৩০ XP বোনাস
+            <div className="text-xs" style={{ color: '#60A5FA' }}>
+              ক্লাস, MCQ, বাড়ির কাজ
             </div>
           </div>
           <span

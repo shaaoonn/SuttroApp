@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { simulations } from '@/simulations/registry';
 import SimulationCard from '@/components/ui/SimulationCard';
-import HeroSimulation from '@/components/home/HeroSimulation';
+
 import MobileHome from '@/components/home/MobileHome';
 import { getClasses, getExams } from '@/lib/data';
 import { SUBJECT_COLORS, SUBJECT_LABELS, SUBJECT_ICONS, ytThumb } from '@/lib/constants';
@@ -68,10 +68,27 @@ export default async function Home() {
               </div>
             </div>
             <div className="max-w-4xl mx-auto">
-              <HeroSimulation />
-              <p className="text-center text-sm mt-3" style={{ color: '#94A3B8' }}>
-                এটাই সূত্র — নিজে চালিয়ে দেখো &#9757;
-              </p>
+              <div
+                className="rounded-2xl overflow-hidden"
+                style={{ background: '#0F172A', aspectRatio: '16/9' }}
+              >
+                <div className="w-full h-full flex items-center justify-center">
+                  <Link
+                    href="/simulations"
+                    className="flex flex-col items-center gap-3 suttro-transition hover:scale-105"
+                  >
+                    <div
+                      className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-2xl"
+                      style={{ background: 'linear-gradient(135deg, #0D9488, #14B8A6)' }}
+                    >
+                      🔬
+                    </div>
+                    <span className="text-white/80 text-sm font-medium">
+                      সিমুলেশন চালাও &rarr;
+                    </span>
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -133,7 +150,7 @@ export default async function Home() {
             </p>
             <div className="grid lg:grid-cols-3 gap-6">
               {[
-                { href: '/daily', icon: '🎯', title: 'দৈনিক চ্যালেঞ্জ', desc: 'প্রতিদিন ৫টি নতুন প্রশ্ন — সব সঠিক হলে বোনাস XP!' },
+                { href: '/daily', icon: '📖', title: 'আজকের পড়া', desc: 'প্রতিদিনের ক্লাস, MCQ, বাড়ির কাজ — সব এক জায়গায়।' },
                 { href: '/achievements', icon: '🎖️', title: 'ব্যাজ ও অ্যাচিভমেন্ট', desc: '১৮টি ব্যাজ — পরীক্ষা দাও, স্ট্রিক রাখো, মাস্টার হও।' },
                 { href: '/leaderboard', icon: '🏆', title: 'লিডারবোর্ড', desc: 'সাপ্তাহিক ও সর্বকালীন — তোমার র‍্যাংকিং দেখো।' },
               ].map((item) => (

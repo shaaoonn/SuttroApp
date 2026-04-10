@@ -53,6 +53,11 @@ interface XPStats {
   todayXP: number;
 }
 
+interface DailyScoreData {
+  today: { score_pct: number; marks_earned: number; marks_possible: number; items_completed: number; items_total: number } | null;
+  month: { average: number; totalDays: number; perfectDays: number; scores: { score_date: string; score_pct: number }[] };
+}
+
 interface SubjectProgress {
   subjectId: string;
   avgMastery: number;
@@ -167,6 +172,7 @@ export default function DashboardPage() {
   const [srsCount, setSrsCount] = useState(0);
   const [subjectProgress, setSubjectProgress] = useState<SubjectProgress[]>([]);
   const [classLevel, setClassLevel] = useState<number | null>(null);
+  const [dailyScores, setDailyScores] = useState<DailyScoreData | null>(null);
   const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
@@ -177,12 +183,13 @@ export default function DashboardPage() {
     if (!session?.access_token) return;
     const headers = { Authorization: `Bearer ${session.access_token}` };
 
-    const [dashRes, xpRes, srsRes, progressRes, profileRes] = await Promise.all([
+    const [dashRes, xpRes, srsRes, progressRes, profileRes, scoresRes] = await Promise.all([
       fetch('/api/dashboard', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
       fetch('/api/xp', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
       fetch('/api/srs', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
       fetch('/api/chapter-progress', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
       fetch('/api/profile', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+      fetch('/api/daily-lesson/scores', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
     ]);
 
     if (dashRes) setData(dashRes);
@@ -190,6 +197,7 @@ export default function DashboardPage() {
     if (srsRes) setSrsCount(srsRes.totalDue ?? 0);
     if (progressRes) setSubjectProgress(progressRes.subjects ?? []);
     if (profileRes) setClassLevel(profileRes.class_level ?? 9);
+    if (scoresRes) setDailyScores(scoresRes);
     setDataLoading(false);
   }, [session?.access_token]);
 
@@ -367,6 +375,79 @@ export default function DashboardPage() {
             />
           </div>
         </div>
+
+        {/* আজকের পড়া Score Card */}
+        <Link
+          href="/daily"
+          className="rounded-xl p-3 suttro-transition active:scale-[0.98]"
+          style={{ background: 'white', border: '1px solid #BFDBFE' }}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold flex-shrink-0"
+              style={{
+                background: dailyScores?.today
+                  ? dailyScores.today.score_pct >= 80 ? '#F0FDF4'
+                    : dailyScores.today.score_pct >= 50 ? '#FFFBEB' : '#FEF2F2'
+                  : '#EFF6FF',
+                color: dailyScores?.today
+                  ? dailyScores.today.score_pct >= 80 ? '#16A34A'
+                    : dailyScores.today.score_pct >= 50 ? '#F59E0B' : '#DC2626'
+                  : '#3B82F6',
+              }}
+            >
+              {dailyScores?.today ? Math.round(dailyScores.today.score_pct) : '—'}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-semibold" style={{ color: '#1E293B' }}>
+                📖 আজকের পড়া
+              </div>
+              <div className="text-[11px]" style={{ color: '#94A3B8' }}>
+                {dailyScores?.today
+                  ? `${dailyScores.today.items_completed}/${dailyScores.today.items_total} সম্পন্ন — ${Math.round(dailyScores.today.marks_earned)}/${Math.round(dailyScores.today.marks_possible)} নম্বর`
+                  : 'আজকের পড়া শুরু করো →'}
+              </div>
+            </div>
+            <span style={{ color: '#3B82F6', fontSize: '14px' }}>➤</span>
+          </div>
+        </Link>
+
+        {/* Monthly Scores */}
+        {dailyScores?.month && dailyScores.month.totalDays > 0 && (
+          <div
+            className="rounded-xl p-3"
+            style={{ background: 'white', border: '1px solid #DDD6FE' }}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-semibold" style={{ color: '#5B21B6' }}>
+                📊 মাসিক স্কোর
+              </span>
+              <span className="text-sm font-bold" style={{ color: '#7C3AED' }}>
+                গড় {dailyScores.month.average}/১০০
+              </span>
+            </div>
+            {/* Mini bar chart for last 7 days */}
+            <div className="flex items-end gap-1 h-10">
+              {(dailyScores.month.scores.slice(-7) || []).map((s, i) => (
+                <div
+                  key={i}
+                  className="flex-1 rounded-t-sm transition-all"
+                  style={{
+                    height: `${Math.max(Number(s.score_pct), 5)}%`,
+                    background: Number(s.score_pct) >= 80 ? '#16A34A'
+                      : Number(s.score_pct) >= 50 ? '#F59E0B' : '#DC2626',
+                    opacity: 0.8,
+                  }}
+                  title={`${s.score_date}: ${Math.round(Number(s.score_pct))}/100`}
+                />
+              ))}
+            </div>
+            <div className="flex items-center justify-between mt-1.5 text-[10px]" style={{ color: '#94A3B8' }}>
+              <span>{dailyScores.month.totalDays} দিন পড়েছ</span>
+              <span>🌟 {dailyScores.month.perfectDays} দিন ৯০+</span>
+            </div>
+          </div>
+        )}
 
         {/* Subject Progress */}
         <div className="flex flex-col gap-1.5">

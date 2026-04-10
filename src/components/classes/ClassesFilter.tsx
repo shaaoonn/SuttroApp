@@ -3,17 +3,21 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import type { ClassRecording } from '@/data/classes';
-import {
-  SUBJECT_COLORS,
-  SUBJECT_LABELS,
-  SUBJECT_ICONS,
-  ytThumb,
-} from '@/lib/constants';
+import { ytThumb } from '@/lib/constants';
 
 // ─────────────────────────────────────────────
-// Interactive Class Filter — সূত্র
-// Subject tabs + chapter dropdown + animated list
+// ClassesFilter — Compact, beautiful class archive
+// Subject chips + chapter pills + card list
 // ─────────────────────────────────────────────
+
+const SUBJECT_STYLES: Record<string, { bg: string; light: string; lightBg: string; border: string; text: string; icon: string; label: string }> = {
+  physics:      { bg: '#3B82F6', light: '#60A5FA', lightBg: '#EFF6FF', border: '#BFDBFE', text: '#1E40AF', icon: '⚡', label: 'পদার্থ' },
+  chemistry:    { bg: '#7C3AED', light: '#A78BFA', lightBg: '#F5F3FF', border: '#DDD6FE', text: '#5B21B6', icon: '⚗️', label: 'রসায়ন' },
+  biology:      { bg: '#EC4899', light: '#F472B6', lightBg: '#FDF2F8', border: '#FBCFE8', text: '#9D174D', icon: '🧬', label: 'জীববিজ্ঞান' },
+  math:         { bg: '#DC2626', light: '#F87171', lightBg: '#FEF2F2', border: '#FECACA', text: '#991B1B', icon: '📐', label: 'গণিত' },
+  'higher-math':{ bg: '#EA580C', light: '#FB923C', lightBg: '#FFF7ED', border: '#FED7AA', text: '#9A3412', icon: '📊', label: 'উচ্চতর গণিত' },
+  english:      { bg: '#0891B2', light: '#22D3EE', lightBg: '#ECFEFF', border: '#A5F3FC', text: '#155E75', icon: '📝', label: 'ইংরেজি' },
+};
 
 interface ClassesFilterProps {
   classes: ClassRecording[];
@@ -24,7 +28,6 @@ export default function ClassesFilter({ classes, chapterNames }: ClassesFilterPr
   const [activeSubject, setActiveSubject] = useState<string | null>(null);
   const [activeChapter, setActiveChapter] = useState<number | null>(null);
 
-  // Get unique chapters for the active subject
   const availableChapters = useMemo(() => {
     if (!activeSubject) return [];
     const chapters = new Set<number>();
@@ -32,21 +35,18 @@ export default function ClassesFilter({ classes, chapterNames }: ClassesFilterPr
       if (cls.subject === activeSubject) chapters.add(cls.chapter);
     });
     return Array.from(chapters).sort((a, b) => a - b);
-  }, [activeSubject]);
+  }, [activeSubject, classes]);
 
-  // Filtered classes
   const filtered = useMemo(() => {
     return classes.filter((cls) => {
       if (activeSubject && cls.subject !== activeSubject) return false;
       if (activeChapter !== null && cls.chapter !== activeChapter) return false;
       return true;
     });
-  }, [activeSubject, activeChapter]);
+  }, [classes, activeSubject, activeChapter]);
 
-  // Handle subject click
   const handleSubjectClick = (key: string | null) => {
     if (key === activeSubject) {
-      // Toggle off
       setActiveSubject(null);
       setActiveChapter(null);
     } else {
@@ -55,7 +55,6 @@ export default function ClassesFilter({ classes, chapterNames }: ClassesFilterPr
     }
   };
 
-  // Count classes per subject
   const subjectCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     classes.forEach((cls) => {
@@ -64,219 +63,200 @@ export default function ClassesFilter({ classes, chapterNames }: ClassesFilterPr
     return counts;
   }, [classes]);
 
+  const subStyle = activeSubject ? SUBJECT_STYLES[activeSubject] : null;
+
   return (
-    <>
-      {/* Subject filter tabs */}
-      <div className="flex flex-wrap gap-2 mb-4">
+    <div className="flex flex-col gap-3">
+      {/* ── Subject chips (horizontal scroll on mobile) ── */}
+      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
         <button
           onClick={() => handleSubjectClick(null)}
-          className="px-5 py-2.5 rounded-full text-base font-medium suttro-transition"
+          className="flex-shrink-0 px-4 py-2 rounded-xl text-[13px] font-semibold suttro-transition active:scale-[0.97]"
           style={{
-            background: activeSubject === null ? 'var(--suttro-deep)' : 'transparent',
-            color: activeSubject === null ? 'white' : 'var(--suttro-text)',
-            border: activeSubject === null ? 'none' : '1.5px solid var(--suttro-border)',
+            background: activeSubject === null ? '#134E4A' : 'white',
+            color: activeSubject === null ? 'white' : '#64748B',
+            border: activeSubject === null ? '1px solid #134E4A' : '1px solid #E2E8F0',
           }}
         >
           সব ({classes.length})
         </button>
-        {Object.entries(SUBJECT_LABELS).map(([key, label]) => {
-          const isActive = activeSubject === key;
+        {Object.entries(SUBJECT_STYLES).map(([key, s]) => {
           const count = subjectCounts[key] || 0;
           if (count === 0) return null;
+          const isActive = activeSubject === key;
           return (
             <button
               key={key}
               onClick={() => handleSubjectClick(key)}
-              className="px-5 py-2.5 rounded-full text-base font-medium suttro-transition"
+              className="flex-shrink-0 px-4 py-2 rounded-xl text-[13px] font-semibold suttro-transition active:scale-[0.97] flex items-center gap-1.5"
               style={{
-                background: isActive ? SUBJECT_COLORS[key] : 'transparent',
-                color: isActive ? 'white' : 'var(--suttro-text)',
-                border: isActive ? 'none' : '1.5px solid var(--suttro-border)',
+                background: isActive ? s.bg : 'white',
+                color: isActive ? 'white' : s.text,
+                border: `1px solid ${isActive ? s.bg : s.border}`,
               }}
             >
-              <span className="mr-1.5">{SUBJECT_ICONS[key]}</span>
-              {label} ({count})
+              <span className="text-sm">{s.icon}</span>
+              {s.label}
+              <span
+                className="text-[11px] px-1.5 py-0.5 rounded-md font-bold"
+                style={{
+                  background: isActive ? 'rgba(255,255,255,0.25)' : s.lightBg,
+                  color: isActive ? 'white' : s.text,
+                }}
+              >
+                {count}
+              </span>
             </button>
           );
         })}
       </div>
 
-      {/* Chapter filter — only shows when a subject is selected */}
-      {activeSubject && availableChapters.length > 0 && (
+      {/* ── Chapter pills ── */}
+      {activeSubject && subStyle && availableChapters.length > 0 && (
         <div
-          className="flex flex-wrap items-center gap-2 mb-6 p-3 rounded-[10px]"
-          style={{ background: 'var(--suttro-sky)' }}
+          className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide px-1 py-2 rounded-xl"
+          style={{ background: subStyle.lightBg }}
         >
-          <span
-            className="text-base font-medium mr-1"
-            style={{ color: 'var(--suttro-muted)' }}
-          >
-            অধ্যায়:
-          </span>
           <button
             onClick={() => setActiveChapter(null)}
-            className="px-3 py-1.5 rounded-full text-sm font-medium suttro-transition"
+            className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[12px] font-semibold suttro-transition"
             style={{
-              background: activeChapter === null ? SUBJECT_COLORS[activeSubject] : 'var(--suttro-white)',
-              color: activeChapter === null ? 'white' : 'var(--suttro-text)',
-              border: activeChapter === null ? 'none' : '1px solid var(--suttro-border)',
+              background: activeChapter === null ? subStyle.bg : 'white',
+              color: activeChapter === null ? 'white' : subStyle.text,
             }}
           >
-            সব অধ্যায়
+            সব
           </button>
           {availableChapters.map((ch) => {
             const isActive = activeChapter === ch;
-            const chapterName = chapterNames[activeSubject]?.[ch];
+            const name = chapterNames[activeSubject]?.[ch];
             return (
               <button
                 key={ch}
                 onClick={() => setActiveChapter(isActive ? null : ch)}
-                className="px-3 py-1.5 rounded-full text-sm font-medium suttro-transition"
+                className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[12px] font-medium suttro-transition whitespace-nowrap"
                 style={{
-                  background: isActive ? SUBJECT_COLORS[activeSubject] : 'var(--suttro-white)',
-                  color: isActive ? 'white' : 'var(--suttro-text)',
-                  border: isActive ? 'none' : '1px solid var(--suttro-border)',
+                  background: isActive ? subStyle.bg : 'white',
+                  color: isActive ? 'white' : subStyle.text,
                 }}
-                title={chapterName || `অধ্যায় ${ch}`}
               >
-                {chapterName ? `${ch}. ${chapterName}` : `অধ্যায় ${ch}`}
+                {name ? `${ch}. ${name}` : `অধ্যায় ${ch}`}
               </button>
             );
           })}
         </div>
       )}
 
-      {/* Active filter summary */}
+      {/* ── Filter summary ── */}
       {(activeSubject || activeChapter !== null) && (
-        <div className="flex items-center gap-2 mb-4">
-          <span className="text-base" style={{ color: 'var(--suttro-muted)' }}>
-            {filtered.length}টি ক্লাস পাওয়া গেছে
+        <div className="flex items-center gap-2">
+          <span className="text-[13px] font-medium" style={{ color: '#64748B' }}>
+            {filtered.length}টি ক্লাস
           </span>
           <button
             onClick={() => { setActiveSubject(null); setActiveChapter(null); }}
-            className="text-base px-2.5 py-1 rounded-full suttro-transition hover:opacity-80"
-            style={{ background: 'var(--suttro-sky)', color: 'var(--suttro-primary)' }}
+            className="text-[12px] px-2.5 py-1 rounded-lg font-medium suttro-transition"
+            style={{ background: '#FEF2F2', color: '#DC2626' }}
           >
-            ফিল্টার মুছো &times;
+            ✕ মুছো
           </button>
         </div>
       )}
 
-      {/* Class list */}
-      <div className="space-y-4">
+      {/* ── Class cards ── */}
+      <div className="flex flex-col gap-2.5">
         {filtered.length === 0 ? (
-          <div
-            className="rounded-[14px] p-10 text-center"
-            style={{ background: 'var(--suttro-sky)' }}
-          >
-            <div className="text-3xl mb-3">📭</div>
-            <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
-              এই ফিল্টারে কোনো ক্লাস পাওয়া যায়নি।
+          <div className="rounded-xl p-10 text-center" style={{ background: '#F8FAFC' }}>
+            <div className="text-3xl mb-2">📭</div>
+            <p className="text-sm" style={{ color: '#94A3B8' }}>
+              কোনো ক্লাস পাওয়া যায়নি
             </p>
           </div>
         ) : (
-          filtered.map((cls) => (
-            <div
-              key={cls.slug}
-              className="rounded-[14px] border p-5 lg:p-6 flex flex-col lg:flex-row lg:items-center gap-4 suttro-transition hover:shadow-md"
-              style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}
-            >
-              {/* Thumbnail */}
-              <div
-                className="w-full lg:w-40 h-[90px] rounded-[10px] shrink-0 relative overflow-hidden group/thumb"
-                style={{ background: 'var(--player-bg)' }}
+          filtered.map((cls) => {
+            const s = SUBJECT_STYLES[cls.subject] || SUBJECT_STYLES.physics;
+            return (
+              <Link
+                key={cls.slug}
+                href={cls.available ? `/class/${cls.slug}` : '#'}
+                className="rounded-xl overflow-hidden suttro-transition active:scale-[0.98]"
+                style={{
+                  background: 'white',
+                  border: `1px solid ${s.border}`,
+                  opacity: cls.available ? 1 : 0.6,
+                  pointerEvents: cls.available ? 'auto' : 'none',
+                }}
               >
-                {cls.youtubeId ? (
-                  <img
-                    src={ytThumb(cls.youtubeId)}
-                    alt={cls.title}
-                    className="w-full h-full object-cover group-hover/thumb:scale-105 suttro-transition"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div
-                    className="w-full h-full flex items-center justify-center"
-                    style={{ background: SUBJECT_COLORS[cls.subject] + '18' }}
-                  >
-                    <span className="text-3xl">{SUBJECT_ICONS[cls.subject]}</span>
+                {/* Thumbnail Row */}
+                <div className="relative" style={{ aspectRatio: '16/8' }}>
+                  {cls.youtubeId ? (
+                    <img
+                      src={ytThumb(cls.youtubeId, 'hq')}
+                      alt={cls.title}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div
+                      className="w-full h-full flex items-center justify-center"
+                      style={{ background: `linear-gradient(135deg, ${s.bg}15, ${s.light}10)` }}
+                    >
+                      <span className="text-4xl">{s.icon}</span>
+                    </div>
+                  )}
+                  {/* Play overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div
+                      className="w-11 h-11 rounded-full flex items-center justify-center text-white text-lg backdrop-blur-sm"
+                      style={{ background: 'rgba(255,255,255,0.2)', border: '2px solid rgba(255,255,255,0.5)' }}
+                    >
+                      ▶
+                    </div>
                   </div>
-                )}
-                {/* Play overlay */}
-                <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover/thumb:opacity-100 suttro-transition">
+                  {/* Duration badge */}
+                  <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-md text-[11px] font-bold text-white bg-black/60 backdrop-blur-sm">
+                    {cls.duration}
+                  </div>
+                  {/* Subject badge */}
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm"
-                    style={{ background: 'var(--suttro-primary)' }}
+                    className="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[11px] font-bold text-white"
+                    style={{ background: s.bg }}
                   >
-                    ▶
+                    {s.icon} {s.label}
+                  </div>
+                  {/* Not available overlay */}
+                  {!cls.available && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                      <span className="text-white text-sm font-semibold px-3 py-1.5 rounded-lg bg-black/50">
+                        শীঘ্রই আসছে
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Info */}
+                <div className="p-3">
+                  <h3 className="text-sm font-semibold mb-1 line-clamp-1" style={{ color: '#1E293B' }}>
+                    {cls.title}
+                  </h3>
+                  <div className="flex items-center gap-2 text-[11px]" style={{ color: '#94A3B8' }}>
+                    <span
+                      className="px-1.5 py-0.5 rounded font-medium"
+                      style={{ background: s.lightBg, color: s.text }}
+                    >
+                      অধ্যায় {cls.chapter}
+                    </span>
+                    <span>{cls.date}</span>
+                    <span>·</span>
+                    <span>ক্লাস {cls.classLevel}</span>
                   </div>
                 </div>
-                {/* Duration badge */}
-                <div className="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded text-sm font-medium text-white bg-black/70">
-                  {cls.duration}
-                </div>
-              </div>
-
-              {/* Info */}
-              <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <span
-                    className="px-2 py-0.5 rounded text-sm font-medium text-white"
-                    style={{ background: SUBJECT_COLORS[cls.subject] }}
-                  >
-                    {SUBJECT_LABELS[cls.subject]}
-                  </span>
-                  <span
-                    className="px-2 py-0.5 rounded text-sm font-medium"
-                    style={{ background: SUBJECT_COLORS[cls.subject] + '15', color: SUBJECT_COLORS[cls.subject] }}
-                  >
-                    অধ্যায় {cls.chapter}
-                    {chapterNames[cls.subject]?.[cls.chapter]
-                      ? ` · ${chapterNames[cls.subject][cls.chapter]}`
-                      : ''}
-                  </span>
-                  <span className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
-                    ক্লাস {cls.classLevel}
-                  </span>
-                </div>
-                <h3
-                  className="text-lg font-semibold mb-1 truncate"
-                  style={{ color: 'var(--suttro-deep)' }}
-                >
-                  {cls.title}
-                </h3>
-                <div
-                  className="flex items-center gap-3 text-sm"
-                  style={{ color: 'var(--suttro-muted)' }}
-                >
-                  <span>{cls.date}</span>
-                  <span>·</span>
-                  <span>{cls.duration}</span>
-                </div>
-              </div>
-
-              {/* Action */}
-              <div className="shrink-0">
-                {cls.available ? (
-                  <Link
-                    href={`/class/${cls.slug}`}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-[10px] text-base font-medium text-white suttro-transition hover:opacity-90"
-                    style={{ background: 'var(--suttro-primary)' }}
-                  >
-                    দেখো &rarr;
-                  </Link>
-                ) : (
-                  <span
-                    className="inline-flex items-center gap-1.5 px-5 py-3 rounded-[10px] text-base"
-                    style={{ background: 'var(--suttro-sky)', color: 'var(--suttro-muted)' }}
-                  >
-                    শীঘ্রই আসছে
-                  </span>
-                )}
-              </div>
-            </div>
-          ))
+              </Link>
+            );
+          })
         )}
       </div>
-    </>
+    </div>
   );
 }

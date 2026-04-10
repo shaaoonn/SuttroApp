@@ -18,7 +18,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/profile': 'প্রোফাইল',
   '/simulations': 'সিমুলেশন',
   '/classes': 'ক্লাস আর্কাইভ',
-  '/daily': 'দৈনিক চ্যালেঞ্জ',
+  '/daily': 'আজকের পড়া',
   '/review': 'রিভিউ',
   '/achievements': 'অ্যাচিভমেন্ট',
   '/leaderboard': 'লিডারবোর্ড',

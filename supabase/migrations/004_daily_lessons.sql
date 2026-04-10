@@ -34,6 +34,9 @@ CREATE TABLE daily_lesson_items (
   media_url     TEXT,        -- for uploaded PDFs, images
   content_body  TEXT,        -- for inline text content (notes, question text)
   marks         INTEGER DEFAULT 0,
+  subject_id    TEXT REFERENCES subjects(id),  -- subject per item (not per lesson)
+  chapter_num   INTEGER,                       -- chapter per item
+  gdrive_file_id TEXT,                         -- Google Drive file ID for cleanup
   sort_order    INTEGER DEFAULT 0,
   created_at    TIMESTAMPTZ DEFAULT now()
 );
@@ -79,6 +82,7 @@ CREATE TABLE daily_submissions (
   -- Auto-grading (future: OpenRouter)
   auto_grade      NUMERIC(5,2),
   auto_reviewed   BOOLEAN DEFAULT false,
+  gdrive_file_ids TEXT[],    -- Google Drive file IDs for student photo uploads
   UNIQUE(user_id, item_id)
 );
 

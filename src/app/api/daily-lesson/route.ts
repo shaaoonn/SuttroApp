@@ -134,7 +134,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { item_id, type, mcq_answers, text_answer, photo_urls } = body;
+  const { item_id, type, mcq_answers, text_answer, photo_urls, gdrive_file_ids } = body;
 
   if (!item_id || !type) {
     return NextResponse.json({ error: 'Missing item_id or type' }, { status: 400 });
@@ -196,6 +196,9 @@ export async function POST(req: NextRequest) {
 
   } else if (type === 'photo') {
     submissionData.photo_urls = photo_urls || [];
+    if (gdrive_file_ids) {
+      submissionData.gdrive_file_ids = gdrive_file_ids;
+    }
 
   } else if (type === 'completion') {
     // Just mark as completed (for videos, sims, PDFs)

@@ -22,6 +22,15 @@ const ITEM_TYPE_ICONS: Record<string, string> = {
   note: '📝', mcq_set: '✅', written_question: '✍️',
 };
 
+const SUBJECT_LABELS: Record<string, { label: string; color: string }> = {
+  physics: { label: 'পদার্থবিজ্ঞান', color: '#1E40AF' },
+  chemistry: { label: 'রসায়ন', color: '#166534' },
+  biology: { label: 'জীববিজ্ঞান', color: '#9D174D' },
+  math: { label: 'গণিত', color: '#9A3412' },
+  'higher-math': { label: 'উচ্চতর গণিত', color: '#7E22CE' },
+  english: { label: 'ইংরেজি', color: '#991B1B' },
+};
+
 interface McqQuestion {
   id: number;
   question: string;
@@ -55,6 +64,8 @@ interface LessonItem {
   media_url?: string;
   content_body?: string;
   marks: number;
+  subject_id?: string;
+  chapter_num?: number;
   mcqs: McqQuestion[];
   submission: Submission | null;
 }
@@ -346,8 +357,16 @@ function ItemCard({
           {isCompleted ? '✓' : icon}
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-[13px] font-semibold line-clamp-1" style={{ color: '#1E293B' }}>
-            {item.title}
+          <div className="flex items-center gap-1.5">
+            <span className="text-[13px] font-semibold line-clamp-1" style={{ color: '#1E293B' }}>
+              {item.title}
+            </span>
+            {item.subject_id && SUBJECT_LABELS[item.subject_id] && (
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded flex-shrink-0"
+                style={{ background: '#F1F5F9', color: SUBJECT_LABELS[item.subject_id].color }}>
+                {SUBJECT_LABELS[item.subject_id].label}
+              </span>
+            )}
           </div>
           {item.description && (
             <div className="text-[11px] line-clamp-1" style={{ color: '#94A3B8' }}>
@@ -613,7 +632,9 @@ function WrittenQuestionBody({
   const isCompleted = item.submission?.is_completed ?? false;
   const [textAnswer, setTextAnswer] = useState(item.submission?.text_answer || '');
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState('');
   const [mode, setMode] = useState<'text' | 'photo'>('text');
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -635,25 +656,71 @@ function WrittenQuestionBody({
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setSelectedFile(file);
+    // Show preview
     const reader = new FileReader();
     reader.onload = () => setPhotoPreview(reader.result as string);
     reader.readAsDataURL(file);
   };
 
   const handlePhotoSubmit = async () => {
-    if (!session || !photoPreview) return;
+    if (!session || !selectedFile) return;
     setLoading(true);
-    // In production, upload to Supabase Storage and get URL
-    // For now, store the data URL (temporary)
-    await fetch('/api/daily-lesson', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${session.access_token}`,
-      },
-      body: JSON.stringify({ item_id: item.id, type: 'photo', photo_urls: [photoPreview] }),
-    });
+    setUploadProgress('আপলোড হচ্ছে...');
+
+    try {
+      // Upload to Google Drive via API
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      formData.append('type', 'submission');
+
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${session.access_token}` },
+        body: formData,
+      });
+      const uploadData = await uploadRes.json();
+
+      let photoUrl: string;
+      let gdriveFileId: string | undefined;
+
+      if (uploadData.success) {
+        photoUrl = uploadData.url;
+        gdriveFileId = uploadData.fileId;
+        setUploadProgress('জমা দেওয়া হচ্ছে...');
+      } else {
+        // Fallback: store as data URL if Google Drive not configured
+        photoUrl = photoPreview!;
+      }
+
+      // Submit to daily-lesson API
+      await fetch('/api/daily-lesson', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          item_id: item.id,
+          type: 'photo',
+          photo_urls: [photoUrl],
+          gdrive_file_ids: gdriveFileId ? [gdriveFileId] : undefined,
+        }),
+      });
+    } catch {
+      // Fallback: store as data URL
+      await fetch('/api/daily-lesson', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ item_id: item.id, type: 'photo', photo_urls: [photoPreview] }),
+      });
+    }
+
     setLoading(false);
+    setUploadProgress('');
     onSubmit();
   };
 
@@ -749,7 +816,7 @@ function WrittenQuestionBody({
             <div className="relative">
               <img src={photoPreview} alt="preview" className="w-full rounded-lg" style={{ maxHeight: 200, objectFit: 'cover' }} />
               <button
-                onClick={() => { setPhotoPreview(null); if (fileRef.current) fileRef.current.value = ''; }}
+                onClick={() => { setPhotoPreview(null); setSelectedFile(null); if (fileRef.current) fileRef.current.value = ''; }}
                 className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/60 text-white text-[11px] flex items-center justify-center"
               >
                 ✕
@@ -772,7 +839,7 @@ function WrittenQuestionBody({
               className="w-full py-2.5 rounded-xl text-[13px] font-semibold text-white suttro-transition active:scale-[0.98] disabled:opacity-50"
               style={{ background: 'linear-gradient(135deg, #EA580C, #FB923C)' }}
             >
-              {loading ? 'আপলোড হচ্ছে...' : '📤 ছবি জমা দাও'}
+              {loading ? (uploadProgress || 'আপলোড হচ্ছে...') : '📤 ছবি জমা দাও'}
             </button>
           )}
         </>

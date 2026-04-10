@@ -5,21 +5,10 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase-browser';
 
-const SUBJECT_LABELS: Record<string, string> = {
-  physics: 'পদার্থবিজ্ঞান',
-  chemistry: 'রসায়ন',
-  biology: 'জীববিজ্ঞান',
-  math: 'সাধারণ গণিত',
-  'higher-math': 'উচ্চতর গণিত',
-  english: 'ইংরেজি',
-};
-
 interface LessonRow {
   id: string;
   lesson_date: string;
   title: string;
-  subject_id: string | null;
-  chapter_num: number | null;
   class_level: number;
   total_marks: number;
   is_published: boolean;
@@ -69,7 +58,6 @@ export default function DailyLessonsTable({ lessons: initial }: { lessons: Lesso
               <tr style={{ background: '#f8fafc', borderBottom: '1px solid var(--admin-border)' }}>
                 <th className="text-left px-4 py-3 text-sm font-semibold" style={{ color: 'var(--admin-muted)' }}>তারিখ</th>
                 <th className="text-left px-4 py-3 text-sm font-semibold" style={{ color: 'var(--admin-muted)' }}>শিরোনাম</th>
-                <th className="text-left px-4 py-3 text-sm font-semibold" style={{ color: 'var(--admin-muted)' }}>বিষয়</th>
                 <th className="text-left px-4 py-3 text-sm font-semibold" style={{ color: 'var(--admin-muted)' }}>আইটেম</th>
                 <th className="text-left px-4 py-3 text-sm font-semibold" style={{ color: 'var(--admin-muted)' }}>নম্বর</th>
                 <th className="text-left px-4 py-3 text-sm font-semibold" style={{ color: 'var(--admin-muted)' }}>স্ট্যাটাস</th>
@@ -97,9 +85,6 @@ export default function DailyLessonsTable({ lessons: initial }: { lessons: Lesso
                       )}
                     </td>
                     <td className="px-4 py-3 text-sm font-medium">{lesson.title}</td>
-                    <td className="px-4 py-3 text-sm">
-                      {lesson.subject_id ? SUBJECT_LABELS[lesson.subject_id] || lesson.subject_id : '—'}
-                    </td>
                     <td className="px-4 py-3 text-sm">{lesson.item_count}টি</td>
                     <td className="px-4 py-3 text-sm">{lesson.total_marks}</td>
                     <td className="px-4 py-3">
@@ -137,7 +122,7 @@ export default function DailyLessonsTable({ lessons: initial }: { lessons: Lesso
               })}
               {lessons.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-sm" style={{ color: 'var(--admin-muted)' }}>
+                  <td colSpan={6} className="px-4 py-8 text-center text-sm" style={{ color: 'var(--admin-muted)' }}>
                     কোনো পড়া তৈরি হয়নি
                   </td>
                 </tr>

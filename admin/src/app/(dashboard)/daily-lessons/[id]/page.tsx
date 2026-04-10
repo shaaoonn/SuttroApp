@@ -50,8 +50,6 @@ export default async function EditDailyLessonPage({ params }: PageProps) {
     id: lesson.id,
     lesson_date: lesson.lesson_date,
     title: lesson.title,
-    subject_id: lesson.subject_id || '',
-    chapter_num: lesson.chapter_num || 1,
     class_level: lesson.class_level || 10,
     total_marks: lesson.total_marks || 100,
     is_published: lesson.is_published,
@@ -67,6 +65,9 @@ export default async function EditDailyLessonPage({ params }: PageProps) {
     media_url: item.media_url || '',
     content_body: item.content_body || '',
     marks: item.marks || 0,
+    subject_id: item.subject_id || '',
+    chapter_num: item.chapter_num || 0,
+    gdrive_file_id: item.gdrive_file_id || '',
     mcqs: (mcqsByItem[item.id] || []).map((mcq: any) => ({
       question: mcq.question,
       option_ka: mcq.option_ka,

@@ -1,10 +1,13 @@
 'use client';
 
+import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/auth-context';
 
 // ─────────────────────────────────────────────
 // AppBar — Native-style top bar (mobile only)
-// Shows page title + back button on sub-pages
+// Home: Logo + streak badge + avatar
+// Sub-pages: back button + centered title
 // ─────────────────────────────────────────────
 
 const PAGE_TITLES: Record<string, string> = {
@@ -45,6 +48,7 @@ const TAB_ROUTES = ['/', '/guide', '/exams', '/dashboard'];
 export default function AppBar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { user } = useAuth();
 
   // Hide on immersive content pages
   if (HIDDEN_PATHS.some((p) => pathname.startsWith(p))) return null;
@@ -52,6 +56,13 @@ export default function AppBar() {
   const isTab = TAB_ROUTES.includes(pathname);
   const isHome = pathname === '/';
   const title = getTitle(pathname);
+
+  // User initial for avatar
+  const displayName =
+    user?.user_metadata?.full_name ||
+    user?.user_metadata?.name ||
+    '';
+  const initial = displayName ? displayName.charAt(0) : 'সূ';
 
   return (
     <header
@@ -65,12 +76,47 @@ export default function AppBar() {
       }}
     >
       <div className="flex items-center h-14 px-4">
-        {isTab ? (
-          /* ── Tab page: title left-aligned ── */
+        {isHome ? (
+          /* ── Home: Logo + streak badge + avatar ── */
           <>
             <h1
               className="text-xl font-bold flex-1"
-              style={{ color: isHome ? '#0D9488' : '#134E4A' }}
+              style={{ color: '#0D9488' }}
+            >
+              সূত্র
+            </h1>
+            <div className="flex items-center gap-2">
+              {user && (
+                <div
+                  className="px-2 py-0.5 rounded-full text-[11px] font-semibold text-white flex items-center gap-1"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #F59E0B, #FBBF24)',
+                  }}
+                >
+                  ★ 7
+                </div>
+              )}
+              <Link
+                href={user ? '/dashboard' : '/login'}
+                className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
+                style={{
+                  background: user
+                    ? 'linear-gradient(135deg, #0D9488, #2DD4BF)'
+                    : '#E2E8F0',
+                  color: user ? '#fff' : '#94A3B8',
+                }}
+              >
+                {user ? initial : '?'}
+              </Link>
+            </div>
+          </>
+        ) : isTab ? (
+          /* ── Other tab pages: title left-aligned ── */
+          <>
+            <h1
+              className="text-xl font-bold flex-1"
+              style={{ color: '#134E4A' }}
             >
               {title}
             </h1>
@@ -83,7 +129,16 @@ export default function AppBar() {
               className="flex items-center justify-center w-10 h-10 -ml-2 rounded-full active:bg-black/5 suttro-transition"
               aria-label="পেছনে যাও"
             >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#134E4A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#134E4A"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <polyline points="15 18 9 12 15 6" />
               </svg>
             </button>

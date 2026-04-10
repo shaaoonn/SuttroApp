@@ -7,7 +7,7 @@ import ExamPlayer from '@/components/exam/ExamPlayer';
 // Exam Player Page — Dynamic [id]
 // ─────────────────────────────────────────────
 
-export const revalidate = 300; // ISR: 5 minutes
+export const revalidate = 300;
 
 interface ExamPageProps {
   params: Promise<{ id: string }>;
@@ -30,17 +30,22 @@ export default async function ExamPage({ params }: ExamPageProps) {
   if (!exam) notFound();
 
   return (
-    <div style={{ background: 'var(--suttro-surface)' }}>
-      <div className="mx-auto max-w-3xl px-6 py-6">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-base mb-4" style={{ color: 'var(--suttro-muted)' }}>
-          <Link href="/exams" className="hover:underline">পরীক্ষা</Link>
-          <span>&rsaquo;</span>
-          <span style={{ color: 'var(--suttro-text)' }}>{exam.title}</span>
-        </nav>
-
-        {/* Exam Player */}
+    <div style={{ background: '#F8FAFB' }}>
+      {/* Mobile: no padding, full-width player */}
+      <div className="lg:hidden">
         <ExamPlayer exam={exam} />
+      </div>
+
+      {/* Desktop: padded container */}
+      <div className="hidden lg:block">
+        <div className="mx-auto max-w-3xl px-6 py-6">
+          <nav className="flex items-center gap-2 text-base mb-4" style={{ color: '#94A3B8' }}>
+            <Link href="/exams" className="hover:underline">পরীক্ষা</Link>
+            <span>&rsaquo;</span>
+            <span style={{ color: '#134E4A' }}>{exam.title}</span>
+          </nav>
+          <ExamPlayer exam={exam} />
+        </div>
       </div>
     </div>
   );

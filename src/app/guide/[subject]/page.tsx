@@ -4,6 +4,11 @@ import { getSubjectGuide } from '@/lib/data';
 import ChapterMasteryLoader from '@/components/guide/ChapterMasteryLoader';
 import PracticeButton from '@/components/guide/PracticeButton';
 
+// ─────────────────────────────────────────────
+// Subject Guide — Chapter List
+// Design reference Page 4
+// ─────────────────────────────────────────────
+
 export const revalidate = 300;
 
 export async function generateMetadata({ params }: { params: Promise<{ subject: string }> }) {
@@ -16,12 +21,21 @@ export async function generateMetadata({ params }: { params: Promise<{ subject: 
   };
 }
 
-// Content type badge config
+// Subject-specific styling
+const SUBJECT_STYLES: Record<string, { bg: string; lightBg: string; border: string; textColor: string; light: string }> = {
+  physics: { bg: '#3B82F6', lightBg: '#EFF6FF', border: '#BFDBFE', textColor: '#1E40AF', light: '#60A5FA' },
+  chemistry: { bg: '#7C3AED', lightBg: '#F5F3FF', border: '#DDD6FE', textColor: '#5B21B6', light: '#A78BFA' },
+  biology: { bg: '#EC4899', lightBg: '#FDF2F8', border: '#FBCFE8', textColor: '#9D174D', light: '#F472B6' },
+  math: { bg: '#DC2626', lightBg: '#FEF2F2', border: '#FECACA', textColor: '#991B1B', light: '#F87171' },
+  'higher-math': { bg: '#EA580C', lightBg: '#FFF7ED', border: '#FED7AA', textColor: '#9A3412', light: '#FB923C' },
+  english: { bg: '#0891B2', lightBg: '#ECFEFF', border: '#A5F3FC', textColor: '#155E75', light: '#22D3EE' },
+};
+
 const CONTENT_BADGES = [
-  { key: 'simulations' as const, icon: '🔬', label: 'সিমুলেশন' },
-  { key: 'classes' as const, icon: '📹', label: 'ক্লাস' },
-  { key: 'mcq' as const, icon: '📝', label: 'MCQ' },
-  { key: 'cq' as const, icon: '📖', label: 'সৃজনশীল' },
+  { key: 'simulations' as const, label: 'সিম' },
+  { key: 'classes' as const, label: 'ভিডিও' },
+  { key: 'mcq' as const, label: 'MCQ' },
+  { key: 'cq' as const, label: 'সৃজনশীল' },
 ];
 
 export default async function SubjectGuidePage({ params }: { params: Promise<{ subject: string }> }) {
@@ -29,116 +43,143 @@ export default async function SubjectGuidePage({ params }: { params: Promise<{ s
   const guide = await getSubjectGuide(subject);
   if (!guide) notFound();
 
+  const styles = SUBJECT_STYLES[subject] || {
+    bg: guide.color,
+    lightBg: `${guide.color}08`,
+    border: `${guide.color}30`,
+    textColor: guide.color,
+    light: guide.color,
+  };
+
   return (
-    <div style={{ background: 'var(--suttro-surface)' }}>
-      <div className="mx-auto max-w-6xl px-6 py-6">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-base mb-6" style={{ color: 'var(--suttro-muted)' }}>
-          <Link href="/guide" className="hover:underline">গাইড</Link>
-          <span>&rsaquo;</span>
-          <span style={{ color: guide.color }}>{guide.icon} {guide.subjectBn}</span>
-        </nav>
-
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--suttro-deep)' }}>
-            {guide.icon} {guide.subjectBn}
-          </h1>
-          <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
-            {guide.chapters.length} অধ্যায় — অধ্যায়ে ক্লিক করো সব কন্টেন্ট দেখতে।
-          </p>
-
-          {/* Subject totals */}
-          <div className="flex flex-wrap gap-3 mt-4">
-            {CONTENT_BADGES.map((badge) => {
-              const count = guide.totals[badge.key];
-              if (count === 0) return null;
-              return (
-                <span
-                  key={badge.key}
-                  className="px-3 py-1.5 rounded-lg text-sm font-medium"
-                  style={{ background: `${guide.color}12`, color: guide.color }}
-                >
-                  {badge.icon} {count} {badge.label}
-                </span>
-              );
-            })}
+    <div style={{ background: '#F8FAFB' }}>
+      {/* ── Subject Header ── */}
+      <div
+        className="px-4 py-4"
+        style={{
+          background: `linear-gradient(180deg, ${styles.lightBg}, #F8FAFB)`,
+        }}
+      >
+        <div className="flex items-center gap-2 mb-3">
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm"
+            style={{
+              background: `linear-gradient(135deg, ${styles.bg}, ${styles.light})`,
+            }}
+          >
+            {guide.icon}
+          </div>
+          <div className="flex-1">
+            <h1
+              className="text-lg font-bold"
+              style={{ color: styles.textColor }}
+            >
+              {guide.subjectBn}
+            </h1>
+            <p className="text-xs" style={{ color: styles.light }}>
+              ক্লাস ৯-১০ — {guide.chapters.length} অধ্যায়
+            </p>
           </div>
         </div>
 
-        {/* User's mastery progress (client component — lazy loaded) */}
+        {/* Content summary badges */}
+        <div className="flex flex-wrap gap-1.5">
+          {CONTENT_BADGES.map((badge) => {
+            const count = guide.totals[badge.key];
+            if (count === 0) return null;
+            return (
+              <span
+                key={badge.key}
+                className="px-2 py-0.5 rounded-full text-[11px] font-medium"
+                style={{
+                  background: styles.lightBg,
+                  color: styles.textColor,
+                  border: `1px solid ${styles.border}`,
+                }}
+              >
+                {count} {badge.label}
+              </span>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Mastery progress (client component) */}
+      <div className="px-4">
         <ChapterMasteryLoader
           subjectId={subject}
           totalChapters={guide.chapters.length}
           color={guide.color}
         />
+      </div>
 
-        {/* Chapter cards */}
-        <div className="space-y-4">
-          {guide.chapters.map((ch) => (
-            <Link
-              key={ch.chapter}
-              href={`/guide/${subject}/${ch.chapter}`}
-              className="group block rounded-[14px] border overflow-hidden suttro-transition hover:shadow-md hover:-translate-y-0.5"
-              style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}
-            >
-              <div className="flex items-start gap-4 p-5">
-                {/* Chapter number */}
+      {/* ── Chapter List ── */}
+      <div className="px-4 pb-6">
+        <div
+          className="text-xs font-semibold mb-2 tracking-wider"
+          style={{ color: '#5F9EA0' }}
+        >
+          অধ্যায়সমূহ
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          {guide.chapters.map((ch) => {
+            // Build content text: "সিম ২ · ভিডিও ১ · MCQ ৬৫"
+            const contentParts: string[] = [];
+            if (ch.content.simulations > 0) contentParts.push(`সিম ${ch.content.simulations}`);
+            if (ch.content.classes > 0) contentParts.push(`ভিডিও ${ch.content.classes}`);
+            if (ch.content.mcq > 0) contentParts.push(`MCQ ${ch.content.mcq}`);
+            if (ch.content.cq > 0) contentParts.push(`সৃজনশীল ${ch.content.cq}`);
+            const contentText = contentParts.join(' · ');
+
+            return (
+              <Link
+                key={ch.chapter}
+                href={`/guide/${subject}/${ch.chapter}`}
+                className="rounded-xl p-3 flex items-center gap-2.5 suttro-transition active:scale-[0.98]"
+                style={{
+                  background: 'white',
+                  border: `1px solid ${ch.total > 0 ? styles.border : '#F0F4F3'}`,
+                }}
+              >
+                {/* Chapter number circle */}
                 <div
-                  className="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-lg font-bold text-white"
-                  style={{ background: guide.color }}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                  style={
+                    ch.total > 0
+                      ? {
+                          background: '#E2E8F0',
+                          color: '#94A3B8',
+                        }
+                      : {
+                          background: '#E2E8F0',
+                          color: '#94A3B8',
+                        }
+                  }
                 >
                   {ch.chapter}
                 </div>
 
+                {/* Chapter info */}
                 <div className="flex-1 min-w-0">
-                  {/* Chapter name */}
-                  <h3
-                    className="text-lg font-semibold mb-2 group-hover:text-[var(--suttro-primary)] suttro-transition"
-                    style={{ color: 'var(--suttro-deep)' }}
+                  <div
+                    className="text-sm font-semibold truncate"
+                    style={{ color: '#134E4A' }}
                   >
-                    {ch.name}
-                  </h3>
-
-                  {/* Content badges */}
-                  {ch.total > 0 ? (
-                    <div className="flex flex-wrap items-center gap-2">
-                      {CONTENT_BADGES.map((badge) => {
-                        const count = ch.content[badge.key];
-                        if (count === 0) return null;
-                        return (
-                          <span
-                            key={badge.key}
-                            className="px-2 py-0.5 rounded text-xs font-medium"
-                            style={{ background: `${guide.color}10`, color: guide.color }}
-                          >
-                            {badge.icon} {count}
-                          </span>
-                        );
-                      })}
-                      {ch.content.mcq > 0 && (
-                        <PracticeButton href={`/practice/${subject}/${ch.chapter}`} />
-                      )}
-                    </div>
-                  ) : (
-                    <span className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
-                      শীঘ্রই আসছে
-                    </span>
-                  )}
+                    অধ্যায় {ch.chapter}: {ch.name}
+                  </div>
+                  <div className="text-[11px]" style={{ color: '#5F9EA0' }}>
+                    {ch.total > 0 ? contentText : 'শীঘ্রই আসছে'}
+                  </div>
                 </div>
 
-                {/* Arrow */}
-                {ch.total > 0 && (
-                  <span
-                    className="text-xl suttro-transition group-hover:translate-x-1"
-                    style={{ color: guide.color }}
-                  >
-                    &rsaquo;
-                  </span>
+                {/* Practice button or arrow */}
+                {ch.content.mcq > 0 && (
+                  <PracticeButton href={`/practice/${subject}/${ch.chapter}`} />
                 )}
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </div>

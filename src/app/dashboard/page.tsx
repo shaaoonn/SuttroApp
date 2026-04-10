@@ -6,6 +6,11 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { calculateLevel, xpForNextLevel } from '@/lib/xp';
 
+// ─────────────────────────────────────────────
+// Dashboard — Profile & Progress
+// Matches the 10-page design reference (Page 7)
+// ─────────────────────────────────────────────
+
 interface ExamAttempt {
   id: string;
   examPaperId: string;
@@ -56,12 +61,55 @@ interface SubjectProgress {
   chaptersStudied: number;
 }
 
-const SUBJECT_META: Record<string, { bn: string; icon: string; color: string }> = {
-  physics: { bn: 'পদার্থবিজ্ঞান', icon: '⚡', color: '#3B82F6' },
-  chemistry: { bn: 'রসায়ন', icon: '🧪', color: '#7C3AED' },
-  biology: { bn: 'জীববিজ্ঞান', icon: '🧬', color: '#EC4899' },
-  math: { bn: 'গণিত', icon: '📐', color: '#DC2626' },
-  'higher-math': { bn: 'উচ্চতর গণিত', icon: '📊', color: '#EA580C' },
+const SUBJECT_META: Record<
+  string,
+  { bn: string; icon: string; color: string; light: string; bg: string; border: string; textColor: string }
+> = {
+  physics: {
+    bn: 'পদার্থবিজ্ঞান',
+    icon: '⚡',
+    color: '#3B82F6',
+    light: '#60A5FA',
+    bg: '#EFF6FF',
+    border: '#BFDBFE',
+    textColor: '#1E40AF',
+  },
+  chemistry: {
+    bn: 'রসায়ন',
+    icon: '🧪',
+    color: '#7C3AED',
+    light: '#A78BFA',
+    bg: '#F5F3FF',
+    border: '#DDD6FE',
+    textColor: '#5B21B6',
+  },
+  biology: {
+    bn: 'জীববিজ্ঞান',
+    icon: '🧬',
+    color: '#EC4899',
+    light: '#F472B6',
+    bg: '#FDF2F8',
+    border: '#FBCFE8',
+    textColor: '#9D174D',
+  },
+  math: {
+    bn: 'গণিত',
+    icon: '📐',
+    color: '#DC2626',
+    light: '#F87171',
+    bg: '#FEF2F2',
+    border: '#FECACA',
+    textColor: '#991B1B',
+  },
+  'higher-math': {
+    bn: 'উচ্চতর গণিত',
+    icon: '📊',
+    color: '#EA580C',
+    light: '#FB923C',
+    bg: '#FFF7ED',
+    border: '#FED7AA',
+    textColor: '#9A3412',
+  },
 };
 
 const EVENT_LABELS: Record<string, string> = {
@@ -129,10 +177,10 @@ export default function DashboardPage() {
     const headers = { Authorization: `Bearer ${session.access_token}` };
 
     const [dashRes, xpRes, srsRes, progressRes] = await Promise.all([
-      fetch('/api/dashboard', { headers }).then((r) => r.ok ? r.json() : null).catch(() => null),
-      fetch('/api/xp', { headers }).then((r) => r.ok ? r.json() : null).catch(() => null),
-      fetch('/api/srs', { headers }).then((r) => r.ok ? r.json() : null).catch(() => null),
-      fetch('/api/chapter-progress', { headers }).then((r) => r.ok ? r.json() : null).catch(() => null),
+      fetch('/api/dashboard', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+      fetch('/api/xp', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+      fetch('/api/srs', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+      fetch('/api/chapter-progress', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
     ]);
 
     if (dashRes) setData(dashRes);
@@ -149,7 +197,10 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center" style={{ background: 'var(--suttro-surface)' }}>
+      <div
+        className="flex-1 flex items-center justify-center"
+        style={{ background: '#F8FAFB' }}
+      >
         <div className="text-center">
           <div className="text-3xl mb-3 animate-pulse">⏳</div>
           <p style={{ color: '#94A3B8' }}>লোড হচ্ছে...</p>
@@ -160,184 +211,297 @@ export default function DashboardPage() {
 
   if (!user) return null;
 
-  const counts = data?.counts || { exams_taken: 0, classes_watched: 0, sims_viewed: 0, cq_viewed: 0 };
+  const displayName =
+    user.user_metadata?.full_name ||
+    user.user_metadata?.name ||
+    'শিক্ষার্থী';
+  const initial = displayName.charAt(0);
   const totalXP = xpStats?.total_xp ?? 0;
   const level = xpStats?.level ?? calculateLevel(totalXP);
   const streak = xpStats?.current_streak ?? 0;
-  const todayXP = xpStats?.todayXP ?? 0;
-  const dailyGoal = xpStats?.daily_goal_xp ?? 50;
   const nextLevel = xpForNextLevel(totalXP);
+  const badgeCount = 0; // placeholder
 
   return (
-    <div style={{ background: 'var(--suttro-surface)' }}>
-      <div className="mx-auto max-w-6xl px-6 py-8">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold mb-1" style={{ color: '#134E4A' }}>
-              ড্যাশবোর্ড
-            </h1>
-            <p className="text-sm" style={{ color: '#94A3B8' }}>
-              তোমার শেখার অগ্রগতি এক নজরে।
-            </p>
-          </div>
-          <button
-            onClick={() => signOut()}
-            className="px-4 py-2 rounded-[10px] text-sm font-medium border suttro-transition hover:bg-black/5"
-            style={{ borderColor: 'var(--suttro-border)', color: 'var(--suttro-muted)' }}
+    <div style={{ background: '#F8FAFB' }}>
+      {/* ── Profile Header ── */}
+      <div
+        className="text-center"
+        style={{
+          background: 'linear-gradient(180deg, #F0FDFA, #F8FAFB)',
+          padding: '20px 16px 12px',
+        }}
+      >
+        {/* Avatar */}
+        <div
+          className="w-14 h-14 mx-auto mb-2 rounded-full flex items-center justify-center text-xl text-white font-bold"
+          style={{
+            background: 'linear-gradient(135deg, #0D9488, #2DD4BF)',
+            boxShadow: '0 4px 16px rgba(13,148,136,0.3)',
+          }}
+        >
+          {initial}
+        </div>
+        <div
+          className="text-base font-bold"
+          style={{ color: '#134E4A' }}
+        >
+          {displayName}
+        </div>
+        <div className="text-xs mb-3" style={{ color: '#5F9EA0' }}>
+          ক্লাস ১০
+        </div>
+
+        {/* Stat Cards Row */}
+        <div className="flex gap-2 justify-center mb-2">
+          {/* Level */}
+          <div
+            className="rounded-[10px] px-3.5 py-2 text-center"
+            style={{
+              background: 'white',
+              border: '1px solid #CCFBF1',
+            }}
           >
-            লগ আউট
-          </button>
-        </div>
-
-        {/* XP & Streak Banner */}
-        <div className="rounded-[12px] border p-5 mb-6"
-          style={{ background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)', borderColor: 'transparent' }}>
-          <div className="flex flex-wrap items-center gap-6">
-            {/* Level */}
-            <div className="text-center">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-bold text-white"
-                style={{ background: 'rgba(255,255,255,0.2)', border: '2px solid rgba(255,255,255,0.4)' }}>
-                {level}
-              </div>
-              <p className="text-xs text-white/70 mt-1">লেভেল</p>
+            <div
+              className="text-lg font-bold"
+              style={{ color: '#0D9488' }}
+            >
+              Level {level}
             </div>
-
-            {/* XP Progress */}
-            <div className="flex-1 min-w-[200px]">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-sm font-medium text-white">{totalXP} XP</span>
-                <span className="text-xs text-white/60">লেভেল {level + 1} → {nextLevel.needed} XP</span>
-              </div>
-              <div className="w-full h-2.5 rounded-full" style={{ background: 'rgba(255,255,255,0.15)' }}>
-                <div className="h-full rounded-full transition-all"
-                  style={{ width: `${nextLevel.progress}%`, background: 'linear-gradient(90deg, #2DD4BF, #5EEAD4)' }} />
-              </div>
-              <div className="flex items-center justify-between mt-1.5">
-                <span className="text-xs text-white/60">আজ: {todayXP}/{dailyGoal} XP</span>
-                {todayXP >= dailyGoal && <span className="text-xs text-green-300">✓ গোল পূরণ!</span>}
-              </div>
+            <div className="text-[10px]" style={{ color: '#5F9EA0' }}>
+              {totalXP}/{nextLevel.needed} XP
             </div>
-
-            {/* Streak */}
-            <div className="text-center px-4">
-              <div className="text-3xl mb-0.5">{streak > 0 ? '🔥' : '❄️'}</div>
-              <p className="text-xl font-bold text-white">{streak}</p>
-              <p className="text-xs text-white/60">দিন স্ট্রিক</p>
+          </div>
+          {/* Streak */}
+          <div
+            className="rounded-[10px] px-3.5 py-2 text-center"
+            style={{
+              background: 'white',
+              border: '1px solid #FDE68A',
+            }}
+          >
+            <div
+              className="text-lg font-bold"
+              style={{ color: '#F59E0B' }}
+            >
+              {streak}
+            </div>
+            <div className="text-[10px]" style={{ color: '#5F9EA0' }}>
+              🔥 Day Streak
+            </div>
+          </div>
+          {/* Badges */}
+          <div
+            className="rounded-[10px] px-3.5 py-2 text-center"
+            style={{
+              background: 'white',
+              border: '1px solid #F0F4F3',
+            }}
+          >
+            <div
+              className="text-lg font-bold"
+              style={{ color: '#3B82F6' }}
+            >
+              {badgeCount}
+            </div>
+            <div className="text-[10px]" style={{ color: '#5F9EA0' }}>
+              ব্যাজ
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Action Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-          <Link href="/daily"
-            className="rounded-[12px] border p-4 suttro-transition hover:shadow-sm"
-            style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
-            <div className="text-2xl mb-1">🎯</div>
-            <p className="text-sm font-bold" style={{ color: '#134E4A' }}>দৈনিক চ্যালেঞ্জ</p>
-            <p className="text-xs" style={{ color: '#94A3B8' }}>+25-50 XP</p>
-          </Link>
-          <Link href="/review"
-            className="rounded-[12px] border p-4 suttro-transition hover:shadow-sm relative"
-            style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
-            <div className="text-2xl mb-1">🧠</div>
-            <p className="text-sm font-bold" style={{ color: '#134E4A' }}>রিভিউ কার্ড</p>
-            <p className="text-xs" style={{ color: '#94A3B8' }}>
-              {srsCount > 0 ? `${srsCount}টি বাকি` : 'সব শেষ!'}
-            </p>
-            {srsCount > 0 && (
-              <span className="absolute top-2 right-2 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center text-white"
-                style={{ background: '#dc2626' }}>{srsCount > 9 ? '9+' : srsCount}</span>
-            )}
-          </Link>
-          <Link href="/leaderboard"
-            className="rounded-[12px] border p-4 suttro-transition hover:shadow-sm"
-            style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
-            <div className="text-2xl mb-1">🏆</div>
-            <p className="text-sm font-bold" style={{ color: '#134E4A' }}>লিডারবোর্ড</p>
-            <p className="text-xs" style={{ color: '#94A3B8' }}>র‍্যাংকিং দেখো</p>
-          </Link>
-          <Link href="/achievements"
-            className="rounded-[12px] border p-4 suttro-transition hover:shadow-sm"
-            style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
-            <div className="text-2xl mb-1">🎖️</div>
-            <p className="text-sm font-bold" style={{ color: '#134E4A' }}>অ্যাচিভমেন্ট</p>
-            <p className="text-xs" style={{ color: '#94A3B8' }}>ব্যাজ সংগ্রহ</p>
-          </Link>
-        </div>
-
-        {/* Stats Row */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-          {[
-            { label: 'পরীক্ষা দিয়েছ', value: dataLoading ? '...' : String(counts.exams_taken), icon: '📝' },
-            { label: 'গড় স্কোর', value: dataLoading ? '...' : `${data?.avgScore || 0}%`, icon: '📊' },
-            { label: 'ক্লাস দেখেছ', value: dataLoading ? '...' : String(counts.classes_watched), icon: '📹' },
-            { label: 'সিমুলেশন', value: dataLoading ? '...' : String(counts.sims_viewed), icon: '🔬' },
-          ].map((stat) => (
-            <div key={stat.label} className="rounded-[12px] border p-4 text-center"
-              style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
-              <div className="text-xl mb-1">{stat.icon}</div>
-              <div className="text-xl font-bold mb-0.5" style={{ color: '#0D9488' }}>{stat.value}</div>
-              <div className="text-xs" style={{ color: '#94A3B8' }}>{stat.label}</div>
-            </div>
-          ))}
+      {/* ── Content ── */}
+      <div className="px-4 pb-6 flex flex-col gap-3">
+        {/* XP Progress Card */}
+        <div
+          className="rounded-xl p-3"
+          style={{ background: 'white', border: '1px solid #CCFBF1' }}
+        >
+          <div className="flex justify-between items-center mb-1.5">
+            <span
+              className="text-sm font-semibold"
+              style={{ color: '#134E4A' }}
+            >
+              Level {level} → Level {level + 1}
+            </span>
+            <span
+              className="text-[13px] font-medium"
+              style={{ color: '#2DD4BF' }}
+            >
+              {totalXP}/{nextLevel.needed} XP
+            </span>
+          </div>
+          <div
+            className="h-1.5 rounded-full"
+            style={{ background: '#F0FDFA' }}
+          >
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${nextLevel.progress}%`,
+                background: 'linear-gradient(90deg, #0D9488, #2DD4BF)',
+                boxShadow: '0 1px 6px rgba(13,148,136,0.25)',
+              }}
+            />
+          </div>
         </div>
 
         {/* Subject Progress */}
-        {subjectProgress.length > 0 && (
-          <div className="rounded-[14px] border p-6 mb-6"
-            style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold" style={{ color: '#134E4A' }}>
-                বিষয়ভিত্তিক অগ্রগতি
-              </h2>
-              <Link href="/guide" className="text-sm font-medium suttro-transition hover:opacity-80"
-                style={{ color: '#0D9488' }}>
-                গাইড দেখো &rarr;
-              </Link>
-            </div>
-            <div className="space-y-4">
-              {subjectProgress.map((sp) => {
-                const meta = SUBJECT_META[sp.subjectId] || { bn: sp.subjectId, icon: '📚', color: 'var(--suttro-primary)' };
+        <div className="flex flex-col gap-1.5">
+          <div
+            className="text-sm font-semibold px-1"
+            style={{ color: '#134E4A' }}
+          >
+            বিষয়ভিত্তিক প্রগ্রেস
+          </div>
+
+          {subjectProgress.length > 0 ? (
+            subjectProgress.map((sp) => {
+              const meta = SUBJECT_META[sp.subjectId] || {
+                bn: sp.subjectId,
+                icon: '📚',
+                color: '#0D9488',
+                light: '#14B8A6',
+                bg: '#F0FDFA',
+                border: '#CCFBF1',
+                textColor: '#134E4A',
+              };
+              return (
+                <Link
+                  key={sp.subjectId}
+                  href={`/guide/${sp.subjectId}`}
+                  className="rounded-xl p-3 suttro-transition active:scale-[0.98]"
+                  style={{
+                    background: 'white',
+                    border: `1px solid ${meta.border}`,
+                  }}
+                >
+                  <div className="flex justify-between items-center mb-1">
+                    <span
+                      className="text-sm font-semibold"
+                      style={{ color: meta.textColor }}
+                    >
+                      {meta.bn}
+                    </span>
+                    <span
+                      className="text-[13px] font-medium"
+                      style={{ color: meta.color }}
+                    >
+                      {sp.avgMastery}%
+                    </span>
+                  </div>
+                  <div
+                    className="h-[5px] rounded-full"
+                    style={{ background: meta.bg }}
+                  >
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${Math.min(sp.avgMastery, 100)}%`,
+                        background: `linear-gradient(90deg, ${meta.color}, ${meta.light})`,
+                      }}
+                    />
+                  </div>
+                </Link>
+              );
+            })
+          ) : (
+            /* Default subject cards when no progress data */
+            <>
+              {(['physics', 'chemistry', 'biology'] as const).map((subjectKey) => {
+                const meta = SUBJECT_META[subjectKey];
                 return (
-                  <Link key={sp.subjectId} href={`/guide/${sp.subjectId}`}
-                    className="block suttro-transition hover:opacity-90">
-                    <div className="flex items-center gap-3 mb-1.5">
-                      <span className="text-lg">{meta.icon}</span>
-                      <span className="text-sm font-medium flex-1" style={{ color: '#134E4A' }}>
+                  <Link
+                    key={subjectKey}
+                    href={`/guide/${subjectKey}`}
+                    className="rounded-xl p-3 suttro-transition active:scale-[0.98]"
+                    style={{
+                      background: 'white',
+                      border: `1px solid ${meta.border}`,
+                    }}
+                  >
+                    <div className="flex justify-between items-center mb-1">
+                      <span
+                        className="text-sm font-semibold"
+                        style={{ color: meta.textColor }}
+                      >
                         {meta.bn}
                       </span>
-                      <span className="text-sm font-bold" style={{ color: meta.color }}>
-                        {sp.avgMastery}%
+                      <span
+                        className="text-[13px] font-medium"
+                        style={{ color: '#94A3B8' }}
+                      >
+                        0%
                       </span>
                     </div>
-                    <div className="w-full h-2.5 rounded-full" style={{ background: '#F0FDFA' }}>
+                    <div
+                      className="h-[5px] rounded-full"
+                      style={{ background: meta.bg }}
+                    >
                       <div
-                        className="h-full rounded-full transition-all"
-                        style={{ width: `${Math.min(sp.avgMastery, 100)}%`, background: meta.color }}
+                        className="h-full rounded-full"
+                        style={{ width: '0%' }}
                       />
-                    </div>
-                    <div className="flex justify-between mt-1">
-                      <span className="text-xs" style={{ color: '#94A3B8' }}>
-                        {sp.totalCorrect}/{sp.totalAttempted} সঠিক
-                      </span>
-                      <span className="text-xs" style={{ color: '#94A3B8' }}>
-                        {sp.chaptersStudied} অধ্যায়
-                      </span>
                     </div>
                   </Link>
                 );
               })}
-            </div>
-          </div>
-        )}
+            </>
+          )}
+        </div>
 
-        {/* Content Grid */}
-        <div className="grid lg:grid-cols-2 gap-6">
+        {/* Earned Badges */}
+        <div className="flex flex-col gap-1.5">
+          <div
+            className="text-sm font-semibold px-1"
+            style={{ color: '#134E4A' }}
+          >
+            অর্জিত ব্যাজ
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            {/* Placeholder badges */}
+            {[
+              { gradient: 'linear-gradient(135deg, #F59E0B, #FBBF24)', icon: '🏆', shadow: 'rgba(245,158,11,0.2)' },
+              { gradient: 'linear-gradient(135deg, #3B82F6, #60A5FA)', icon: '⚡', shadow: 'rgba(59,130,246,0.2)' },
+              { gradient: 'linear-gradient(135deg, #10B981, #34D399)', icon: '✓', shadow: 'rgba(16,185,129,0.2)' },
+              { gradient: 'linear-gradient(135deg, #7C3AED, #A78BFA)', icon: '★', shadow: 'rgba(139,92,246,0.2)' },
+            ].map((badge, i) => (
+              <div
+                key={i}
+                className="w-11 h-11 rounded-xl flex items-center justify-center text-xl"
+                style={{
+                  background: badge.gradient,
+                  boxShadow: `0 3px 10px ${badge.shadow}`,
+                }}
+              >
+                {badge.icon}
+              </div>
+            ))}
+            <Link
+              href="/achievements"
+              className="w-11 h-11 rounded-xl flex items-center justify-center text-base"
+              style={{
+                background: '#E2E8F0',
+                color: '#94A3B8',
+              }}
+            >
+              ?
+            </Link>
+          </div>
+        </div>
+
+        {/* ── Desktop-only: Exam History & Activity ── */}
+        <div className="hidden lg:grid lg:grid-cols-2 gap-6 mt-4">
           {/* Exam History */}
-          <div className="rounded-[14px] border p-6"
-            style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
-            <h2 className="text-lg font-semibold mb-4" style={{ color: '#134E4A' }}>
+          <div
+            className="rounded-xl border p-6"
+            style={{ borderColor: '#CCFBF1', background: 'white' }}
+          >
+            <h2
+              className="text-lg font-semibold mb-4"
+              style={{ color: '#134E4A' }}
+            >
               পরীক্ষার ইতিহাস
             </h2>
             {dataLoading ? (
@@ -347,25 +511,48 @@ export default function DashboardPage() {
             ) : data?.examAttempts && data.examAttempts.length > 0 ? (
               <div className="space-y-2">
                 {data.examAttempts.map((attempt) => {
-                  const pct = attempt.totalMarks > 0 ? Math.round((attempt.score / attempt.totalMarks) * 100) : 0;
+                  const pct =
+                    attempt.totalMarks > 0
+                      ? Math.round(
+                          (attempt.score / attempt.totalMarks) * 100
+                        )
+                      : 0;
                   const grade = getGrade(pct);
                   return (
-                    <Link key={attempt.id} href={`/exam/${attempt.examPaperId}`}
+                    <Link
+                      key={attempt.id}
+                      href={`/exam/${attempt.examPaperId}`}
                       className="flex items-center justify-between p-3 rounded-[10px] hover:bg-black/5 suttro-transition border"
-                      style={{ borderColor: '#F0F4F3' }}>
+                      style={{ borderColor: '#F0F4F3' }}
+                    >
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium truncate" style={{ color: '#134E4A' }}>
+                        <div
+                          className="text-sm font-medium truncate"
+                          style={{ color: '#134E4A' }}
+                        >
                           {attempt.examTitle}
                         </div>
-                        <div className="text-xs" style={{ color: '#94A3B8' }}>
-                          {attempt.correct} সঠিক, {attempt.wrong} ভুল — {formatDuration(attempt.duration)}
+                        <div
+                          className="text-xs"
+                          style={{ color: '#94A3B8' }}
+                        >
+                          {attempt.correct} সঠিক, {attempt.wrong} ভুল —{' '}
+                          {formatDuration(attempt.duration)}
                         </div>
                       </div>
                       <div className="text-right ml-3 shrink-0">
-                        <div className="text-base font-bold" style={{ color: grade.color }}>
+                        <div
+                          className="text-base font-bold"
+                          style={{ color: grade.color }}
+                        >
                           {attempt.score.toFixed(1)}/{attempt.totalMarks}
                         </div>
-                        <div className="text-xs" style={{ color: grade.color }}>{grade.label}</div>
+                        <div
+                          className="text-xs"
+                          style={{ color: grade.color }}
+                        >
+                          {grade.label}
+                        </div>
                       </div>
                     </Link>
                   );
@@ -374,9 +561,20 @@ export default function DashboardPage() {
             ) : (
               <div className="text-center py-8">
                 <div className="text-3xl mb-3">📝</div>
-                <p className="text-sm mb-3" style={{ color: '#94A3B8' }}>এখনো কোনো পরীক্ষা দাওনি।</p>
-                <Link href="/exams" className="inline-block px-5 py-2 rounded-[10px] text-sm font-medium text-white"
-                  style={{ background: 'linear-gradient(135deg, #0D9488, #14B8A6)' }}>
+                <p
+                  className="text-sm mb-3"
+                  style={{ color: '#94A3B8' }}
+                >
+                  এখনো কোনো পরীক্ষা দাওনি।
+                </p>
+                <Link
+                  href="/exams"
+                  className="inline-block px-5 py-2 rounded-[10px] text-sm font-medium text-white"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #0D9488, #14B8A6)',
+                  }}
+                >
                   পরীক্ষা দাও &rarr;
                 </Link>
               </div>
@@ -384,26 +582,46 @@ export default function DashboardPage() {
           </div>
 
           {/* Recent Activity */}
-          <div className="rounded-[14px] border p-6"
-            style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
-            <h2 className="text-lg font-semibold mb-4" style={{ color: '#134E4A' }}>
+          <div
+            className="rounded-xl border p-6"
+            style={{ borderColor: '#CCFBF1', background: 'white' }}
+          >
+            <h2
+              className="text-lg font-semibold mb-4"
+              style={{ color: '#134E4A' }}
+            >
               সম্প্রতি কার্যকলাপ
             </h2>
             {dataLoading ? (
               <div className="text-center py-8">
                 <div className="text-2xl mb-2 animate-pulse">⏳</div>
               </div>
-            ) : data?.recentActivity && data.recentActivity.length > 0 ? (
+            ) : data?.recentActivity &&
+              data.recentActivity.length > 0 ? (
               <div className="space-y-2">
                 {data.recentActivity.map((item, i) => (
-                  <div key={i} className="flex items-center gap-3 p-3 rounded-[10px]"
-                    style={{ background: '#F0FDFA' }}>
-                    <span className="text-lg shrink-0">{EVENT_ICONS[item.eventType] || '📌'}</span>
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 p-3 rounded-[10px]"
+                    style={{ background: '#F0FDFA' }}
+                  >
+                    <span className="text-lg shrink-0">
+                      {EVENT_ICONS[item.eventType] || '📌'}
+                    </span>
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium truncate" style={{ color: '#134E4A' }}>
-                        {EVENT_LABELS[item.eventType] || item.eventType}
+                      <div
+                        className="text-sm font-medium truncate"
+                        style={{ color: '#134E4A' }}
+                      >
+                        {EVENT_LABELS[item.eventType] ||
+                          item.eventType}
                       </div>
-                      <div className="text-xs" style={{ color: '#94A3B8' }}>{timeAgo(item.createdAt)}</div>
+                      <div
+                        className="text-xs"
+                        style={{ color: '#94A3B8' }}
+                      >
+                        {timeAgo(item.createdAt)}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -419,21 +637,29 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Quick Links */}
-        <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {[
-            { href: '/exams', icon: '📝', label: 'পরীক্ষা' },
-            { href: '/simulations', icon: '🔬', label: 'সিমুলেশন' },
-            { href: '/classes', icon: '📹', label: 'ক্লাস আর্কাইভ' },
-            { href: '/pricing', icon: '💎', label: 'প্রিমিয়াম' },
-          ].map((link) => (
-            <Link key={link.href} href={link.href}
-              className="rounded-[12px] p-4 text-center suttro-transition hover:opacity-80"
-              style={{ background: '#F0FDFA' }}>
-              <div className="text-xl mb-1">{link.icon}</div>
-              <div className="text-sm font-medium" style={{ color: '#134E4A' }}>{link.label}</div>
-            </Link>
-          ))}
+        {/* Action Links */}
+        <div className="flex flex-col gap-1.5 mt-2">
+          <Link
+            href="/profile"
+            className="rounded-xl p-3 flex items-center gap-3 suttro-transition active:scale-[0.98]"
+            style={{ background: 'white', border: '1px solid #F0F4F3' }}
+          >
+            <span className="text-base">⚙️</span>
+            <span
+              className="text-sm font-medium flex-1"
+              style={{ color: '#134E4A' }}
+            >
+              সেটিংস
+            </span>
+            <span style={{ color: '#0D9488' }}>➤</span>
+          </Link>
+          <button
+            onClick={() => signOut()}
+            className="rounded-xl p-3 text-center text-sm font-medium suttro-transition active:scale-[0.98]"
+            style={{ color: '#EF4444' }}
+          >
+            লগ আউট
+          </button>
         </div>
       </div>
     </div>

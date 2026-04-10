@@ -6,8 +6,7 @@ import { useAuth } from '@/lib/auth-context';
 
 // ─────────────────────────────────────────────
 // Login — Phone OTP + Google OAuth
-// Step 1: Enter phone → Step 2: Enter OTP
-// OR: Continue with Google
+// Design reference Page 2
 // ─────────────────────────────────────────────
 
 type Step = 'phone' | 'otp';
@@ -30,17 +29,12 @@ export default function LoginPage() {
       setError('সঠিক মোবাইল নম্বর দাও');
       return;
     }
-
     setLoading(true);
     setError(null);
-
     try {
       const { error: authError } = await sendOTP(fullPhone);
-      if (authError) {
-        setError(authError);
-      } else {
-        setStep('otp');
-      }
+      if (authError) setError(authError);
+      else setStep('otp');
     } catch {
       setError('নেটওয়ার্ক সমস্যা — আবার চেষ্টা করো');
     } finally {
@@ -54,17 +48,12 @@ export default function LoginPage() {
       setError('৬ সংখ্যার OTP দাও');
       return;
     }
-
     setLoading(true);
     setError(null);
-
     try {
       const { error: authError } = await verifyOTP(fullPhone, otp);
-      if (authError) {
-        setError(authError);
-      } else {
-        router.push('/dashboard');
-      }
+      if (authError) setError(authError);
+      else router.push('/dashboard');
     } catch {
       setError('নেটওয়ার্ক সমস্যা — আবার চেষ্টা করো');
     } finally {
@@ -81,7 +70,6 @@ export default function LoginPage() {
         setError(authError);
         setGoogleLoading(false);
       }
-      // If successful, the page redirects to Google — no need to setLoading(false)
     } catch {
       setError('Google লগইনে সমস্যা — আবার চেষ্টা করো');
       setGoogleLoading(false);
@@ -89,21 +77,35 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex-1 flex items-center justify-center" style={{ background: 'linear-gradient(160deg, #F0FDFA, #F5F3FF)' }}>
-      <div className="w-full max-w-sm px-4">
-        <div
-          className="rounded-[16px] border p-6 md:p-8"
-          style={{ borderColor: '#F0F4F3', background: '#FFFFFF', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}
-        >
-          <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold mb-1" style={{ color: '#134E4A' }}>
-              সূত্র-তে লগ ইন
-            </h1>
-            <p className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
-              {step === 'phone' ? 'তোমার মোবাইল নম্বর দাও বা Google দিয়ে লগ ইন করো' : 'OTP দাও যেটা তোমার ফোনে এসেছে'}
-            </p>
-          </div>
+    <div
+      className="flex-1 flex flex-col items-center justify-center"
+      style={{
+        background: 'linear-gradient(160deg, #F0FDFA, #F5F3FF)',
+      }}
+    >
+      <div className="w-full max-w-sm px-5">
+        {/* Brand Logo */}
+        <div className="text-center mb-8">
+          <h1
+            className="text-3xl font-bold"
+            style={{ color: '#0D9488' }}
+          >
+            সূত্র
+          </h1>
+          <p className="text-xs" style={{ color: '#94A3B8' }}>
+            suttro.app
+          </p>
+        </div>
 
+        {/* Auth Card */}
+        <div
+          className="rounded-2xl p-6"
+          style={{
+            background: 'white',
+            border: '1px solid #F0F4F3',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
+          }}
+        >
           {/* Error */}
           {error && (
             <div
@@ -116,56 +118,47 @@ export default function LoginPage() {
 
           {step === 'phone' ? (
             <>
-              {/* Google Sign-In Button */}
-              <button
-                type="button"
-                onClick={handleGoogleLogin}
-                disabled={googleLoading}
-                className="w-full flex items-center justify-center gap-3 py-3 rounded-[10px] text-base font-medium border suttro-transition hover:bg-black/5 disabled:opacity-50 mb-4"
-                style={{ borderColor: 'var(--suttro-border)', color: 'var(--suttro-text)' }}
+              <h2
+                className="text-lg font-semibold text-center mb-4"
+                style={{ color: '#134E4A' }}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                </svg>
-                {googleLoading ? 'Google-এ যাচ্ছে...' : 'Google দিয়ে লগ ইন'}
-              </button>
-
-              {/* Divider */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex-1 h-px" style={{ background: 'var(--suttro-border)' }} />
-                <span className="text-sm" style={{ color: 'var(--suttro-muted)' }}>অথবা</span>
-                <div className="flex-1 h-px" style={{ background: 'var(--suttro-border)' }} />
-              </div>
+                লগ ইন করো
+              </h2>
 
               {/* Phone input */}
               <form onSubmit={handleSendOTP}>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--suttro-text)' }}>
-                    মোবাইল নম্বর
+                <div className="mb-3">
+                  <label
+                    className="block text-xs font-medium mb-1"
+                    style={{ color: '#5F9EA0' }}
+                  >
+                    ফোন নম্বর
                   </label>
-                  <div className="flex gap-2">
+                  <div
+                    className="flex rounded-[10px] overflow-hidden"
+                    style={{ border: '1.5px solid #E2E8F0' }}
+                  >
                     <span
-                      className="flex items-center px-3 rounded-[10px] text-sm border"
-                      style={{ borderColor: 'var(--suttro-border)', color: 'var(--suttro-muted)' }}
+                      className="flex items-center px-3 text-sm"
+                      style={{
+                        background: '#F8FAFB',
+                        color: '#94A3B8',
+                        borderRight: '1px solid #E2E8F0',
+                      }}
                     >
                       +880
                     </span>
                     <input
                       type="tel"
-                      placeholder="1XXXXXXXXX"
+                      placeholder="01XXXXXXXXX"
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+                      onChange={(e) =>
+                        setPhone(e.target.value.replace(/\D/g, ''))
+                      }
                       maxLength={11}
                       autoFocus
-                      className="flex-1 px-4 py-3 rounded-[10px] text-sm border outline-none focus:ring-2"
-                      style={{
-                        borderColor: 'var(--suttro-border)',
-                        color: 'var(--suttro-text)',
-                        background: 'var(--suttro-surface)',
-                      }}
+                      className="flex-1 px-3 py-2.5 text-sm outline-none"
+                      style={{ color: '#134E4A' }}
                     />
                   </div>
                 </div>
@@ -173,64 +166,141 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading || phone.length < 10}
-                  className="w-full py-3 rounded-[10px] text-base font-medium text-white suttro-transition hover:opacity-90 disabled:opacity-50"
-                  style={{ background: 'linear-gradient(135deg, #0D9488, #14B8A6)', boxShadow: '0 4px 14px rgba(13,148,136,0.25)' }}
+                  className="w-full py-2.5 rounded-xl text-sm font-semibold text-white suttro-transition hover:opacity-90 disabled:opacity-50 mb-3"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #0D9488, #14B8A6)',
+                    boxShadow:
+                      '0 4px 14px rgba(13,148,136,0.25)',
+                  }}
                 >
                   {loading ? 'পাঠানো হচ্ছে...' : 'OTP পাঠাও'}
                 </button>
               </form>
-            </>
-          ) : (
-            <form onSubmit={handleVerifyOTP}>
-              {/* OTP input */}
-              <div className="mb-2">
-                <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--suttro-text)' }}>
-                  OTP কোড
-                </label>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="৬ সংখ্যার কোড"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                  maxLength={6}
-                  autoFocus
-                  className="w-full px-4 py-3 rounded-[10px] text-sm border outline-none focus:ring-2 text-center tracking-[0.5em] font-mono text-lg"
-                  style={{
-                    borderColor: 'var(--suttro-border)',
-                    color: 'var(--suttro-text)',
-                    background: 'var(--suttro-surface)',
-                  }}
+
+              {/* Divider */}
+              <div className="flex items-center gap-3 mb-3">
+                <div
+                  className="flex-1 h-px"
+                  style={{ background: '#E2E8F0' }}
+                />
+                <span className="text-xs" style={{ color: '#94A3B8' }}>
+                  অথবা
+                </span>
+                <div
+                  className="flex-1 h-px"
+                  style={{ background: '#E2E8F0' }}
                 />
               </div>
 
-              <p className="text-sm mb-4" style={{ color: 'var(--suttro-muted)' }}>
-                {fullPhone} নম্বরে পাঠানো হয়েছে
-              </p>
-
-              <button
-                type="submit"
-                disabled={loading || otp.length < 6}
-                className="w-full py-3 rounded-[10px] text-base font-medium text-white suttro-transition hover:opacity-90 disabled:opacity-50"
-                style={{ background: 'var(--suttro-primary)' }}
-              >
-                {loading ? 'যাচাই হচ্ছে...' : 'লগ ইন করো'}
-              </button>
-
+              {/* Google Sign-In */}
               <button
                 type="button"
-                onClick={() => { setStep('phone'); setOtp(''); setError(null); }}
-                className="w-full py-2.5 mt-2 rounded-[10px] text-base font-medium suttro-transition"
-                style={{ color: 'var(--suttro-muted)' }}
+                onClick={handleGoogleLogin}
+                disabled={googleLoading}
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-[10px] text-sm font-medium suttro-transition hover:bg-black/5 disabled:opacity-50"
+                style={{
+                  border: '1px solid #E2E8F0',
+                  color: '#134E4A',
+                }}
               >
-                &larr; নম্বর বদলাও
+                <svg width="16" height="16" viewBox="0 0 24 24">
+                  <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
+                    fill="#4285F4"
+                  />
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853"
+                  />
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    fill="#FBBC05"
+                  />
+                  <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335"
+                  />
+                </svg>
+                {googleLoading
+                  ? 'Google-এ যাচ্ছে...'
+                  : 'Google দিয়ে লগ ইন'}
               </button>
-            </form>
-          )}
+            </>
+          ) : (
+            /* ── OTP Step ── */
+            <>
+              <div className="text-center mb-4">
+                <div
+                  className="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center text-xl"
+                  style={{
+                    background: '#F0FDFA',
+                    color: '#0D9488',
+                  }}
+                >
+                  ✉
+                </div>
+                <h2
+                  className="text-lg font-semibold mb-1"
+                  style={{ color: '#134E4A' }}
+                >
+                  OTP যাচাই করো
+                </h2>
+                <p className="text-xs" style={{ color: '#5F9EA0' }}>
+                  {fullPhone} নম্বরে কোড পাঠানো হয়েছে
+                </p>
+              </div>
 
-          <p className="text-sm text-center mt-4" style={{ color: 'var(--suttro-muted)' }}>
-            কোনো পাসওয়ার্ড লাগবে না — OTP বা Google দিয়ে লগ ইন।
-          </p>
+              <form onSubmit={handleVerifyOTP}>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="_ _ _ _ _ _"
+                  value={otp}
+                  onChange={(e) =>
+                    setOtp(e.target.value.replace(/\D/g, ''))
+                  }
+                  maxLength={6}
+                  autoFocus
+                  className="w-full px-4 py-3 rounded-[10px] text-center tracking-[0.5em] font-mono text-lg outline-none focus:ring-2 mb-4"
+                  style={{
+                    border: `1.5px solid ${otp.length > 0 ? '#0D9488' : '#E2E8F0'}`,
+                    color: '#134E4A',
+                  }}
+                />
+
+                <button
+                  type="submit"
+                  disabled={loading || otp.length < 6}
+                  className="w-full py-2.5 rounded-xl text-sm font-semibold text-white suttro-transition hover:opacity-90 disabled:opacity-50 mb-2"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #0D9488, #14B8A6)',
+                    boxShadow:
+                      '0 4px 14px rgba(13,148,136,0.25)',
+                  }}
+                >
+                  {loading ? 'যাচাই হচ্ছে...' : 'যাচাই করো'}
+                </button>
+
+                <p className="text-center text-xs" style={{ color: '#94A3B8' }}>
+                  কোড পাওনি?{' '}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStep('phone');
+                      setOtp('');
+                      setError(null);
+                    }}
+                    className="font-semibold"
+                    style={{ color: '#0D9488' }}
+                  >
+                    আবার পাঠাও
+                  </button>
+                </p>
+              </form>
+            </>
+          )}
         </div>
       </div>
     </div>

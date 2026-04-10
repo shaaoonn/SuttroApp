@@ -24,30 +24,30 @@ export default function ExamTabs({ exams, totalCQs, cqCollections, chapterNames 
     <>
       {/* Tab bar */}
       <div
-        className="flex rounded-xl p-1 mb-6"
-        style={{ background: 'var(--suttro-sky)' }}
+        className="flex rounded-xl p-1 mb-4"
+        style={{ background: '#F0F4F3' }}
       >
         <button
           onClick={() => setTab('mcq')}
-          className="flex-1 py-3 rounded-lg text-base font-semibold suttro-transition"
+          className="flex-1 py-2.5 rounded-lg text-xs font-semibold suttro-transition"
           style={{
-            background: tab === 'mcq' ? 'var(--suttro-white)' : 'transparent',
-            color: tab === 'mcq' ? 'var(--suttro-deep)' : 'var(--suttro-muted)',
-            boxShadow: tab === 'mcq' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+            background: tab === 'mcq' ? 'white' : 'transparent',
+            color: tab === 'mcq' ? '#134E4A' : '#94A3B8',
+            boxShadow: tab === 'mcq' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
           }}
         >
           MCQ পরীক্ষা ({exams.length})
         </button>
         <button
           onClick={() => setTab('cq')}
-          className="flex-1 py-3 rounded-lg text-base font-semibold suttro-transition"
+          className="flex-1 py-2.5 rounded-lg text-xs font-semibold suttro-transition"
           style={{
-            background: tab === 'cq' ? 'var(--suttro-white)' : 'transparent',
-            color: tab === 'cq' ? 'var(--suttro-deep)' : 'var(--suttro-muted)',
-            boxShadow: tab === 'cq' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+            background: tab === 'cq' ? 'white' : 'transparent',
+            color: tab === 'cq' ? '#134E4A' : '#94A3B8',
+            boxShadow: tab === 'cq' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
           }}
         >
-          সৃজনশীল প্রশ্ন ({totalCQs})
+          সৃজনশীল ({totalCQs})
         </button>
       </div>
 
@@ -56,14 +56,14 @@ export default function ExamTabs({ exams, totalCQs, cqCollections, chapterNames 
         <>
           <ExamFilter exams={exams} />
           <div
-            className="mt-12 rounded-[14px] border p-8 text-center"
-            style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}
+            className="mt-6 rounded-xl p-4 text-center"
+            style={{ background: 'white', border: '1px solid #F0F4F3' }}
           >
-            <p className="text-base font-medium mb-1" style={{ color: 'var(--suttro-deep)' }}>
+            <p className="text-xs font-medium mb-0.5" style={{ color: '#134E4A' }}>
               {exams.length}টি MCQ পরীক্ষা প্রস্তুত — আরও আসছে!
             </p>
-            <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
-              প্রতিটি পরীক্ষায় SSC-স্টাইল MCQ, টাইমার, নেগেটিভ মার্কিং ও বিস্তারিত ব্যাখ্যা আছে।
+            <p className="text-[11px]" style={{ color: '#94A3B8' }}>
+              SSC-স্টাইল MCQ, টাইমার, নেগেটিভ মার্কিং ও বিস্তারিত ব্যাখ্যা।
             </p>
           </div>
         </>
@@ -71,13 +71,13 @@ export default function ExamTabs({ exams, totalCQs, cqCollections, chapterNames 
         <>
           <CQFilter collections={cqCollections} chapterNames={chapterNames} />
           <div
-            className="mt-12 rounded-[14px] border p-8 text-center"
-            style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}
+            className="mt-6 rounded-xl p-4 text-center"
+            style={{ background: 'white', border: '1px solid #F0F4F3' }}
           >
-            <p className="text-base font-medium mb-1" style={{ color: 'var(--suttro-deep)' }}>
+            <p className="text-xs font-medium mb-0.5" style={{ color: '#134E4A' }}>
               {totalCQs}টি সৃজনশীল প্রশ্ন — অধ্যায় অনুযায়ী ফিল্টার করো
             </p>
-            <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
+            <p className="text-[11px]" style={{ color: '#94A3B8' }}>
               প্রতিটি প্রশ্নে উদ্দীপক, ৪টি অংশ (ক-ঘ) এবং বিস্তারিত উত্তর আছে।
             </p>
           </div>

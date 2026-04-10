@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 // ─────────────────────────────────────────────
 // Footer — সূত্র | suttro.app
@@ -35,8 +36,13 @@ export default function Footer() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand column */}
           <div className="col-span-2 lg:col-span-1">
-            <h3 className="text-2xl font-bold text-white mb-2">সূত্র</h3>
-            <p className="text-sm text-white/40 mb-1">suttro.app</p>
+            <Image
+              src="/logo.png"
+              alt="সূত্র | suttro.app"
+              width={120}
+              height={40}
+              className="h-10 w-auto mb-2 brightness-0 invert"
+            />
             <p className="text-base text-white/60 mt-3 leading-relaxed">
               বিজ্ঞান দেখো, বিজ্ঞান বোঝো।
             </p>

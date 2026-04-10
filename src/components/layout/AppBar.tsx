@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 
@@ -83,12 +84,16 @@ export default function AppBar() {
         {isHome ? (
           /* ── Home: Logo + streak badge + avatar ── */
           <>
-            <h1
-              className="text-xl font-bold flex-1"
-              style={{ color: '#0D9488' }}
-            >
-              সূত্র
-            </h1>
+            <div className="flex-1">
+              <Image
+                src="/logo.png"
+                alt="সূত্র"
+                width={90}
+                height={30}
+                className="h-8 w-auto"
+                priority
+              />
+            </div>
             <div className="flex items-center gap-2">
               {user && (
                 <div

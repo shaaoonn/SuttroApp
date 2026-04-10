@@ -4,6 +4,12 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'সূত্র Admin Panel',
   description: 'Suttro content management and analytics dashboard',
+  icons: {
+    icon: [
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: { url: '/apple-touch-icon.png', sizes: '180x180' },
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

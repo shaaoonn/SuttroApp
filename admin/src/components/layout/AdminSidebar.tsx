@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase-browser';
 
@@ -37,8 +38,15 @@ export default function AdminSidebar({ adminName, adminRole }: AdminSidebarProps
     >
       {/* Logo */}
       <div className="px-6 py-5 border-b border-white/10">
-        <Link href="/" className="text-xl font-bold text-white">
-          সূত্র Admin
+        <Link href="/" className="flex items-center gap-2">
+          <Image
+            src="/logo.png"
+            alt="সূত্র"
+            width={80}
+            height={28}
+            className="h-7 w-auto brightness-0 invert"
+          />
+          <span className="text-sm font-medium text-white/60">Admin</span>
         </Link>
       </div>
 

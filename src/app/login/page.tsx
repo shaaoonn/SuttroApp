@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
 
 // ─────────────────────────────────────────────
@@ -86,15 +87,14 @@ export default function LoginPage() {
       <div className="w-full max-w-sm px-5">
         {/* Brand Logo */}
         <div className="text-center mb-8">
-          <h1
-            className="text-3xl font-bold"
-            style={{ color: '#0D9488' }}
-          >
-            সূত্র
-          </h1>
-          <p className="text-xs" style={{ color: '#94A3B8' }}>
-            suttro.app
-          </p>
+          <Image
+            src="/logo.png"
+            alt="সূত্র | suttro.app"
+            width={160}
+            height={54}
+            className="mx-auto h-14 w-auto"
+            priority
+          />
         </div>
 
         {/* Auth Card */}

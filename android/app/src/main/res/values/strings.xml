@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">সূত্র</string>
+    <string name="title_activity_main">সূত্র</string>
+    <string name="package_name">com.suttro.app</string>
+    <string name="custom_url_scheme">com.suttro.app</string>
+</resources>

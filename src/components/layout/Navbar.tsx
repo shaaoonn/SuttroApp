@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
 import MobileMenu from './MobileMenu';
 
@@ -57,19 +58,15 @@ export default function Navbar() {
       >
         <div className="mx-auto max-w-6xl flex items-center justify-between px-4 h-16 lg:h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span
-              className="text-2xl font-bold"
-              style={{ color: '#0D9488' }}
-            >
-              সূত্র
-            </span>
-            <span
-              className="hidden lg:inline text-sm"
-              style={{ color: 'var(--suttro-muted)' }}
-            >
-              suttro.app
-            </span>
+          <Link href="/" className="flex items-center shrink-0">
+            <Image
+              src="/logo.png"
+              alt="সূত্র | suttro.app"
+              width={120}
+              height={40}
+              className="h-9 w-auto lg:h-10"
+              priority
+            />
           </Link>
 
           {/* Desktop Links */}

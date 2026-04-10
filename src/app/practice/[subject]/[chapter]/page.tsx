@@ -25,7 +25,7 @@ export default function PracticePage() {
   const [loading, setLoading] = useState(true);
 
   const subjectLabel = SUBJECT_LABELS[subject] || subject;
-  const color = SUBJECT_COLORS[subject] || '#2563EB';
+  const color = SUBJECT_COLORS[subject] || '#0D9488';
 
   const loadQuestions = useCallback(async () => {
     setLoading(true);

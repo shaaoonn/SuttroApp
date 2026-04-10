@@ -98,20 +98,23 @@ Refs:    D:\APPS AND WEB\Suttro App\references\
 | Target Audience | NCTB Class 9-10 students, Bangladesh |
 | Primary Language | বাংলা (Bengali) |
 
-### Colors (CSS Variables)
+### Colors (CSS Variables — v2.0 Light Teal Gradient)
 ```css
---suttro-deep: #0B1D3A;       /* headers, dark bg, text */
---suttro-primary: #1B6B4A;     /* buttons, links, brand green */
---suttro-primary-light: #2A9D6E; /* success, positive */
---suttro-accent: #E8A838;      /* highlights, CTA, badges */
---suttro-sky: #E4F0F6;         /* light backgrounds */
---suttro-surface: #FAFBF9;     /* page background */
---suttro-red: #C4392D;         /* errors */
+--suttro-deep: #134E4A;        /* headers, dark bg, footer */
+--suttro-primary: #0D9488;     /* buttons, links, brand teal */
+--suttro-primary-bright: #14B8A6; /* gradient end, hover */
+--suttro-text: #134E4A;        /* body text */
+--suttro-muted: #94A3B8;       /* secondary text */
+--suttro-border: #F0F4F3;      /* card borders */
+--suttro-sky: #F0FDFA;         /* light backgrounds */
+--suttro-surface: #F8FAFB;     /* page background */
+--suttro-white: #FFFFFF;       /* card backgrounds */
+--suttro-amber: #F59E0B;       /* highlights, streaks */
 
 /* Subject-specific colors */
---physics: #2563EB;   /* Electric Blue */
+--physics: #3B82F6;   /* Blue */
 --chemistry: #7C3AED; /* Vivid Purple */
---biology: #059669;   /* Emerald */
+--biology: #EC4899;   /* Pink */
 --subject-math: #DC2626;        /* Red — সাধারণ গণিত */
 --subject-higher-math: #EA580C; /* Orange — উচ্চতর গণিত */
 --subject-english: #0891B2;     /* Cyan/Teal — ইংরেজি */
@@ -400,6 +403,23 @@ Before starting any development:
 | 2.3 | Phone OTP auth (Supabase) | ✅ Done | 2026-04-03 | AuthProvider context, lazy Supabase init, login OTP flow, auth-aware Navbar |
 | 2.4 | User dashboard | ✅ Done | 2026-04-03 | Protected route, stats, recent activity, offline downloads, sign out |
 | 2.5 | PWA enhancements | ⬜ Pending | — | Offline sim caching, install prompt |
+
+### Design v2.0 — Light Teal Gradient Redesign
+| # | Task | Status | Date | Notes |
+|---|------|--------|------|-------|
+| D.1 | Branding guide v2.0 | ✅ Done | 2026-04-10 | references/branding.md replaced with new palette |
+| D.2 | CSS variables + globals.css | ✅ Done | 2026-04-10 | All vars updated to teal/gradient system |
+| D.3 | Navbar redesign | ✅ Done | 2026-04-10 | White bg, teal logo, gradient buttons, amber streak |
+| D.4 | Homepage redesign | ✅ Done | 2026-04-10 | Gradient hero, teal stats, amber trust, dark CTA |
+| D.5 | Footer redesign | ✅ Done | 2026-04-10 | Dark teal #134E4A bg, cyan hover |
+| D.6 | BottomNav redesign | ✅ Done | 2026-04-10 | Teal active, slate inactive |
+| D.7 | Login page redesign | ✅ Done | 2026-04-10 | Gradient bg, shadow card, gradient buttons |
+| D.8 | Pricing page redesign | ✅ Done | 2026-04-10 | Teal border highlight, gradient badge/buttons |
+| D.9 | Dashboard redesign | ✅ Done | 2026-04-10 | Teal gradient XP banner, all vars updated |
+| D.10 | MobileMenu redesign | ✅ Done | 2026-04-10 | White bg, gradient primary buttons |
+| D.11 | Subject colors update | ✅ Done | 2026-04-10 | Biology #EC4899, Physics #3B82F6 across all files |
+| D.12 | Exam components update | ✅ Done | 2026-04-10 | ExamPlayer, ExamResult, ExamFilter, CQViewer |
+| D.13 | All old colors removed | ✅ Done | 2026-04-10 | No #0B1D3A, #1B6B4A, #2563EB, #059669 remaining |
 
 ### Simulation Registry
 <!-- Claude Code: নতুন সিমুলেশন তৈরি হলে এখানে যোগ করো -->

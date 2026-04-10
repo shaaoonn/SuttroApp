@@ -103,7 +103,7 @@ function buildGuide(): SubjectGuide[] {
     return {
       subject,
       subjectBn: SUBJECT_LABELS[subject] || subject,
-      color: SUBJECT_COLORS[subject] || '#1B6B4A',
+      color: SUBJECT_COLORS[subject] || '#0D9488',
       icon: SUBJECT_ICONS[subject] || '📚',
       chapters,
       totals,

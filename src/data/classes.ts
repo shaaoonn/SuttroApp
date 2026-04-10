@@ -4,9 +4,9 @@
 // ─────────────────────────────────────────────
 
 export const SUBJECT_COLORS: Record<string, string> = {
-  physics: '#2563EB',
+  physics: '#3B82F6',
   chemistry: '#7C3AED',
-  biology: '#059669',
+  biology: '#EC4899',
   math: '#DC2626',
   'higher-math': '#EA580C',
   english: '#0891B2',

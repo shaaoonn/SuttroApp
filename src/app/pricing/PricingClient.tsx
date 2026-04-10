@@ -74,10 +74,10 @@ export default function PricingClient() {
     <div style={{ background: 'var(--suttro-surface)' }}>
       <div className="mx-auto max-w-5xl px-6 py-12">
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--suttro-deep)' }}>
+          <h1 className="text-3xl font-bold mb-2" style={{ color: '#134E4A' }}>
             প্রাইসিং
           </h1>
-          <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
+          <p className="text-base" style={{ color: '#94A3B8' }}>
             ফ্রি দিয়ে শুরু করো — আপগ্রেড করো যখন দরকার।
           </p>
         </div>
@@ -101,36 +101,36 @@ export default function PricingClient() {
             {plans.map((plan) => (
               <div
                 key={plan.id}
-                className={`rounded-[14px] border p-6 md:p-8 flex flex-col ${plan.highlight ? 'ring-2' : ''}`}
+                className="rounded-[12px] border p-6 md:p-8 flex flex-col"
                 style={{
-                  borderColor: plan.highlight ? 'var(--suttro-primary)' : 'var(--suttro-border)',
-                  background: 'var(--suttro-white)',
-                  ...(plan.highlight ? { ringColor: 'var(--suttro-primary)' } : {}),
+                  borderColor: plan.highlight ? '#0D9488' : '#F0F4F3',
+                  borderWidth: plan.highlight ? '2px' : '1px',
+                  background: '#FFFFFF',
                 }}
               >
                 {plan.badgeText && (
                   <span
                     className="inline-block px-3 py-1.5 rounded-full text-sm font-medium text-white mb-4 self-start"
-                    style={{ background: 'var(--suttro-accent)' }}
+                    style={{ background: 'linear-gradient(135deg, #0D9488, #14B8A6)' }}
                   >
                     {plan.badgeText}
                   </span>
                 )}
-                <h2 className="text-xl font-bold mb-1" style={{ color: 'var(--suttro-deep)' }}>
+                <h2 className="text-xl font-bold mb-1" style={{ color: '#134E4A' }}>
                   {plan.name}
                 </h2>
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-3xl font-bold" style={{ color: 'var(--suttro-deep)' }}>
+                  <span className="text-4xl font-bold" style={{ color: '#134E4A' }}>
                     {plan.price}
                   </span>
-                  <span className="text-base" style={{ color: 'var(--suttro-muted)' }}>
+                  <span className="text-base" style={{ color: '#94A3B8' }}>
                     {plan.period}
                   </span>
                 </div>
                 <ul className="space-y-3 mb-8 flex-1">
                   {plan.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-base" style={{ color: 'var(--suttro-text)' }}>
-                      <span style={{ color: 'var(--suttro-primary-light)' }}>&#10003;</span>
+                    <li key={f} className="flex items-start gap-2 text-base" style={{ color: '#134E4A' }}>
+                      <span style={{ color: '#10B981' }}>&#10003;</span>
                       {f}
                     </li>
                   ))}
@@ -138,13 +138,13 @@ export default function PricingClient() {
                 <button
                   onClick={() => handleSubscribe(plan.id)}
                   disabled={loading === plan.id || plan.id === 'free'}
-                  className="block w-full text-center py-3 rounded-[10px] text-base font-medium suttro-transition disabled:opacity-50"
+                  className="block w-full text-center py-3 rounded-[12px] text-base font-medium suttro-transition disabled:opacity-50"
                   style={
                     plan.highlight
-                      ? { background: 'var(--suttro-primary)', color: 'white' }
+                      ? { background: 'linear-gradient(135deg, #0D9488, #14B8A6)', color: 'white', boxShadow: '0 4px 14px rgba(13,148,136,0.25)' }
                       : plan.id === 'free'
-                      ? { background: 'var(--suttro-surface)', color: 'var(--suttro-muted)', cursor: 'default' }
-                      : { background: 'transparent', color: 'var(--suttro-primary)', border: '1.5px solid var(--suttro-primary)' }
+                      ? { background: '#F8FAFB', color: '#94A3B8', cursor: 'default' }
+                      : { background: 'transparent', color: '#0D9488', border: '1.5px solid #99F6E4' }
                   }
                 >
                   {loading === plan.id ? (

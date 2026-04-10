@@ -57,9 +57,9 @@ interface SubjectProgress {
 }
 
 const SUBJECT_META: Record<string, { bn: string; icon: string; color: string }> = {
-  physics: { bn: 'পদার্থবিজ্ঞান', icon: '⚡', color: '#2563EB' },
+  physics: { bn: 'পদার্থবিজ্ঞান', icon: '⚡', color: '#3B82F6' },
   chemistry: { bn: 'রসায়ন', icon: '🧪', color: '#7C3AED' },
-  biology: { bn: 'জীববিজ্ঞান', icon: '🧬', color: '#059669' },
+  biology: { bn: 'জীববিজ্ঞান', icon: '🧬', color: '#EC4899' },
   math: { bn: 'গণিত', icon: '📐', color: '#DC2626' },
   'higher-math': { bn: 'উচ্চতর গণিত', icon: '📊', color: '#EA580C' },
 };
@@ -103,8 +103,8 @@ function timeAgo(dateStr: string): string {
 }
 
 function getGrade(percentage: number): { label: string; color: string } {
-  if (percentage >= 80) return { label: 'A+', color: '#059669' };
-  if (percentage >= 70) return { label: 'A', color: '#2563EB' };
+  if (percentage >= 80) return { label: 'A+', color: '#10B981' };
+  if (percentage >= 70) return { label: 'A', color: '#3B82F6' };
   if (percentage >= 60) return { label: 'A-', color: '#7C3AED' };
   if (percentage >= 50) return { label: 'B', color: '#EA580C' };
   if (percentage >= 40) return { label: 'C', color: '#DC2626' };
@@ -152,7 +152,7 @@ export default function DashboardPage() {
       <div className="flex-1 flex items-center justify-center" style={{ background: 'var(--suttro-surface)' }}>
         <div className="text-center">
           <div className="text-3xl mb-3 animate-pulse">⏳</div>
-          <p style={{ color: 'var(--suttro-muted)' }}>লোড হচ্ছে...</p>
+          <p style={{ color: '#94A3B8' }}>লোড হচ্ছে...</p>
         </div>
       </div>
     );
@@ -174,10 +174,10 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--suttro-deep)' }}>
+            <h1 className="text-2xl font-bold mb-1" style={{ color: '#134E4A' }}>
               ড্যাশবোর্ড
             </h1>
-            <p className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
+            <p className="text-sm" style={{ color: '#94A3B8' }}>
               তোমার শেখার অগ্রগতি এক নজরে।
             </p>
           </div>
@@ -191,8 +191,8 @@ export default function DashboardPage() {
         </div>
 
         {/* XP & Streak Banner */}
-        <div className="rounded-[14px] border p-5 mb-6"
-          style={{ background: 'linear-gradient(135deg, #1B6B4A 0%, #0F4A33 100%)', borderColor: 'transparent' }}>
+        <div className="rounded-[12px] border p-5 mb-6"
+          style={{ background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)', borderColor: 'transparent' }}>
           <div className="flex flex-wrap items-center gap-6">
             {/* Level */}
             <div className="text-center">
@@ -211,7 +211,7 @@ export default function DashboardPage() {
               </div>
               <div className="w-full h-2.5 rounded-full" style={{ background: 'rgba(255,255,255,0.15)' }}>
                 <div className="h-full rounded-full transition-all"
-                  style={{ width: `${nextLevel.progress}%`, background: '#4ade80' }} />
+                  style={{ width: `${nextLevel.progress}%`, background: 'linear-gradient(90deg, #2DD4BF, #5EEAD4)' }} />
               </div>
               <div className="flex items-center justify-between mt-1.5">
                 <span className="text-xs text-white/60">আজ: {todayXP}/{dailyGoal} XP</span>
@@ -232,17 +232,17 @@ export default function DashboardPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
           <Link href="/daily"
             className="rounded-[12px] border p-4 suttro-transition hover:shadow-sm"
-            style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}>
+            style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
             <div className="text-2xl mb-1">🎯</div>
-            <p className="text-sm font-bold" style={{ color: 'var(--suttro-deep)' }}>দৈনিক চ্যালেঞ্জ</p>
-            <p className="text-xs" style={{ color: 'var(--suttro-muted)' }}>+25-50 XP</p>
+            <p className="text-sm font-bold" style={{ color: '#134E4A' }}>দৈনিক চ্যালেঞ্জ</p>
+            <p className="text-xs" style={{ color: '#94A3B8' }}>+25-50 XP</p>
           </Link>
           <Link href="/review"
             className="rounded-[12px] border p-4 suttro-transition hover:shadow-sm relative"
-            style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}>
+            style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
             <div className="text-2xl mb-1">🧠</div>
-            <p className="text-sm font-bold" style={{ color: 'var(--suttro-deep)' }}>রিভিউ কার্ড</p>
-            <p className="text-xs" style={{ color: 'var(--suttro-muted)' }}>
+            <p className="text-sm font-bold" style={{ color: '#134E4A' }}>রিভিউ কার্ড</p>
+            <p className="text-xs" style={{ color: '#94A3B8' }}>
               {srsCount > 0 ? `${srsCount}টি বাকি` : 'সব শেষ!'}
             </p>
             {srsCount > 0 && (
@@ -252,17 +252,17 @@ export default function DashboardPage() {
           </Link>
           <Link href="/leaderboard"
             className="rounded-[12px] border p-4 suttro-transition hover:shadow-sm"
-            style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}>
+            style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
             <div className="text-2xl mb-1">🏆</div>
-            <p className="text-sm font-bold" style={{ color: 'var(--suttro-deep)' }}>লিডারবোর্ড</p>
-            <p className="text-xs" style={{ color: 'var(--suttro-muted)' }}>র‍্যাংকিং দেখো</p>
+            <p className="text-sm font-bold" style={{ color: '#134E4A' }}>লিডারবোর্ড</p>
+            <p className="text-xs" style={{ color: '#94A3B8' }}>র‍্যাংকিং দেখো</p>
           </Link>
           <Link href="/achievements"
             className="rounded-[12px] border p-4 suttro-transition hover:shadow-sm"
-            style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}>
+            style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
             <div className="text-2xl mb-1">🎖️</div>
-            <p className="text-sm font-bold" style={{ color: 'var(--suttro-deep)' }}>অ্যাচিভমেন্ট</p>
-            <p className="text-xs" style={{ color: 'var(--suttro-muted)' }}>ব্যাজ সংগ্রহ</p>
+            <p className="text-sm font-bold" style={{ color: '#134E4A' }}>অ্যাচিভমেন্ট</p>
+            <p className="text-xs" style={{ color: '#94A3B8' }}>ব্যাজ সংগ্রহ</p>
           </Link>
         </div>
 
@@ -275,10 +275,10 @@ export default function DashboardPage() {
             { label: 'সিমুলেশন', value: dataLoading ? '...' : String(counts.sims_viewed), icon: '🔬' },
           ].map((stat) => (
             <div key={stat.label} className="rounded-[12px] border p-4 text-center"
-              style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}>
+              style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
               <div className="text-xl mb-1">{stat.icon}</div>
-              <div className="text-xl font-bold mb-0.5" style={{ color: 'var(--suttro-primary)' }}>{stat.value}</div>
-              <div className="text-xs" style={{ color: 'var(--suttro-muted)' }}>{stat.label}</div>
+              <div className="text-xl font-bold mb-0.5" style={{ color: '#0D9488' }}>{stat.value}</div>
+              <div className="text-xs" style={{ color: '#94A3B8' }}>{stat.label}</div>
             </div>
           ))}
         </div>
@@ -286,13 +286,13 @@ export default function DashboardPage() {
         {/* Subject Progress */}
         {subjectProgress.length > 0 && (
           <div className="rounded-[14px] border p-6 mb-6"
-            style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}>
+            style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold" style={{ color: 'var(--suttro-deep)' }}>
+              <h2 className="text-lg font-semibold" style={{ color: '#134E4A' }}>
                 বিষয়ভিত্তিক অগ্রগতি
               </h2>
               <Link href="/guide" className="text-sm font-medium suttro-transition hover:opacity-80"
-                style={{ color: 'var(--suttro-primary)' }}>
+                style={{ color: '#0D9488' }}>
                 গাইড দেখো &rarr;
               </Link>
             </div>
@@ -304,24 +304,24 @@ export default function DashboardPage() {
                     className="block suttro-transition hover:opacity-90">
                     <div className="flex items-center gap-3 mb-1.5">
                       <span className="text-lg">{meta.icon}</span>
-                      <span className="text-sm font-medium flex-1" style={{ color: 'var(--suttro-deep)' }}>
+                      <span className="text-sm font-medium flex-1" style={{ color: '#134E4A' }}>
                         {meta.bn}
                       </span>
                       <span className="text-sm font-bold" style={{ color: meta.color }}>
                         {sp.avgMastery}%
                       </span>
                     </div>
-                    <div className="w-full h-2.5 rounded-full" style={{ background: 'var(--suttro-sky)' }}>
+                    <div className="w-full h-2.5 rounded-full" style={{ background: '#F0FDFA' }}>
                       <div
                         className="h-full rounded-full transition-all"
                         style={{ width: `${Math.min(sp.avgMastery, 100)}%`, background: meta.color }}
                       />
                     </div>
                     <div className="flex justify-between mt-1">
-                      <span className="text-xs" style={{ color: 'var(--suttro-muted)' }}>
+                      <span className="text-xs" style={{ color: '#94A3B8' }}>
                         {sp.totalCorrect}/{sp.totalAttempted} সঠিক
                       </span>
-                      <span className="text-xs" style={{ color: 'var(--suttro-muted)' }}>
+                      <span className="text-xs" style={{ color: '#94A3B8' }}>
                         {sp.chaptersStudied} অধ্যায়
                       </span>
                     </div>
@@ -336,8 +336,8 @@ export default function DashboardPage() {
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Exam History */}
           <div className="rounded-[14px] border p-6"
-            style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}>
-            <h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--suttro-deep)' }}>
+            style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
+            <h2 className="text-lg font-semibold mb-4" style={{ color: '#134E4A' }}>
               পরীক্ষার ইতিহাস
             </h2>
             {dataLoading ? (
@@ -352,12 +352,12 @@ export default function DashboardPage() {
                   return (
                     <Link key={attempt.id} href={`/exam/${attempt.examPaperId}`}
                       className="flex items-center justify-between p-3 rounded-[10px] hover:bg-black/5 suttro-transition border"
-                      style={{ borderColor: 'var(--suttro-border)' }}>
+                      style={{ borderColor: '#F0F4F3' }}>
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium truncate" style={{ color: 'var(--suttro-text)' }}>
+                        <div className="text-sm font-medium truncate" style={{ color: '#134E4A' }}>
                           {attempt.examTitle}
                         </div>
-                        <div className="text-xs" style={{ color: 'var(--suttro-muted)' }}>
+                        <div className="text-xs" style={{ color: '#94A3B8' }}>
                           {attempt.correct} সঠিক, {attempt.wrong} ভুল — {formatDuration(attempt.duration)}
                         </div>
                       </div>
@@ -374,9 +374,9 @@ export default function DashboardPage() {
             ) : (
               <div className="text-center py-8">
                 <div className="text-3xl mb-3">📝</div>
-                <p className="text-sm mb-3" style={{ color: 'var(--suttro-muted)' }}>এখনো কোনো পরীক্ষা দাওনি।</p>
+                <p className="text-sm mb-3" style={{ color: '#94A3B8' }}>এখনো কোনো পরীক্ষা দাওনি।</p>
                 <Link href="/exams" className="inline-block px-5 py-2 rounded-[10px] text-sm font-medium text-white"
-                  style={{ background: 'var(--suttro-primary)' }}>
+                  style={{ background: 'linear-gradient(135deg, #0D9488, #14B8A6)' }}>
                   পরীক্ষা দাও &rarr;
                 </Link>
               </div>
@@ -385,8 +385,8 @@ export default function DashboardPage() {
 
           {/* Recent Activity */}
           <div className="rounded-[14px] border p-6"
-            style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}>
-            <h2 className="text-lg font-semibold mb-4" style={{ color: 'var(--suttro-deep)' }}>
+            style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
+            <h2 className="text-lg font-semibold mb-4" style={{ color: '#134E4A' }}>
               সম্প্রতি কার্যকলাপ
             </h2>
             {dataLoading ? (
@@ -397,13 +397,13 @@ export default function DashboardPage() {
               <div className="space-y-2">
                 {data.recentActivity.map((item, i) => (
                   <div key={i} className="flex items-center gap-3 p-3 rounded-[10px]"
-                    style={{ background: 'var(--suttro-sky)' }}>
+                    style={{ background: '#F0FDFA' }}>
                     <span className="text-lg shrink-0">{EVENT_ICONS[item.eventType] || '📌'}</span>
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium truncate" style={{ color: 'var(--suttro-text)' }}>
+                      <div className="text-sm font-medium truncate" style={{ color: '#134E4A' }}>
                         {EVENT_LABELS[item.eventType] || item.eventType}
                       </div>
-                      <div className="text-xs" style={{ color: 'var(--suttro-muted)' }}>{timeAgo(item.createdAt)}</div>
+                      <div className="text-xs" style={{ color: '#94A3B8' }}>{timeAgo(item.createdAt)}</div>
                     </div>
                   </div>
                 ))}
@@ -411,7 +411,7 @@ export default function DashboardPage() {
             ) : (
               <div className="text-center py-8">
                 <div className="text-3xl mb-3">🎯</div>
-                <p className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
+                <p className="text-sm" style={{ color: '#94A3B8' }}>
                   কোনো কার্যকলাপ নেই। পরীক্ষা দাও বা ক্লাস দেখো!
                 </p>
               </div>
@@ -429,9 +429,9 @@ export default function DashboardPage() {
           ].map((link) => (
             <Link key={link.href} href={link.href}
               className="rounded-[12px] p-4 text-center suttro-transition hover:opacity-80"
-              style={{ background: 'var(--suttro-sky)' }}>
+              style={{ background: '#F0FDFA' }}>
               <div className="text-xl mb-1">{link.icon}</div>
-              <div className="text-sm font-medium" style={{ color: 'var(--suttro-deep)' }}>{link.label}</div>
+              <div className="text-sm font-medium" style={{ color: '#134E4A' }}>{link.label}</div>
             </Link>
           ))}
         </div>

@@ -30,7 +30,7 @@ export default function ExamPlayer({ exam }: ExamPlayerProps) {
   const hasSavedRef = useRef(false);
   const [earnedBadges, setEarnedBadges] = useState<EarnedBadge[]>([]);
 
-  const subjectColor = EXAM_SUBJECT_COLORS[exam.subject] || '#1B6B4A';
+  const subjectColor = EXAM_SUBJECT_COLORS[exam.subject] || '#0D9488';
   const question = exam.questions[currentQ];
   const totalQ = exam.questions.length;
   const accessToken = session?.access_token;

@@ -29,7 +29,7 @@ export default function Footer() {
   return (
     <footer
       className="border-t mt-auto"
-      style={{ background: 'var(--suttro-deep)', borderColor: 'rgba(255,255,255,0.08)' }}
+      style={{ background: '#134E4A', borderColor: 'rgba(255,255,255,0.1)' }}
     >
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
@@ -53,7 +53,7 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-base text-white/50 hover:text-white/80 suttro-transition"
+                    className="text-base text-white/50 hover:text-[#2DD4BF] suttro-transition"
                   >
                     {link.label}
                   </Link>
@@ -70,7 +70,7 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-base text-white/50 hover:text-white/80 suttro-transition"
+                    className="text-base text-white/50 hover:text-[#2DD4BF] suttro-transition"
                   >
                     {link.label}
                   </Link>
@@ -87,7 +87,7 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-base text-white/50 hover:text-white/80 suttro-transition"
+                    className="text-base text-white/50 hover:text-[#2DD4BF] suttro-transition"
                     {...('external' in link ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   >
                     {link.label}

@@ -83,7 +83,7 @@ export default function ExamFilter({ exams }: ExamFilterProps) {
           </div>
         ) : (
           filtered.map((exam) => {
-            const color = EXAM_SUBJECT_COLORS[exam.subject] || '#1B6B4A';
+            const color = EXAM_SUBJECT_COLORS[exam.subject] || '#0D9488';
             return (
               <Link
                 key={exam.id}

@@ -202,7 +202,7 @@ export default function ProfilePage() {
               className="rounded-[10px] px-4 py-2.5 text-sm mb-4"
               style={{
                 background: saveMsg.includes('সমস্যা') ? '#FEE2E2' : '#ECFDF5',
-                color: saveMsg.includes('সমস্যা') ? '#DC2626' : '#059669',
+                color: saveMsg.includes('সমস্যা') ? '#DC2626' : '#10B981',
               }}
             >
               {saveMsg}
@@ -310,7 +310,7 @@ export default function ProfilePage() {
                         : profile?.subscription_plan === 'premium' ? '#ECFDF5'
                         : 'var(--suttro-sky)',
                       color: profile?.subscription_plan === 'pro' ? '#7C3AED'
-                        : profile?.subscription_plan === 'premium' ? '#059669'
+                        : profile?.subscription_plan === 'premium' ? '#0D9488'
                         : 'var(--suttro-muted)',
                     }}
                   >

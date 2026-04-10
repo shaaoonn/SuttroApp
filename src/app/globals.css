@@ -5,27 +5,61 @@
    ───────────────────────────────────────────── */
 
 :root {
-  /* Primary Palette */
-  --suttro-deep: #0B1D3A;
-  --suttro-primary: #1B6B4A;
-  --suttro-primary-light: #2A9D6E;
-  --suttro-accent: #E8A838;
-  --suttro-accent-light: #FFF3DB;
-  --suttro-sky: #E4F0F6;
-  --suttro-surface: #FAFBF9;
+  /* Primary — Teal */
+  --suttro-primary: #0D9488;
+  --suttro-primary-light: #14B8A6;
+  --suttro-primary-bright: #2DD4BF;
+  --suttro-primary-text: #134E4A;
+  --suttro-primary-bg: #F0FDFA;
+  --suttro-primary-border: #CCFBF1;
+  --suttro-primary-shadow: rgba(13, 148, 136, 0.25);
+
+  /* Amber */
+  --suttro-amber: #F59E0B;
+  --suttro-amber-light: #FBBF24;
+  --suttro-amber-text: #92400E;
+  --suttro-amber-bg: #FFFBEB;
+  --suttro-amber-border: #FDE68A;
+  --suttro-amber-shadow: rgba(245, 158, 11, 0.25);
+
+  /* Legacy aliases for backward compat */
+  --suttro-deep: #134E4A;
+  --suttro-accent: #F59E0B;
+  --suttro-accent-light: #FFFBEB;
+  --suttro-sky: #F0FDFA;
+  --suttro-surface: #F8FAFB;
   --suttro-white: #FFFFFF;
-  --suttro-text: #1A1F2B;
-  --suttro-muted: #6B7280;
-  --suttro-border: #E2E5E0;
-  --suttro-red: #C4392D;
+  --suttro-text: #134E4A;
+  --suttro-muted: #94A3B8;
+  --suttro-border: #F0F4F3;
+  --suttro-divider: #E2E8F0;
+  --suttro-red: #EF4444;
 
   /* Subject Colors */
-  --physics: #2563EB;
+  --physics: #3B82F6;
+  --physics-light: #60A5FA;
+  --physics-text: #1E40AF;
+  --physics-bg: #EFF6FF;
+  --physics-border: #BFDBFE;
   --chemistry: #7C3AED;
-  --biology: #059669;
+  --chemistry-light: #A78BFA;
+  --chemistry-text: #5B21B6;
+  --chemistry-bg: #F5F3FF;
+  --chemistry-border: #DDD6FE;
+  --biology: #EC4899;
+  --biology-light: #F472B6;
+  --biology-text: #9D174D;
+  --biology-bg: #FDF2F8;
+  --biology-border: #FBCFE8;
   --subject-math: #DC2626;
   --subject-higher-math: #EA580C;
   --subject-english: #0891B2;
+
+  /* Semantic */
+  --success: #10B981;
+  --success-bg: #ECFDF5;
+  --error: #EF4444;
+  --error-bg: #FEF2F2;
 
   /* Player/Canvas Dark Theme */
   --player-bg: #0d1117;
@@ -34,7 +68,7 @@
   --player-border: rgba(255, 255, 255, 0.06);
   --player-text: rgba(255, 255, 255, 0.85);
   --player-muted: rgba(255, 255, 255, 0.35);
-  --player-accent: #1B6B4A;
+  --player-accent: #0D9488;
   --player-radius: 10px;
 
   /* Canvas Component Colors */
@@ -58,8 +92,14 @@
   --color-suttro-deep: var(--suttro-deep);
   --color-suttro-primary: var(--suttro-primary);
   --color-suttro-primary-light: var(--suttro-primary-light);
+  --color-suttro-primary-bright: var(--suttro-primary-bright);
+  --color-suttro-primary-text: var(--suttro-primary-text);
+  --color-suttro-primary-bg: var(--suttro-primary-bg);
+  --color-suttro-primary-border: var(--suttro-primary-border);
   --color-suttro-accent: var(--suttro-accent);
   --color-suttro-accent-light: var(--suttro-accent-light);
+  --color-suttro-amber: var(--suttro-amber);
+  --color-suttro-amber-light: var(--suttro-amber-light);
   --color-suttro-sky: var(--suttro-sky);
   --color-suttro-surface: var(--suttro-surface);
   --color-suttro-white: var(--suttro-white);
@@ -113,8 +153,8 @@ html {
 }
 
 body {
-  background: var(--suttro-surface);
-  color: var(--suttro-text);
+  background: #F8FAFB;
+  color: #134E4A;
   font-family: 'Hind Siliguri', 'DM Sans', sans-serif;
   line-height: 1.7;
   overflow-x: hidden;

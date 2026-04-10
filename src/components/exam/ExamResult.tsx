@@ -20,7 +20,7 @@ interface ExamResultProps {
 
 export default function ExamResult({ exam, answers, timeUsed, onRetry, earnedBadges }: ExamResultProps) {
   const [showReview, setShowReview] = useState(false);
-  const subjectColor = EXAM_SUBJECT_COLORS[exam.subject] || '#1B6B4A';
+  const subjectColor = EXAM_SUBJECT_COLORS[exam.subject] || '#0D9488';
 
   // ── Calculate score ──
   const stats = useMemo(() => {
@@ -47,8 +47,8 @@ export default function ExamResult({ exam, answers, timeUsed, onRetry, earnedBad
 
   // ── Grade ──
   const grade = useMemo(() => {
-    if (stats.percentage >= 80) return { label: 'A+', color: '#059669', emoji: '🏆' };
-    if (stats.percentage >= 70) return { label: 'A', color: '#2563EB', emoji: '🌟' };
+    if (stats.percentage >= 80) return { label: 'A+', color: '#10B981', emoji: '🏆' };
+    if (stats.percentage >= 70) return { label: 'A', color: '#3B82F6', emoji: '🌟' };
     if (stats.percentage >= 60) return { label: 'A-', color: '#7C3AED', emoji: '👏' };
     if (stats.percentage >= 50) return { label: 'B', color: '#EA580C', emoji: '💪' };
     if (stats.percentage >= 40) return { label: 'C', color: '#DC2626', emoji: '📖' };
@@ -89,8 +89,8 @@ export default function ExamResult({ exam, answers, timeUsed, onRetry, earnedBad
         {/* Stats grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
           <div className="rounded-[10px] p-4" style={{ background: '#ECFDF5' }}>
-            <div className="text-2xl font-bold" style={{ color: '#059669' }}>{stats.correct}</div>
-            <div className="text-base" style={{ color: '#059669' }}>সঠিক</div>
+            <div className="text-2xl font-bold" style={{ color: '#10B981' }}>{stats.correct}</div>
+            <div className="text-base" style={{ color: '#10B981' }}>সঠিক</div>
           </div>
           <div className="rounded-[10px] p-4" style={{ background: '#FEE2E2' }}>
             <div className="text-2xl font-bold" style={{ color: '#DC2626' }}>{stats.wrong}</div>
@@ -173,7 +173,7 @@ export default function ExamResult({ exam, answers, timeUsed, onRetry, earnedBad
                 key={q.id}
                 className="rounded-[14px] border p-5"
                 style={{
-                  borderColor: isSkipped ? 'var(--suttro-border)' : isCorrect ? '#059669' : '#DC2626',
+                  borderColor: isSkipped ? 'var(--suttro-border)' : isCorrect ? '#10B981' : '#DC2626',
                   borderWidth: '2px',
                   background: 'var(--suttro-white)',
                 }}
@@ -182,11 +182,11 @@ export default function ExamResult({ exam, answers, timeUsed, onRetry, earnedBad
                 <div className="flex items-center gap-2 mb-3">
                   <span
                     className="px-3 py-1 rounded-full text-base font-bold text-white"
-                    style={{ background: isSkipped ? 'var(--suttro-muted)' : isCorrect ? '#059669' : '#DC2626' }}
+                    style={{ background: isSkipped ? 'var(--suttro-muted)' : isCorrect ? '#10B981' : '#DC2626' }}
                   >
                     {i + 1}
                   </span>
-                  <span className="text-base font-medium" style={{ color: isSkipped ? 'var(--suttro-muted)' : isCorrect ? '#059669' : '#DC2626' }}>
+                  <span className="text-base font-medium" style={{ color: isSkipped ? 'var(--suttro-muted)' : isCorrect ? '#10B981' : '#DC2626' }}>
                     {isSkipped ? 'বাদ দিয়েছ' : isCorrect ? 'সঠিক ✓' : 'ভুল ✗'}
                   </span>
                 </div>
@@ -208,8 +208,8 @@ export default function ExamResult({ exam, answers, timeUsed, onRetry, earnedBad
 
                     if (isRight) {
                       optBg = '#ECFDF5';
-                      optBorder = '#059669';
-                      optColor = '#059669';
+                      optBorder = '#10B981';
+                      optColor = '#10B981';
                     } else if (isUserPick && !isRight) {
                       optBg = '#FEE2E2';
                       optBorder = '#DC2626';
@@ -225,7 +225,7 @@ export default function ExamResult({ exam, answers, timeUsed, onRetry, earnedBad
                         <span
                           className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold"
                           style={{
-                            background: isRight ? '#059669' : isUserPick ? '#DC2626' : 'var(--suttro-sky)',
+                            background: isRight ? '#10B981' : isUserPick ? '#DC2626' : 'var(--suttro-sky)',
                             color: isRight || isUserPick ? 'white' : 'var(--suttro-muted)',
                           }}
                         >

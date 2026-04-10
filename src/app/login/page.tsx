@@ -89,14 +89,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex-1 flex items-center justify-center" style={{ background: 'var(--suttro-surface)' }}>
+    <div className="flex-1 flex items-center justify-center" style={{ background: 'linear-gradient(160deg, #F0FDFA, #F5F3FF)' }}>
       <div className="w-full max-w-sm px-4">
         <div
-          className="rounded-[14px] border p-6 md:p-8"
-          style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}
+          className="rounded-[16px] border p-6 md:p-8"
+          style={{ borderColor: '#F0F4F3', background: '#FFFFFF', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}
         >
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--suttro-deep)' }}>
+            <h1 className="text-2xl font-bold mb-1" style={{ color: '#134E4A' }}>
               সূত্র-তে লগ ইন
             </h1>
             <p className="text-sm" style={{ color: 'var(--suttro-muted)' }}>
@@ -174,7 +174,7 @@ export default function LoginPage() {
                   type="submit"
                   disabled={loading || phone.length < 10}
                   className="w-full py-3 rounded-[10px] text-base font-medium text-white suttro-transition hover:opacity-90 disabled:opacity-50"
-                  style={{ background: 'var(--suttro-primary)' }}
+                  style={{ background: 'linear-gradient(135deg, #0D9488, #14B8A6)', boxShadow: '0 4px 14px rgba(13,148,136,0.25)' }}
                 >
                   {loading ? 'পাঠানো হচ্ছে...' : 'OTP পাঠাও'}
                 </button>

@@ -52,14 +52,16 @@ export default async function Home() {
       {/* ── Hero Section ── */}
       <section
         className="relative overflow-hidden"
-        style={{ background: 'var(--suttro-deep)' }}
+        style={{ background: 'linear-gradient(160deg, #F0FDFA 0%, #F5F3FF 50%, #FEF3C7 100%)' }}
       >
-        <div className="mx-auto max-w-6xl px-6 py-14 lg:py-20">
+        {/* Subtle radial glow */}
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(13,148,136,0.08), transparent 65%)' }} />
+        <div className="mx-auto max-w-6xl px-6 py-14 lg:py-20 relative z-10">
           <div className="text-center mb-8 lg:mb-10">
-            <h1 className="text-[2.75rem] lg:text-5xl font-bold text-white leading-[1.15] mb-5">
+            <h1 className="text-[2.75rem] lg:text-5xl font-bold leading-[1.15] mb-5" style={{ color: '#134E4A' }}>
               বিজ্ঞান দেখো, বিজ্ঞান বোঝো।
             </h1>
-            <p className="text-lg lg:text-xl text-white/60 max-w-xl mx-auto mb-8">
+            <p className="text-lg lg:text-xl max-w-xl mx-auto mb-8" style={{ color: '#5F9EA0' }}>
               ক্লাস ৯-১০ ইন্টারেক্টিভ সায়েন্স সিমুলেশন — NCTB পাঠ্যবইয়ের প্রতিটি অধ্যায়,
               এখন তোমার হাতের মুঠোয়।
             </p>
@@ -67,14 +69,14 @@ export default async function Home() {
               <Link
                 href="/simulations"
                 className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-[12px] text-lg font-semibold text-white suttro-transition hover:opacity-90"
-                style={{ background: 'var(--suttro-primary)' }}
+                style={{ background: 'linear-gradient(135deg, #0D9488, #14B8A6)', boxShadow: '0 4px 14px rgba(13,148,136,0.25)' }}
               >
                 সিমুলেশন চালাও &rarr;
               </Link>
               <Link
                 href="/classes"
-                className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-[12px] text-lg font-semibold suttro-transition hover:bg-white/15"
-                style={{ color: 'white', border: '1.5px solid rgba(255,255,255,0.25)' }}
+                className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-[12px] text-lg font-semibold suttro-transition hover:bg-black/5"
+                style={{ color: '#0D9488', background: 'white', border: '1.5px solid #99F6E4' }}
               >
                 &#9654; ক্লাস দেখো
               </Link>
@@ -84,7 +86,7 @@ export default async function Home() {
           {/* Live simulation in hero */}
           <div className="max-w-4xl mx-auto">
             <HeroSimulation />
-            <p className="text-center text-sm text-white/30 mt-3">
+            <p className="text-center text-sm mt-3" style={{ color: '#94A3B8' }}>
               এটাই সূত্র — নিজে চালিয়ে দেখো &#9757;
             </p>
           </div>
@@ -92,20 +94,20 @@ export default async function Home() {
       </section>
 
       {/* ── Stats Bar ── */}
-      <section style={{ background: 'var(--suttro-sky)' }}>
+      <section style={{ background: '#F0FDFA' }}>
         <div className="mx-auto max-w-6xl px-6 py-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
             {STATS.map((stat) => (
               <div key={stat.label}>
                 <div
                   className="text-3xl lg:text-4xl font-bold"
-                  style={{ color: 'var(--suttro-primary)' }}
+                  style={{ color: '#0D9488' }}
                 >
                   {stat.value}
                 </div>
                 <div
                   className="text-base mt-1"
-                  style={{ color: 'var(--suttro-muted)' }}
+                  style={{ color: '#5F9EA0' }}
                 >
                   {stat.label}
                 </div>
@@ -116,11 +118,11 @@ export default async function Home() {
       </section>
 
       {/* ── Features ── */}
-      <section style={{ background: 'var(--suttro-surface)' }}>
+      <section style={{ background: '#F8FAFB' }}>
         <div className="mx-auto max-w-6xl px-6 py-16">
           <h2
             className="text-3xl lg:text-4xl font-bold text-center mb-10"
-            style={{ color: 'var(--suttro-deep)' }}
+            style={{ color: '#134E4A' }}
           >
             কেন সূত্র?
           </h2>
@@ -128,17 +130,17 @@ export default async function Home() {
             {FEATURES.map((feature) => (
               <div
                 key={feature.title}
-                className="rounded-[14px] border p-6"
-                style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-white)' }}
+                className="rounded-[12px] border p-6"
+                style={{ borderColor: '#F0F4F3', background: '#FFFFFF' }}
               >
                 <div className="text-4xl mb-3">{feature.icon}</div>
                 <h3
                   className="text-lg font-semibold mb-2"
-                  style={{ color: 'var(--suttro-deep)' }}
+                  style={{ color: '#134E4A' }}
                 >
                   {feature.title}
                 </h3>
-                <p className="text-base leading-relaxed" style={{ color: 'var(--suttro-muted)' }}>
+                <p className="text-base leading-relaxed" style={{ color: '#94A3B8' }}>
                   {feature.desc}
                 </p>
               </div>
@@ -148,48 +150,48 @@ export default async function Home() {
       </section>
 
       {/* ── Gamification / Learning Features ── */}
-      <section style={{ background: 'var(--suttro-white)' }}>
+      <section style={{ background: '#FFFFFF' }}>
         <div className="mx-auto max-w-6xl px-6 py-16">
           <h2
             className="text-3xl lg:text-4xl font-bold text-center mb-3"
-            style={{ color: 'var(--suttro-deep)' }}
+            style={{ color: '#134E4A' }}
           >
             শেখো, খেলো, জিতো
           </h2>
-          <p className="text-base text-center mb-10" style={{ color: 'var(--suttro-muted)' }}>
+          <p className="text-base text-center mb-10" style={{ color: '#94A3B8' }}>
             XP অর্জন করো, স্ট্রিক ধরে রাখো, ব্যাজ সংগ্রহ করো — প্রতিদিন।
           </p>
           <div className="grid lg:grid-cols-3 gap-6">
             <Link href="/daily"
-              className="rounded-[14px] border p-6 suttro-transition hover:shadow-lg hover:-translate-y-1"
-              style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-surface)' }}>
+              className="rounded-[12px] border p-6 suttro-transition hover:shadow-lg hover:-translate-y-1"
+              style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
               <div className="text-4xl mb-3">🎯</div>
-              <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--suttro-deep)' }}>
+              <h3 className="text-lg font-semibold mb-2" style={{ color: '#134E4A' }}>
                 দৈনিক চ্যালেঞ্জ
               </h3>
-              <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
+              <p className="text-base" style={{ color: '#94A3B8' }}>
                 প্রতিদিন ৫টি নতুন প্রশ্ন — সব সঠিক হলে বোনাস XP!
               </p>
             </Link>
             <Link href="/achievements"
-              className="rounded-[14px] border p-6 suttro-transition hover:shadow-lg hover:-translate-y-1"
-              style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-surface)' }}>
+              className="rounded-[12px] border p-6 suttro-transition hover:shadow-lg hover:-translate-y-1"
+              style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
               <div className="text-4xl mb-3">🎖️</div>
-              <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--suttro-deep)' }}>
+              <h3 className="text-lg font-semibold mb-2" style={{ color: '#134E4A' }}>
                 ব্যাজ ও অ্যাচিভমেন্ট
               </h3>
-              <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
+              <p className="text-base" style={{ color: '#94A3B8' }}>
                 ১৮টি ব্যাজ — পরীক্ষা দাও, স্ট্রিক রাখো, মাস্টার হও।
               </p>
             </Link>
             <Link href="/leaderboard"
-              className="rounded-[14px] border p-6 suttro-transition hover:shadow-lg hover:-translate-y-1"
-              style={{ borderColor: 'var(--suttro-border)', background: 'var(--suttro-surface)' }}>
+              className="rounded-[12px] border p-6 suttro-transition hover:shadow-lg hover:-translate-y-1"
+              style={{ borderColor: '#CCFBF1', background: '#FFFFFF' }}>
               <div className="text-4xl mb-3">🏆</div>
-              <h3 className="text-lg font-semibold mb-2" style={{ color: 'var(--suttro-deep)' }}>
+              <h3 className="text-lg font-semibold mb-2" style={{ color: '#134E4A' }}>
                 লিডারবোর্ড
               </h3>
-              <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
+              <p className="text-base" style={{ color: '#94A3B8' }}>
                 সাপ্তাহিক ও সর্বকালীন — তোমার র‍্যাংকিং দেখো।
               </p>
             </Link>
@@ -335,7 +337,7 @@ export default async function Home() {
           </div>
           <div className="grid lg:grid-cols-3 gap-5">
             {EXAMS.slice(0, 3).map((exam) => {
-              const color = EXAM_SUBJECT_COLORS[exam.subject] || '#1B6B4A';
+              const color = EXAM_SUBJECT_COLORS[exam.subject] || '#0D9488';
               return (
                 <Link
                   key={exam.id}
@@ -373,12 +375,12 @@ export default async function Home() {
       </section>
 
       {/* ── Trust / Teacher Section ── */}
-      <section style={{ background: 'var(--suttro-sky)' }}>
+      <section style={{ background: 'linear-gradient(135deg, #FFFBEB, #FEF3C7)', borderTop: '1px solid #FDE68A', borderBottom: '1px solid #FDE68A' }}>
         <div className="mx-auto max-w-3xl px-6 py-16 text-center">
-          <p className="text-xl font-semibold mb-3" style={{ color: 'var(--suttro-deep)' }}>
+          <p className="text-xl font-semibold mb-3" style={{ color: '#92400E' }}>
             ১০ বছরের অভিজ্ঞতা, এক ক্লিকে।
           </p>
-          <p className="text-base leading-relaxed" style={{ color: 'var(--suttro-muted)' }}>
+          <p className="text-base leading-relaxed" style={{ color: '#B45309' }}>
             সূত্র তৈরি করেছে একজন অভিজ্ঞ বিজ্ঞান শিক্ষক — যিনি জানেন ঠিক কোথায় শিক্ষার্থীরা আটকে যায়,
             আর কীভাবে interactive simulation দিয়ে সেই গ্যাপ পূরণ করা যায়।
           </p>
@@ -386,7 +388,7 @@ export default async function Home() {
       </section>
 
       {/* ── CTA ── */}
-      <section style={{ background: 'var(--suttro-deep)' }}>
+      <section style={{ background: '#134E4A' }}>
         <div className="mx-auto max-w-3xl px-6 py-16 text-center">
           <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
             আজই শুরু করো
@@ -397,8 +399,8 @@ export default async function Home() {
           <div className="flex flex-col lg:flex-row gap-3 justify-center">
             <Link
               href="/guide"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-[12px] text-lg font-semibold suttro-transition hover:opacity-90"
-              style={{ background: 'var(--suttro-accent)', color: 'var(--suttro-deep)' }}
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-[12px] text-lg font-semibold text-white suttro-transition hover:opacity-90"
+              style={{ background: 'linear-gradient(135deg, #F59E0B, #FBBF24)', boxShadow: '0 4px 14px rgba(245,158,11,0.25)' }}
             >
               গাইড দেখো &rarr;
             </Link>

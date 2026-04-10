@@ -75,9 +75,9 @@ export default function BottomNav() {
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 lg:hidden border-t"
       style={{
-        background: 'rgba(255, 255, 255, 0.95)',
+        background: 'rgba(255, 255, 255, 0.97)',
         backdropFilter: 'blur(12px)',
-        borderColor: 'var(--suttro-border)',
+        borderColor: '#F0F4F3',
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       }}
     >
@@ -92,7 +92,7 @@ export default function BottomNav() {
               href={item.href}
               className="flex flex-col items-center justify-center gap-0.5 w-16 h-[56px] rounded-lg suttro-transition"
               style={{
-                color: isActive ? 'var(--suttro-primary)' : 'var(--suttro-muted)',
+                color: isActive ? '#0D9488' : '#CBD5E1',
               }}
             >
               <span className={isActive ? 'opacity-100' : 'opacity-60'}>

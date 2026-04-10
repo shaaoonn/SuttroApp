@@ -12,7 +12,7 @@ export interface SimThumbData {
 export const SIM_THUMBNAILS: Record<string, SimThumbData> = {
   'ohms-law': {
     icon: '⚡',
-    bg: 'linear-gradient(135deg, #1e3a5f 0%, #2563EB 100%)',
+    bg: 'linear-gradient(135deg, #1e3a5f 0%, #3B82F6 100%)',
     visual: `<svg viewBox="0 0 240 130" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="20" y="50" width="60" height="30" rx="4" fill="#3b82f6" stroke="#93c5fd" stroke-width="1.5"/>
       <text x="50" y="70" text-anchor="middle" fill="white" font-size="12" font-family="monospace">R</text>
@@ -115,7 +115,7 @@ export const SIM_THUMBNAILS: Record<string, SimThumbData> = {
 
   'cell-division': {
     icon: '🧬',
-    bg: 'linear-gradient(135deg, #064e3b 0%, #059669 100%)',
+    bg: 'linear-gradient(135deg, #064e3b 0%, #EC4899 100%)',
     visual: `<svg viewBox="0 0 240 130" fill="none" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="80" cy="65" rx="50" ry="40" fill="#34d399" opacity="0.2" stroke="#34d399" stroke-width="1.5"/>
       <ellipse cx="80" cy="65" rx="18" ry="15" fill="#6ee7b7" opacity="0.3" stroke="#6ee7b7" stroke-width="1"/>

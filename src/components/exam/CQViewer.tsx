@@ -17,8 +17,8 @@ interface CQViewerProps {
 }
 
 const PART_COLORS = {
-  'জ্ঞানমূলক': '#059669',
-  'অনুধাবনমূলক': '#2563EB',
+  'জ্ঞানমূলক': '#10B981',
+  'অনুধাবনমূলক': '#3B82F6',
   'প্রয়োগমূলক': '#7C3AED',
   'উচ্চতর দক্ষতা': '#DC2626',
 };
@@ -29,7 +29,7 @@ export default function CQViewer({ question, subject, index }: CQViewerProps) {
   );
   const [allRevealed, setAllRevealed] = useState(false);
 
-  const subjectColor = EXAM_SUBJECT_COLORS[subject] || '#1B6B4A';
+  const subjectColor = EXAM_SUBJECT_COLORS[subject] || '#0D9488';
   const chapterName = getChapterName(subject, question.chapter);
 
   const togglePart = (i: number) => {

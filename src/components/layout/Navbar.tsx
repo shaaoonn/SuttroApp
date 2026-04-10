@@ -50,9 +50,9 @@ export default function Navbar() {
       <nav
         className="sticky top-0 z-50 border-b"
         style={{
-          background: 'rgba(250, 251, 249, 0.92)',
+          background: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(12px)',
-          borderColor: 'var(--suttro-border)',
+          borderColor: '#F0F4F3',
         }}
       >
         <div className="mx-auto max-w-6xl flex items-center justify-between px-4 h-16 lg:h-16">
@@ -60,7 +60,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-2 shrink-0">
             <span
               className="text-2xl font-bold"
-              style={{ color: 'var(--suttro-deep)' }}
+              style={{ color: '#0D9488' }}
             >
               সূত্র
             </span>
@@ -133,14 +133,14 @@ export default function Navbar() {
               user ? (
                 <div className="hidden lg:flex items-center gap-1">
                   {streak > 0 && (
-                    <Link href="/dashboard" className="flex items-center gap-1 px-2 py-1.5 rounded-[8px] text-xs font-medium"
-                      style={{ background: '#fff7ed', color: '#ea580c' }}>
+                    <Link href="/dashboard" className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-medium text-white"
+                      style={{ background: 'linear-gradient(135deg, #F59E0B, #FBBF24)' }}>
                       🔥 {streak}
                     </Link>
                   )}
                   {xp > 0 && (
-                    <Link href="/dashboard" className="flex items-center gap-1 px-2 py-1.5 rounded-[8px] text-xs font-medium"
-                      style={{ background: '#ecfdf5', color: '#059669' }}>
+                    <Link href="/dashboard" className="flex items-center gap-1 px-2.5 py-1.5 rounded-[8px] text-xs font-medium"
+                      style={{ background: '#F0FDFA', color: '#0D9488' }}>
                       ✨ {xp}
                     </Link>
                   )}
@@ -167,7 +167,7 @@ export default function Navbar() {
                     ) : (
                       <span
                         className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                        style={{ background: 'var(--suttro-primary)' }}
+                        style={{ background: 'linear-gradient(135deg, #0D9488, #2DD4BF)' }}
                       >
                         {user.user_metadata?.full_name?.charAt(0)?.toUpperCase()
                           || user.email?.charAt(0)?.toUpperCase()
@@ -180,8 +180,8 @@ export default function Navbar() {
               ) : (
                 <Link
                   href="/login"
-                  className="hidden lg:inline-flex items-center px-4 py-2 rounded-[10px] text-sm font-medium text-white suttro-transition"
-                  style={{ background: 'var(--suttro-primary)' }}
+                  className="hidden lg:inline-flex items-center px-4 py-2 rounded-[12px] text-sm font-medium text-white suttro-transition"
+                  style={{ background: 'linear-gradient(135deg, #0D9488, #14B8A6)', boxShadow: '0 4px 14px rgba(13,148,136,0.25)' }}
                 >
                   লগ ইন
                 </Link>

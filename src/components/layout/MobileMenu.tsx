@@ -25,7 +25,7 @@ export default function MobileMenu({ open, onClose, links, subjectLinks, user }:
   return (
     <div
       className="fixed inset-0 z-40 lg:hidden"
-      style={{ background: 'rgba(250, 251, 249, 0.98)', backdropFilter: 'blur(12px)' }}
+      style={{ background: 'rgba(255, 255, 255, 0.98)', backdropFilter: 'blur(12px)' }}
     >
       <div className="flex flex-col pt-20 px-6 gap-2">
         {/* Main actions */}
@@ -42,8 +42,8 @@ export default function MobileMenu({ open, onClose, links, subjectLinks, user }:
               onClick={onClose}
               className="flex items-center gap-2 px-5 py-3 rounded-[10px] text-base font-medium suttro-transition"
               style={a.primary
-                ? { background: 'var(--suttro-primary)', color: 'white' }
-                : { background: 'var(--suttro-sky)', color: 'var(--suttro-deep)' }}
+                ? { background: 'linear-gradient(135deg, #0D9488, #14B8A6)', color: 'white', boxShadow: '0 4px 14px rgba(13,148,136,0.25)' }
+                : { background: '#F0FDFA', color: '#134E4A' }}
             >
               {a.icon} {a.label}
             </Link>
@@ -133,7 +133,7 @@ export default function MobileMenu({ open, onClose, links, subjectLinks, user }:
             href="/login"
             onClick={onClose}
             className="mt-4 flex items-center justify-center py-4 px-4 rounded-[12px] text-lg font-semibold text-white"
-            style={{ background: 'var(--suttro-primary)' }}
+            style={{ background: 'linear-gradient(135deg, #0D9488, #14B8A6)', boxShadow: '0 4px 14px rgba(13,148,136,0.25)' }}
           >
             লগ ইন
           </Link>

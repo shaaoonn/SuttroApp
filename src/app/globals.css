@@ -129,20 +129,7 @@
 
 html {
   overflow-x: hidden;
-  /*
-   * Fluid font scaling for phones with wide CSS viewports (budget Android DPR issue).
-   *
-   * Problem: Budget phones have low DPR (~1.4), making 1080p screens render at
-   * ~770px CSS viewport — content looks tablet-sized but screen is phone-sized.
-   *
-   * Solution: Scale base font proportionally to viewport width using clamp().
-   * At 390px viewport (normal phone): 16px base  (4.1% of viewport)
-   * At 770px viewport (wide phone):   ~31px base  (4.1% of viewport = same proportion!)
-   *
-   * This makes text occupy the SAME physical proportion of screen regardless of DPR.
-   * Formula: font-size = 4.1vw, clamped between 16px minimum and 32px maximum.
-   */
-  font-size: clamp(16px, 4.1vw, 32px);
+  font-size: 16px;
 }
 
 /* Desktop: reset to standard 16px */
@@ -159,8 +146,8 @@ body {
   line-height: 1.7;
   overflow-x: hidden;
   max-width: 100vw;
-  overscroll-behavior-y: none; /* Prevent pull-to-refresh / overscroll bounce */
   -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
+  touch-action: manipulation; /* Fast taps, allow scroll */
 }
 
 /* ─────────────────────────────────────────────
@@ -173,8 +160,8 @@ body {
     padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
   }
 
-  /* Prevent text selection on UI chrome */
-  nav, header, footer, button, a {
+  /* Prevent text selection on UI chrome (not <a> — breaks touch scroll in WebView) */
+  nav, header, footer, button {
     -webkit-user-select: none;
     user-select: none;
   }

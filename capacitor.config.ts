@@ -7,6 +7,14 @@ const config: CapacitorConfig = {
   server: {
     url: 'https://suttro.app',
     cleartext: false,
+    allowNavigation: [
+      'suttro.app',
+      '*.suttro.app',
+      'accounts.google.com',
+      '*.google.com',
+      '*.googleapis.com',
+      '*.supabase.co',
+    ],
   },
   android: {
     buildOptions: {
@@ -25,16 +33,17 @@ const config: CapacitorConfig = {
       backgroundColor: '#FFFFFF',
       androidScaleType: 'CENTER_CROP',
       showSpinner: false,
-      splashFullScreen: true,
-      splashImmersive: true,
+      splashFullScreen: false,
+      splashImmersive: false,
     },
     StatusBar: {
-      style: 'LIGHT',
+      style: 'DARK',
       backgroundColor: '#FFFFFF',
+      overlaysWebView: false,
     },
     Keyboard: {
-      resize: 'body',
-      resizeOnFullScreen: true,
+      resize: 'none',
+      resizeOnFullScreen: false,
     },
   },
 };

@@ -3,7 +3,7 @@ import DesktopHome from '@/components/home/DesktopHome';
 import { getClasses, getExams } from '@/lib/data';
 import { getSiteContent, type ContentMap } from '@/lib/site-content';
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 // ─────────────────────────────────────────────
 // Homepage — সূত্র | suttro.app

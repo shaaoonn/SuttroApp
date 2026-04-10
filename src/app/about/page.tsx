@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'আমাদের সম্পর্কে — সূত্র | suttro.app',
 };
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 export default async function AboutPage() {
   const c = await getSiteContent('about');

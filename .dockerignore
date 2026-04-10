@@ -10,3 +10,12 @@ references/
 Dockerfile
 docker-compose.yml
 .dockerignore
+
+# Not needed for web build
+android/
+scripts/
+*.zip
+*.csv
+suttro_logo_*.png
+logo_*.png
+admin/

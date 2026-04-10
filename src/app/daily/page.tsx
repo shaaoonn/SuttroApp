@@ -76,6 +76,7 @@ interface Lesson {
   title: string;
   subject_id: string;
   total_marks: number;
+  class_level?: number;
 }
 
 interface DailyScore {
@@ -175,9 +176,17 @@ export default function DailyLessonPage() {
         >
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h1 className="text-lg font-bold" style={{ color: '#1E293B' }}>
-                📖 {lesson?.title || 'আজকের পড়া'}
-              </h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-lg font-bold" style={{ color: '#1E293B' }}>
+                  📖 {lesson?.title || 'আজকের পড়া'}
+                </h1>
+                {lesson?.class_level && (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white"
+                    style={{ background: lesson.class_level === 9 ? '#3B82F6' : '#7C3AED' }}>
+                    {lesson.class_level === 9 ? '৯ম' : '১০ম'}
+                  </span>
+                )}
+              </div>
               <p className="text-[12px]" style={{ color: '#64748B' }}>
                 {new Date(lesson?.lesson_date || '').toLocaleDateString('bn-BD', {
                   weekday: 'long', day: 'numeric', month: 'long',

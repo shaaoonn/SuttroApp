@@ -41,16 +41,36 @@ export async function GET(req: NextRequest) {
   const dateParam = req.nextUrl.searchParams.get('date');
   const targetDate = dateParam || today;
 
-  // Fetch the lesson for the target date
-  const { data: lesson, error: lessonErr } = await sb
+  // Get user's class_level from profile (default: 10)
+  let classLevel = 10;
+  if (userId) {
+    const { data: profile } = await sb
+      .from('profiles')
+      .select('class_level')
+      .eq('id', userId)
+      .single();
+    if (profile?.class_level) {
+      classLevel = profile.class_level;
+    }
+  }
+
+  // Allow override via query param (e.g. ?class=9)
+  const classParam = req.nextUrl.searchParams.get('class');
+  if (classParam && (classParam === '9' || classParam === '10')) {
+    classLevel = parseInt(classParam);
+  }
+
+  // Fetch the lesson for the target date filtered by class_level
+  const { data: lesson } = await sb
     .from('daily_lessons')
     .select('*')
     .eq('lesson_date', targetDate)
     .eq('is_published', true)
+    .eq('class_level', classLevel)
     .single();
 
   if (!lesson) {
-    return NextResponse.json({ lesson: null, message: 'আজকের জন্য কোনো পড়া নির্ধারিত হয়নি' });
+    return NextResponse.json({ lesson: null, classLevel, message: 'আজকের জন্য কোনো পড়া নির্ধারিত হয়নি' });
   }
 
   // Fetch lesson items
@@ -122,6 +142,7 @@ export async function GET(req: NextRequest) {
     dailyScore,
     date: targetDate,
     isToday: targetDate === today,
+    classLevel,
   });
 }
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
 
 // ─────────────────────────────────────────────
-// Pricing — Plan cards
+// Pricing — Plan cards + Donation
 // Design reference Page 8
 // ─────────────────────────────────────────────
 
@@ -26,6 +26,9 @@ export default function PricingClient() {
   const [error, setError] = useState<string | null>(null);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [plansLoading, setPlansLoading] = useState(true);
+  const [donateAmount, setDonateAmount] = useState('');
+  const [donateLoading, setDonateLoading] = useState(false);
+  const [donateSuccess, setDonateSuccess] = useState(false);
 
   useEffect(() => {
     fetch('/api/plans')
@@ -63,6 +66,36 @@ export default function PricingClient() {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'কিছু একটা ভুল হয়েছে');
       setLoading(null);
+    }
+  }
+
+  async function handleDonate() {
+    const amount = parseInt(donateAmount);
+    if (!amount || amount < 10) {
+      setError('সর্বনিম্ন ১০ টাকা দিতে হবে');
+      return;
+    }
+    if (!user || !session) {
+      window.location.href = '/login';
+      return;
+    }
+    setDonateLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/payment/bkash/initiate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ planId: 'donation', amount }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Payment initiation failed');
+      window.location.href = data.bkashURL;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'কিছু একটা ভুল হয়েছে');
+      setDonateLoading(false);
     }
   }
 
@@ -253,6 +286,99 @@ export default function PricingClient() {
             ))}
           </div>
         )}
+
+        {/* ═══ Donate Section ═══ */}
+        <div
+          className="mt-6 rounded-xl p-4"
+          style={{
+            background: 'white',
+            border: '1px solid #F0F4F3',
+          }}
+        >
+          <div className="text-center mb-3">
+            <div className="text-2xl mb-1">💝</div>
+            <h2 className="text-base font-bold" style={{ color: '#134E4A' }}>
+              ডোনেট করো
+            </h2>
+            <p className="text-xs mt-1" style={{ color: '#5F9EA0' }}>
+              সূত্র-কে এগিয়ে নিতে তোমার ইচ্ছামতো পরিমাণ দাও
+            </p>
+          </div>
+
+          {/* Quick amount buttons */}
+          <div className="flex gap-2 mb-3">
+            {['50', '100', '200', '500'].map((amt) => (
+              <button
+                key={amt}
+                onClick={() => setDonateAmount(amt)}
+                className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+                style={{
+                  background: donateAmount === amt
+                    ? 'linear-gradient(135deg, #EC4899, #F472B6)'
+                    : '#F8FAFB',
+                  color: donateAmount === amt ? 'white' : '#64748B',
+                  border: donateAmount === amt ? 'none' : '1px solid #E2E8F0',
+                }}
+              >
+                ৳{amt}
+              </button>
+            ))}
+          </div>
+
+          {/* Custom amount input */}
+          <div
+            className="flex rounded-xl overflow-hidden mb-3"
+            style={{ border: '1.5px solid #E2E8F0' }}
+          >
+            <span
+              className="flex items-center px-3 text-sm font-semibold"
+              style={{
+                background: '#F8FAFB',
+                color: '#94A3B8',
+                borderRight: '1px solid #E2E8F0',
+              }}
+            >
+              ৳
+            </span>
+            <input
+              type="number"
+              placeholder="তোমার পরিমাণ লেখো"
+              value={donateAmount}
+              onChange={(e) => setDonateAmount(e.target.value.replace(/\D/g, ''))}
+              min="10"
+              className="flex-1 px-3 py-2.5 text-sm outline-none"
+              style={{ color: '#134E4A' }}
+            />
+          </div>
+
+          {donateSuccess ? (
+            <div className="text-center py-2 text-sm font-semibold" style={{ color: '#16A34A' }}>
+              ধন্যবাদ! তোমার ডোনেশন গৃহীত হয়েছে 💚
+            </div>
+          ) : (
+            <button
+              onClick={handleDonate}
+              disabled={donateLoading || !donateAmount || parseInt(donateAmount) < 10}
+              className="w-full py-2.5 rounded-xl text-sm font-semibold text-white suttro-transition hover:opacity-90 disabled:opacity-50"
+              style={{
+                background: 'linear-gradient(135deg, #EC4899, #F472B6)',
+                boxShadow: '0 4px 14px rgba(236,72,153,0.25)',
+              }}
+            >
+              {donateLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  বিকাশে যাচ্ছে...
+                </span>
+              ) : (
+                `💝 ৳${donateAmount || '0'} ডোনেট করো`
+              )}
+            </button>
+          )}
+        </div>
 
         <p
           className="text-center text-[11px] mt-4"

@@ -74,8 +74,27 @@ export default function ContentPage() {
         body: JSON.stringify({ page, key, value }),
       });
       if (res.ok) {
+        // Update local state
+        setItems(prev => prev.map(item =>
+          item.page === page && item.key === key ? { ...item, value } : item
+        ));
         setSaved(id);
         setTimeout(() => setSaved(null), 2000);
+
+        // Trigger revalidation on main site
+        try {
+          const mainAppUrl = process.env.NEXT_PUBLIC_MAIN_APP_URL || 'https://suttro.app';
+          fetch(`${mainAppUrl}/api/revalidate`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-revalidate-secret': 'suttro-revalidate-2026',
+            },
+            body: JSON.stringify({ page }),
+          }).catch(() => {}); // fire & forget
+        } catch {
+          // Revalidation is best-effort
+        }
       }
     } catch {
       // ignore

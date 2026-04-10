@@ -1,19 +1,19 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { getClasses, getChapterNames } from '@/lib/data';
+import { getSiteContent } from '@/lib/site-content';
 import ClassesFilter from '@/components/classes/ClassesFilter';
-import { SUBJECT_COLORS, SUBJECT_LABELS, SUBJECT_ICONS, ytThumb } from '@/lib/constants';
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'ক্লাস আর্কাইভ — সূত্র | suttro.app',
 };
 
 export default async function ClassesPage() {
-  const [classes, chapterNames] = await Promise.all([
+  const [classes, chapterNames, cms] = await Promise.all([
     getClasses(),
     getChapterNames(),
+    getSiteContent('classes'),
   ]);
 
   return (
@@ -26,10 +26,10 @@ export default async function ClassesPage() {
           {/* Page header */}
           <div>
             <h1 className="text-lg font-bold" style={{ color: '#1E293B' }}>
-              ক্লাস আর্কাইভ
+              {cms.page_title || 'ক্লাস আর্কাইভ'}
             </h1>
             <p className="text-[13px]" style={{ color: '#94A3B8' }}>
-              বিষয় ও অধ্যায় ধরে ফিল্টার করো
+              {cms.page_subtitle || 'বিষয় ও অধ্যায় ধরে ফিল্টার করো'}
             </p>
           </div>
 
@@ -43,10 +43,10 @@ export default async function ClassesPage() {
       <div className="hidden lg:block">
         <div className="mx-auto max-w-6xl px-6 py-12">
           <h1 className="text-4xl font-bold mb-3" style={{ color: '#134E4A' }}>
-            ক্লাস আর্কাইভ
+            {cms.page_title || 'ক্লাস আর্কাইভ'}
           </h1>
           <p className="text-base mb-8" style={{ color: '#94A3B8' }}>
-            প্রতিদিনের ক্লাস রেকর্ডিং — বিষয় ও অধ্যায় ধরে ফিল্টার করো, যখন খুশি দেখো।
+            {cms.page_description || 'প্রতিদিনের ক্লাস রেকর্ডিং'} — {cms.page_subtitle || 'বিষয় ও অধ্যায় ধরে ফিল্টার করো, যখন খুশি দেখো।'}
           </p>
 
           <ClassesFilter classes={classes} chapterNames={chapterNames} />
@@ -57,7 +57,7 @@ export default async function ClassesPage() {
           >
             <div className="text-3xl mb-3">📹</div>
             <p className="text-base font-medium mb-2" style={{ color: '#134E4A' }}>
-              প্রতিদিন নতুন ক্লাস যোগ হচ্ছে
+              {cms.info_text || 'প্রতিদিন নতুন ক্লাস যোগ হচ্ছে'}
             </p>
             <p className="text-base" style={{ color: '#94A3B8' }}>
               ৬টি বিষয়ে {classes.length}টি ক্লাস রেকর্ডিং এখন দেখার জন্য প্রস্তুত।

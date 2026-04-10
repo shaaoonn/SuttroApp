@@ -8,10 +8,15 @@ import { getSupabase } from './supabase-server';
 
 export type ContentMap = Record<string, string>;
 
-// In-memory cache (per server instance, refreshed every 60s)
+// In-memory cache (per server instance, refreshed every 10s)
 let cache: Record<string, ContentMap> = {};
 let cacheTime = 0;
-const CACHE_TTL = 60_000; // 1 minute
+const CACHE_TTL = 10_000; // 10 seconds
+
+export function clearCache() {
+  cache = {};
+  cacheTime = 0;
+}
 
 export async function getSiteContent(page: string): Promise<ContentMap> {
   const now = Date.now();

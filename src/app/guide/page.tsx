@@ -1,13 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getGuide } from '@/lib/data';
+import { getSiteContent } from '@/lib/site-content';
 
 // ─────────────────────────────────────────────
 // Guide — Subject selection
 // Mobile: gradient icon cards
 // ─────────────────────────────────────────────
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'গাইড — বিষয়ভিত্তিক কন্টেন্ট — সূত্র | suttro.app',
@@ -25,7 +26,7 @@ const SUBJECT_STYLES: Record<string, { bg: string; light: string; lightBg: strin
 };
 
 export default async function GuidePage() {
-  const GUIDE = await getGuide();
+  const [GUIDE, cms] = await Promise.all([getGuide(), getSiteContent('guide')]);
 
   return (
     <div style={{ background: '#F8FAFB' }}>
@@ -35,10 +36,10 @@ export default async function GuidePage() {
           {/* Header */}
           <div className="mb-4">
             <h1 className="text-lg font-bold" style={{ color: '#134E4A' }}>
-              গাইড
+              {cms.page_title || 'গাইড'}
             </h1>
             <p className="text-xs" style={{ color: '#5F9EA0' }}>
-              বিষয় বেছে নাও — অধ্যায় অনুযায়ী সব কন্টেন্ট
+              {cms.page_subtitle || 'বিষয় বেছে নাও'} — {cms.page_description || 'অধ্যায় অনুযায়ী সব কন্টেন্ট'}
             </p>
           </div>
 
@@ -117,10 +118,10 @@ export default async function GuidePage() {
         <div className="mx-auto max-w-6xl px-6 py-10">
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-3" style={{ color: '#134E4A' }}>
-              গাইড
+              {cms.page_title || 'গাইড'}
             </h1>
             <p className="text-base" style={{ color: '#94A3B8' }}>
-              বিষয় বেছে নাও — অধ্যায় অনুযায়ী সব কন্টেন্ট এক জায়গায়।
+              {cms.page_subtitle || 'বিষয় বেছে নাও'} — {cms.page_description || 'অধ্যায় অনুযায়ী সব কন্টেন্ট এক জায়গায়।'}
             </p>
           </div>
 

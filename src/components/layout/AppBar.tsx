@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/auth-context';
 
 // ─────────────────────────────────────────────
 // AppBar — Native-style top bar (mobile only)
-// Home: Logo + streak badge + avatar
+// Home: Logo + streak badge + avatar (Google photo)
 // Sub-pages: back button + centered title
 // ─────────────────────────────────────────────
 
@@ -40,7 +40,7 @@ function getTitle(pathname: string): string {
 }
 
 // Pages where AppBar should be hidden (immersive content)
-const HIDDEN_PATHS = ['/sim/', '/class/'];
+const HIDDEN_PATHS = ['/sim/'];
 
 // Main tab routes — no back button needed
 const TAB_ROUTES = ['/', '/guide', '/exams', '/dashboard'];
@@ -57,12 +57,16 @@ export default function AppBar() {
   const isHome = pathname === '/';
   const title = getTitle(pathname);
 
-  // User initial for avatar
+  // User avatar: prefer Google photo, fallback to initial
   const displayName =
     user?.user_metadata?.full_name ||
     user?.user_metadata?.name ||
     '';
   const initial = displayName ? displayName.charAt(0) : 'সূ';
+  const avatarUrl =
+    user?.user_metadata?.avatar_url ||
+    user?.user_metadata?.picture ||
+    '';
 
   return (
     <header
@@ -99,20 +103,38 @@ export default function AppBar() {
               )}
               <Link
                 href={user ? '/dashboard' : '/login'}
-                className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
-                style={{
-                  background: user
-                    ? 'linear-gradient(135deg, #0D9488, #2DD4BF)'
-                    : '#E2E8F0',
-                  color: user ? '#fff' : '#94A3B8',
-                }}
+                className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden"
+                style={
+                  !user || !avatarUrl
+                    ? {
+                        background: user
+                          ? 'linear-gradient(135deg, #0D9488, #2DD4BF)'
+                          : '#E2E8F0',
+                        color: user ? '#fff' : '#94A3B8',
+                        fontSize: '13px',
+                        fontWeight: 700,
+                      }
+                    : undefined
+                }
               >
-                {user ? initial : '?'}
+                {avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={avatarUrl}
+                    alt=""
+                    className="w-8 h-8 rounded-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : user ? (
+                  initial
+                ) : (
+                  '?'
+                )}
               </Link>
             </div>
           </>
         ) : isTab ? (
-          /* ── Other tab pages: title left-aligned ── */
+          /* ── Other tab pages: title left-aligned + avatar right ── */
           <>
             <h1
               className="text-xl font-bold flex-1"
@@ -120,6 +142,34 @@ export default function AppBar() {
             >
               {title}
             </h1>
+            {user && (
+              <Link
+                href="/dashboard"
+                className="w-7 h-7 rounded-full flex items-center justify-center overflow-hidden"
+                style={
+                  !avatarUrl
+                    ? {
+                        background: 'linear-gradient(135deg, #0D9488, #2DD4BF)',
+                        color: '#fff',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                      }
+                    : undefined
+                }
+              >
+                {avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={avatarUrl}
+                    alt=""
+                    className="w-7 h-7 rounded-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  initial
+                )}
+              </Link>
+            )}
           </>
         ) : (
           /* ── Sub-page: back button + centered title ── */
@@ -148,8 +198,23 @@ export default function AppBar() {
             >
               {title}
             </h1>
-            {/* Spacer to keep title centered */}
-            <div className="w-10" />
+            {/* Avatar or spacer */}
+            {user && avatarUrl ? (
+              <Link
+                href="/dashboard"
+                className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={avatarUrl}
+                  alt=""
+                  className="w-7 h-7 rounded-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </Link>
+            ) : (
+              <div className="w-10" />
+            )}
           </>
         )}
       </div>

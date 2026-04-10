@@ -166,6 +166,7 @@ export default function DashboardPage() {
   const [xpStats, setXpStats] = useState<XPStats | null>(null);
   const [srsCount, setSrsCount] = useState(0);
   const [subjectProgress, setSubjectProgress] = useState<SubjectProgress[]>([]);
+  const [classLevel, setClassLevel] = useState<number | null>(null);
   const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
@@ -176,17 +177,19 @@ export default function DashboardPage() {
     if (!session?.access_token) return;
     const headers = { Authorization: `Bearer ${session.access_token}` };
 
-    const [dashRes, xpRes, srsRes, progressRes] = await Promise.all([
+    const [dashRes, xpRes, srsRes, progressRes, profileRes] = await Promise.all([
       fetch('/api/dashboard', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
       fetch('/api/xp', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
       fetch('/api/srs', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
       fetch('/api/chapter-progress', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+      fetch('/api/profile', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
     ]);
 
     if (dashRes) setData(dashRes);
     if (xpRes) setXpStats(xpRes);
     if (srsRes) setSrsCount(srsRes.totalDue ?? 0);
     if (progressRes) setSubjectProgress(progressRes.subjects ?? []);
+    if (profileRes) setClassLevel(profileRes.class_level ?? 9);
     setDataLoading(false);
   }, [session?.access_token]);
 
@@ -216,6 +219,10 @@ export default function DashboardPage() {
     user.user_metadata?.name ||
     'শিক্ষার্থী';
   const initial = displayName.charAt(0);
+  const avatarUrl =
+    user.user_metadata?.avatar_url ||
+    user.user_metadata?.picture ||
+    '';
   const totalXP = xpStats?.total_xp ?? 0;
   const level = xpStats?.level ?? calculateLevel(totalXP);
   const streak = xpStats?.current_streak ?? 0;
@@ -233,15 +240,29 @@ export default function DashboardPage() {
         }}
       >
         {/* Avatar */}
-        <div
-          className="w-14 h-14 mx-auto mb-2 rounded-full flex items-center justify-center text-xl text-white font-bold"
-          style={{
-            background: 'linear-gradient(135deg, #0D9488, #2DD4BF)',
-            boxShadow: '0 4px 16px rgba(13,148,136,0.3)',
-          }}
-        >
-          {initial}
-        </div>
+        {avatarUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={avatarUrl}
+            alt=""
+            className="w-14 h-14 mx-auto mb-2 rounded-full object-cover"
+            style={{
+              border: '2.5px solid #0D9488',
+              boxShadow: '0 4px 16px rgba(13,148,136,0.3)',
+            }}
+            referrerPolicy="no-referrer"
+          />
+        ) : (
+          <div
+            className="w-14 h-14 mx-auto mb-2 rounded-full flex items-center justify-center text-xl text-white font-bold"
+            style={{
+              background: 'linear-gradient(135deg, #0D9488, #2DD4BF)',
+              boxShadow: '0 4px 16px rgba(13,148,136,0.3)',
+            }}
+          >
+            {initial}
+          </div>
+        )}
         <div
           className="text-base font-bold"
           style={{ color: '#134E4A' }}
@@ -249,7 +270,7 @@ export default function DashboardPage() {
           {displayName}
         </div>
         <div className="text-xs mb-3" style={{ color: '#5F9EA0' }}>
-          ক্লাস ১০
+          {classLevel ? (classLevel === 10 ? 'ক্লাস ১০' : 'ক্লাস ৯') : 'ক্লাস ৯-১০'}
         </div>
 
         {/* Stat Cards Row */}

@@ -112,12 +112,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Increment read_count on notification
-    await sb.rpc('increment_read_count', { notif_id: notification_id }).catch(() => {
-      // Fallback: manually update
-      sb.from('notifications')
-        .update({ read_count: sb.rpc ? undefined : 0 })
-        .eq('id', notification_id);
-    });
+    try {
+      await sb.rpc('increment_read_count', { notif_id: notification_id });
+    } catch {
+      // Fallback: ignore if function doesn't exist
+    }
 
     return NextResponse.json({ success: true });
   } catch {

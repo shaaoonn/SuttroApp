@@ -324,6 +324,8 @@ export default function LoginPage() {
           )}
         </div>
       </div>
+      {/* Invisible reCAPTCHA container for Firebase Phone Auth */}
+      <div id="recaptcha-container" />
     </div>
   );
 }

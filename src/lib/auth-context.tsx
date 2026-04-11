@@ -12,9 +12,9 @@ import { isSupabaseConfigured, SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/sup
 import type { User, Session, SupabaseClient } from '@supabase/supabase-js';
 
 // ─────────────────────────────────────────────
-// Auth Context — Supabase Phone OTP
-// Client created lazily inside useEffect (client-side only)
-// Works without credentials in dev/build
+// Auth Context — Firebase Phone OTP + Supabase Session
+// Phone auth: Firebase sends OTP → verify → exchange for Supabase session
+// Google auth: Supabase OAuth (web only)
 // ─────────────────────────────────────────────
 
 interface AuthState {
@@ -22,6 +22,7 @@ interface AuthState {
   session: Session | null;
   loading: boolean;
   configured: boolean;
+  supabase: SupabaseClient | null;
 }
 
 interface AuthContextType extends AuthState {
@@ -40,6 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     session: null,
     loading: isSupabaseConfigured,
     configured: isSupabaseConfigured,
+    supabase: null,
   });
 
   useEffect(() => {
@@ -60,6 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           session,
           loading: false,
           configured: true,
+          supabase: client,
         });
       });
 
@@ -71,6 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             session,
             loading: false,
             configured: true,
+            supabase: client,
           });
         }
       );
@@ -80,23 +84,75 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  // ── Firebase Phone OTP — Send ──
   const sendOTP = async (phone: string): Promise<{ error: string | null }> => {
-    if (!clientRef.current) return { error: 'Auth সেটআপ হয়নি — Supabase credentials দাও' };
-    const { error } = await clientRef.current.auth.signInWithOtp({ phone });
-    return { error: error?.message ?? null };
+    try {
+      const { firebaseSendOTP, setupRecaptcha } = await import('@/lib/firebase-client');
+
+      // Setup recaptcha if not already done
+      let verifier = (window as unknown as { _suttroRecaptcha?: ReturnType<typeof setupRecaptcha> })._suttroRecaptcha;
+      if (!verifier) {
+        // Make sure the recaptcha container exists
+        let container = document.getElementById('recaptcha-container');
+        if (!container) {
+          container = document.createElement('div');
+          container.id = 'recaptcha-container';
+          document.body.appendChild(container);
+        }
+        verifier = setupRecaptcha('recaptcha-container');
+        (window as unknown as { _suttroRecaptcha?: ReturnType<typeof setupRecaptcha> })._suttroRecaptcha = verifier;
+      }
+
+      const result = await firebaseSendOTP(phone, verifier);
+      return result;
+    } catch (err) {
+      console.error('sendOTP error:', err);
+      return { error: 'OTP পাঠাতে সমস্যা হয়েছে — আবার চেষ্টা করো' };
+    }
   };
 
-  const verifyOTP = async (phone: string, token: string): Promise<{ error: string | null }> => {
-    if (!clientRef.current) return { error: 'Auth সেটআপ হয়নি' };
-    const { error } = await clientRef.current.auth.verifyOtp({ phone, token, type: 'sms' });
-    return { error: error?.message ?? null };
+  // ── Firebase Phone OTP — Verify & Exchange for Supabase Session ──
+  const verifyOTP = async (_phone: string, code: string): Promise<{ error: string | null }> => {
+    try {
+      const { firebaseVerifyOTP } = await import('@/lib/firebase-client');
+
+      // Verify OTP with Firebase
+      const { token: firebaseToken, error: verifyError } = await firebaseVerifyOTP(code);
+      if (verifyError || !firebaseToken) {
+        return { error: verifyError || 'OTP যাচাই করতে সমস্যা হয়েছে' };
+      }
+
+      // Exchange Firebase token for Supabase session
+      const res = await fetch('/api/auth/firebase-exchange', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firebase_token: firebaseToken }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        return { error: data.error || 'লগইন করতে সমস্যা হয়েছে' };
+      }
+
+      // Set the Supabase session manually
+      if (clientRef.current && data.access_token && data.refresh_token) {
+        await clientRef.current.auth.setSession({
+          access_token: data.access_token,
+          refresh_token: data.refresh_token,
+        });
+      }
+
+      return { error: null };
+    } catch (err) {
+      console.error('verifyOTP error:', err);
+      return { error: 'লগইন করতে সমস্যা হয়েছে — আবার চেষ্টা করো' };
+    }
   };
 
+  // ── Google OAuth via Supabase ──
   const signInWithGoogle = async (): Promise<{ error: string | null }> => {
     if (!clientRef.current) return { error: 'Auth সেটআপ হয়নি — Supabase credentials দাও' };
 
-    // Use skipBrowserRedirect to prevent Supabase from auto-navigating
-    // This ensures the WebView (Capacitor) handles the redirect properly
     const { data, error } = await clientRef.current.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -107,7 +163,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (error) return { error: error.message };
 
-    // Manually navigate — keeps it inside WebView in Capacitor
     if (data?.url) {
       window.location.href = data.url;
     }
@@ -117,10 +172,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     if (clientRef.current) await clientRef.current.auth.signOut();
+
+    // Also sign out from Firebase
+    try {
+      const { getFirebaseAuth } = await import('@/lib/firebase-client');
+      await getFirebaseAuth().signOut();
+    } catch {
+      // Firebase sign out failure is non-critical
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ ...state, sendOTP, verifyOTP, signInWithGoogle, signOut }}>
+    <AuthContext.Provider
+      value={{ ...state, sendOTP, verifyOTP, signInWithGoogle, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   );

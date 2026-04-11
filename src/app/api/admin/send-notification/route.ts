@@ -10,7 +10,7 @@ import { sendPushNotification } from '@/lib/firebase-admin';
 // ─────────────────────────────────────────────
 
 // Admin user IDs who can send notifications
-const ADMIN_IDS = [
+const ADMIN_IDS: string[] = [
   // Add admin user IDs here
 ];
 

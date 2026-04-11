@@ -1,11 +1,13 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { isNativeApp } from '@/lib/native-bridge';
 
 // ─────────────────────────────────────────────
 // BottomNav — 4-tab native-style bottom bar
-// Standard mobile pattern: Home, Learn, Test, Me
+// Hidden when running inside native Android shell
 // ─────────────────────────────────────────────
 
 const NAV_ITEMS = [
@@ -78,9 +80,13 @@ const NAV_ITEMS = [
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const [native, setNative] = useState(false);
+  useEffect(() => { setNative(isNativeApp()); }, []);
 
-  // Hide on immersive content pages and auth/onboarding screens
+  // Hide in native app (native BottomNavigationView replaces this)
+  // Also hide on immersive content pages and auth/onboarding screens
   if (
+    native ||
     pathname.startsWith('/sim/') ||
     pathname.startsWith('/class/') ||
     pathname.startsWith('/exam/') ||

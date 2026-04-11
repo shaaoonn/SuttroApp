@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import BottomNav from "@/components/layout/BottomNav";
 import PWARegister from "@/components/PWARegister";
 import AuthGate from "@/components/AuthGate";
+import NativeBridgeSync from "@/components/NativeBridgeSync";
 import { AuthProvider } from "@/lib/auth-context";
 import "./globals.css";
 
@@ -107,6 +108,7 @@ export default function RootLayout({
             <BottomNav />
           </AuthGate>
           <PWARegister />
+          <NativeBridgeSync />
         </AuthProvider>
       </body>
     </html>

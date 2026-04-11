@@ -1,14 +1,15 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
+import { isNativeApp } from '@/lib/native-bridge';
 
 // ─────────────────────────────────────────────
 // AppBar — Native-style top bar (mobile only)
-// Home: Logo + streak badge + avatar (Google photo)
-// Sub-pages: back button + centered title
+// Hidden when running inside native Android shell
 // ─────────────────────────────────────────────
 
 const PAGE_TITLES: Record<string, string> = {
@@ -53,6 +54,11 @@ export default function AppBar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user } = useAuth();
+  const [native, setNative] = useState(false);
+  useEffect(() => { setNative(isNativeApp()); }, []);
+
+  // Hide in native app (native MaterialToolbar replaces this)
+  if (native) return null;
 
   // Hide on immersive content pages
   if (HIDDEN_PATHS.some((p) => pathname.startsWith(p))) return null;

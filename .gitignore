@@ -56,3 +56,12 @@ next-env.d.ts
 *.aab
 *.keystore
 *.jks
+
+# Admin panel build
+admin/.next/
+
+# Zip archives
+*.zip
+
+# Firebase service account key (NEVER commit)
+*-firebase-adminsdk-*.json

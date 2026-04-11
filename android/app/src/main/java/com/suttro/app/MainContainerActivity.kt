@@ -1,0 +1,629 @@
+package com.suttro.app
+
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.util.Log
+import android.view.HapticFeedbackConstants
+import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.OvershootInterpolator
+import android.webkit.CookieManager
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.FrameLayout
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
+import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.webkit.WebSettingsCompat
+import androidx.webkit.WebViewFeature
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.messaging.FirebaseMessaging
+
+class MainContainerActivity : AppCompatActivity() {
+
+    private lateinit var sessionManager: SessionManager
+    private lateinit var webView: WebView
+    private lateinit var bottomNav: BottomNavigationView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var shimmerLayout: ShimmerFrameLayout
+
+    // Toolbar views
+    private lateinit var toolbarContainer: FrameLayout
+    private lateinit var homeToolbar: RelativeLayout
+    private lateinit var pageToolbar: RelativeLayout
+    private lateinit var toolbarBack: ImageButton
+    private lateinit var toolbarTitle: TextView
+    private lateinit var toolbarAvatar: ImageView
+    private lateinit var avatarContainer: FrameLayout
+    private lateinit var bellContainer: FrameLayout
+    private lateinit var badgeCount: TextView
+
+    private var sessionInjected = false
+    private var isNavigatingFromTab = false
+    private var currentPath = "/"
+    private var isFirstLoad = true
+
+    // Tab path mapping — 4 tabs
+    private val tabPaths = mapOf(
+        R.id.nav_home to "/",
+        R.id.nav_guide to "/guide",
+        R.id.nav_exam to "/exams",
+        R.id.nav_profile to "/dashboard"
+    )
+
+    private val tabTitles = mapOf(
+        "/" to "সূত্র",
+        "/guide" to "শেখো",
+        "/exams" to "পরীক্ষা",
+        "/dashboard" to "আমি"
+    )
+
+    private val subPageTitles = mapOf(
+        "/simulations" to "সিমুলেশন",
+        "/classes" to "সব ক্লাস",
+        "/daily" to "আজকের পড়া",
+        "/review" to "SRS রিভিউ",
+        "/achievements" to "অ্যাচিভমেন্ট",
+        "/leaderboard" to "লিডারবোর্ড",
+        "/pricing" to "প্রাইসিং",
+        "/profile" to "প্রোফাইল সেটিংস",
+        "/about" to "সম্পর্কে",
+        "/terms" to "শর্তাবলী",
+        "/privacy" to "গোপনীয়তা নীতি",
+        "/payment/success" to "পেমেন্ট সফল",
+        "/payment/failed" to "পেমেন্ট ব্যর্থ"
+    )
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        sessionManager = SessionManager(this)
+        initViews()
+        setupWebView()
+        setupBottomNav()
+        setupBackNavigation()
+        setupSwipeRefresh()
+        loadUserAvatar()
+
+        // Avatar click → dashboard
+        avatarContainer.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+            isNavigatingFromTab = true
+            navigateSPA("/dashboard")
+            bottomNav.selectedItemId = R.id.nav_profile
+        }
+
+        // Bell click → dashboard (notifications area)
+        bellContainer.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+            isNavigatingFromTab = true
+            navigateSPA("/dashboard")
+            bottomNav.selectedItemId = R.id.nav_profile
+        }
+
+        // Back button
+        toolbarBack.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+            if (webView.canGoBack()) {
+                webView.goBack()
+            } else {
+                isNavigatingFromTab = true
+                navigateSPA("/")
+                bottomNav.selectedItemId = R.id.nav_home
+            }
+        }
+
+        showHomeToolbar()
+        showShimmer()
+
+        // Request notification permission (Android 13+)
+        requestNotificationPermission()
+
+        // Register FCM token
+        registerFCMToken()
+
+        // Handle deep link from notification or external
+        val notificationPath = intent.getStringExtra("deep_link_path")
+        if (notificationPath != null) {
+            loadPath(notificationPath)
+        } else if (!handleDeepLink(intent)) {
+            loadPath("/")
+        }
+    }
+
+    // ═══ FCM Setup ═══
+
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        Log.d("SuttroFCM", "Notification permission granted: $granted")
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
+    private fun registerFCMToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result
+                Log.d("SuttroFCM", "FCM Token: $token")
+                // Token will be sent to server by SuttroFirebaseService.onNewToken()
+            } else {
+                Log.e("SuttroFCM", "Failed to get FCM token", task.exception)
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        handleDeepLink(intent)
+    }
+
+    private fun initViews() {
+        toolbarContainer = findViewById(R.id.toolbar_container)
+        homeToolbar = findViewById(R.id.home_toolbar)
+        pageToolbar = findViewById(R.id.page_toolbar)
+        toolbarBack = findViewById(R.id.toolbar_back)
+        toolbarTitle = findViewById(R.id.toolbar_title)
+        toolbarAvatar = findViewById(R.id.toolbar_avatar)
+        avatarContainer = findViewById(R.id.avatar_container)
+        bellContainer = findViewById(R.id.bell_container)
+        badgeCount = findViewById(R.id.badge_count)
+        webView = findViewById(R.id.webview)
+        bottomNav = findViewById(R.id.bottom_nav)
+        progressBar = findViewById(R.id.progress_bar)
+        swipeRefresh = findViewById(R.id.swipe_refresh)
+        shimmerLayout = findViewById(R.id.shimmer_layout)
+    }
+
+    // ─── Deep Linking (#11) ───
+
+    private fun handleDeepLink(intent: Intent?): Boolean {
+        val uri = intent?.data ?: return false
+        if (uri.host == "suttro.app") {
+            val path = uri.path ?: "/"
+            loadPath(path)
+            updateToolbarForPath(path)
+            val tabId = tabPaths.entries.find { (_, p) ->
+                if (p == "/") path == "/" else path.startsWith(p)
+            }?.key
+            tabId?.let { bottomNav.selectedItemId = it }
+            return true
+        }
+        return false
+    }
+
+    // ─── User Avatar ───
+
+    private fun loadUserAvatar() {
+        val avatarUrl = sessionManager.getUserAvatarUrl()
+        if (!avatarUrl.isNullOrBlank()) {
+            Glide.with(this)
+                .load(avatarUrl)
+                .transform(CircleCrop())
+                .placeholder(R.drawable.ic_avatar_default)
+                .error(R.drawable.ic_avatar_default)
+                .into(toolbarAvatar)
+        }
+    }
+
+    // ─── Toolbar States ───
+
+    private fun showHomeToolbar() {
+        homeToolbar.visibility = View.VISIBLE
+        pageToolbar.visibility = View.GONE
+    }
+
+    private fun showPageToolbar(title: String) {
+        homeToolbar.visibility = View.GONE
+        pageToolbar.visibility = View.VISIBLE
+        toolbarTitle.text = title
+    }
+
+    // ─── Shimmer Loading (#5) ───
+
+    private fun showShimmer() {
+        shimmerLayout.visibility = View.VISIBLE
+        shimmerLayout.startShimmer()
+        webView.visibility = View.INVISIBLE
+    }
+
+    private fun hideShimmer() {
+        if (shimmerLayout.visibility == View.VISIBLE) {
+            shimmerLayout.stopShimmer()
+            // Crossfade animation
+            val fadeOut = AlphaAnimation(1f, 0f).apply { duration = 250 }
+            shimmerLayout.startAnimation(fadeOut)
+            shimmerLayout.visibility = View.GONE
+            webView.visibility = View.VISIBLE
+            val fadeIn = AlphaAnimation(0f, 1f).apply { duration = 250 }
+            webView.startAnimation(fadeIn)
+        }
+    }
+
+    // ─── Badge (#3) ───
+
+    private fun updateBadgeCount(count: Int) {
+        if (count > 0) {
+            badgeCount.text = if (count > 99) "99+" else count.toString()
+            badgeCount.visibility = View.VISIBLE
+        } else {
+            badgeCount.visibility = View.GONE
+        }
+    }
+
+    // ─── SwipeRefresh (#9) ───
+
+    private fun setupSwipeRefresh() {
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary)
+        swipeRefresh.setOnRefreshListener {
+            webView.reload()
+        }
+        // Only trigger when WebView is scrolled to top
+        swipeRefresh.setOnChildScrollUpCallback { _, _ ->
+            webView.scrollY > 0
+        }
+    }
+
+    // ─── WebView Setup (all features integrated) ───
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun setupWebView() {
+        val settings = webView.settings
+        settings.javaScriptEnabled = true
+        settings.domStorageEnabled = true
+        @Suppress("DEPRECATION")
+        settings.databaseEnabled = true
+        settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
+        settings.mediaPlaybackRequiresUserGesture = false
+        settings.allowFileAccess = true
+        settings.loadWithOverviewMode = true
+        settings.useWideViewPort = true
+        settings.setSupportZoom(false)
+
+        // Cache strategy (#10) — use cache when available
+        settings.cacheMode = WebSettings.LOAD_DEFAULT
+
+        // User agent
+        val defaultUA = settings.userAgentString
+        settings.userAgentString = "$defaultUA ${SuttroConfig.USER_AGENT_SUFFIX}"
+
+        // Force light mode — no dark mode
+        try {
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
+                WebSettingsCompat.setAlgorithmicDarkeningAllowed(settings, false)
+            }
+        } catch (_: Exception) { }
+
+        // Cookies
+        CookieManager.getInstance().setAcceptCookie(true)
+        CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
+
+        // JavaScript bridge (with title + badge callbacks)
+        val bridge = SuttroBridge(
+            sessionManager = sessionManager,
+            onPageChanged = { path -> runOnUiThread { onWebPageChanged(path) } },
+            onLogout = { runOnUiThread { handleLogout() } },
+            onReady = { runOnUiThread { progressBar.visibility = View.GONE } },
+            onTitleUpdate = { title -> runOnUiThread { onDynamicTitleUpdate(title) } },
+            onBadgeUpdate = { count -> runOnUiThread { updateBadgeCount(count) } }
+        )
+        webView.addJavascriptInterface(bridge, SuttroBridge.INTERFACE_NAME)
+
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+                val url = request.url.toString()
+                if (url.contains("suttro.app/login")) {
+                    handleLogout()
+                    return true
+                }
+                if (url.contains("suttro.app")) return false
+                try { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) } catch (_: Exception) {}
+                return true
+            }
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                progressBar.visibility = View.VISIBLE
+                if (isFirstLoad) {
+                    showShimmer()
+                }
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                progressBar.visibility = View.GONE
+                swipeRefresh.isRefreshing = false
+                hideShimmer()
+                isFirstLoad = false
+                CookieManager.getInstance().flush()
+
+                if (url?.contains("suttro.app") == true) {
+                    hideWebNavigation(view)
+                    if (!sessionInjected) {
+                        injectSession(view)
+                    }
+                }
+            }
+        }
+
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                if (newProgress >= 100) {
+                    progressBar.visibility = View.GONE
+                    swipeRefresh.isRefreshing = false
+                }
+            }
+        }
+    }
+
+    private fun hideWebNavigation(view: WebView?) {
+        view?.evaluateJavascript("""
+            (function() {
+                if (window.__suttroNativeSetup) return;
+                window.__suttroNativeSetup = true;
+
+                // 1. Hide web AppBar & BottomNav via CSS
+                var style = document.createElement('style');
+                style.id = 'suttro-native-hide';
+                style.textContent = [
+                    'header.sticky.top-0.lg\\:hidden { display: none !important; }',
+                    'nav.fixed.bottom-0.lg\\:hidden { display: none !important; }',
+                    'main { padding-bottom: 0 !important; }'
+                ].join('\n');
+                document.head.appendChild(style);
+
+                // 2. Monitor SPA route changes
+                function checkRoute() {
+                    var path = window.location.pathname;
+                    if (path === '/login' && window.SuttroBridge) {
+                        window.SuttroBridge.logout();
+                        return;
+                    }
+                    if (window.SuttroBridge) {
+                        window.SuttroBridge.onPageChanged(path);
+                    }
+                }
+                var origPush = history.pushState;
+                var origReplace = history.replaceState;
+                history.pushState = function() {
+                    origPush.apply(this, arguments);
+                    checkRoute();
+                };
+                history.replaceState = function() {
+                    origReplace.apply(this, arguments);
+                    checkRoute();
+                };
+                window.addEventListener('popstate', checkRoute);
+
+                // 3. Dynamic title observer (#7)
+                var titleEl = document.querySelector('title');
+                if (titleEl && window.SuttroBridge) {
+                    new MutationObserver(function() {
+                        var t = document.title || '';
+                        if (t && t !== 'সূত্র') {
+                            window.SuttroBridge.updateTitle(t);
+                        }
+                    }).observe(titleEl, { childList: true, characterData: true, subtree: true });
+                }
+
+                checkRoute();
+            })();
+        """.trimIndent(), null)
+    }
+
+    private fun injectSession(view: WebView?) {
+        val sessionJson = sessionManager.getSessionJson() ?: return
+        val escaped = sessionJson
+            .replace("\\", "\\\\")
+            .replace("\"", "\\\"")
+            .replace("'", "\\'")
+            .replace("\n", "\\n")
+        val key = SuttroConfig.SUPABASE_STORAGE_KEY
+
+        view?.evaluateJavascript("""
+            (function() {
+                var key = '$key';
+                var existing = localStorage.getItem(key);
+                if (!existing || existing.indexOf('access_token') === -1) {
+                    localStorage.setItem(key, "$escaped");
+                    localStorage.setItem('suttro_onboarding_done', 'true');
+                    window.location.reload();
+                    return 'injected';
+                }
+                return 'exists';
+            })();
+        """.trimIndent()) { result ->
+            sessionInjected = true
+        }
+    }
+
+    // ─── SPA Navigation (#10 — avoid full page reload) ───
+
+    private fun navigateSPA(path: String) {
+        currentPath = path
+        updateToolbarForPath(path)
+        if (sessionInjected) {
+            // Use Next.js router for instant SPA navigation
+            webView.evaluateJavascript("""
+                (function() {
+                    if (window.__next && window.__next.router) {
+                        window.__next.router.push('$path');
+                    } else if (window.next && window.next.router) {
+                        window.next.router.push('$path');
+                    } else {
+                        window.location.href = '${SuttroConfig.WEB_URL}$path';
+                    }
+                })();
+            """.trimIndent(), null)
+        } else {
+            loadPath(path)
+        }
+    }
+
+    private fun loadPath(path: String) {
+        currentPath = path
+        webView.loadUrl("${SuttroConfig.WEB_URL}$path")
+    }
+
+    // ─── Bottom Nav (#1 animated icons + #8 haptic) ───
+
+    private fun setupBottomNav() {
+        bottomNav.setOnItemSelectedListener { item ->
+            // Haptic feedback (#8)
+            bottomNav.performHapticFeedback(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+                    HapticFeedbackConstants.SEGMENT_FREQUENT_TICK
+                else
+                    HapticFeedbackConstants.KEYBOARD_TAP
+            )
+
+            // Bounce animation on selected tab icon (#1)
+            animateTabIcon(item.itemId)
+
+            val path = tabPaths[item.itemId] ?: "/"
+            isNavigatingFromTab = true
+            navigateSPA(path)
+            updateToolbarForPath(path)
+            true
+        }
+    }
+
+    /** Bounce/scale animation on the selected tab icon */
+    private fun animateTabIcon(itemId: Int) {
+        val menuView = bottomNav.getChildAt(0) as? android.view.ViewGroup ?: return
+        for (i in 0 until menuView.childCount) {
+            val itemView = menuView.getChildAt(i)
+            // Find the matching item
+            if (itemView is android.view.ViewGroup) {
+                val navItemId = bottomNav.menu.getItem(i).itemId
+                if (navItemId == itemId) {
+                    // Scale down then bounce up
+                    itemView.animate()
+                        .scaleX(0.8f).scaleY(0.8f)
+                        .setDuration(100)
+                        .withEndAction {
+                            itemView.animate()
+                                .scaleX(1f).scaleY(1f)
+                                .setDuration(300)
+                                .setInterpolator(OvershootInterpolator(2f))
+                                .start()
+                        }
+                        .start()
+                    break
+                }
+            }
+        }
+    }
+
+    // ─── Back Navigation ───
+
+    private fun setupBackNavigation() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (webView.canGoBack()) {
+                    webView.goBack()
+                } else {
+                    finish()
+                }
+            }
+        })
+    }
+
+    // ─── Toolbar Title Logic (#7 sub-page accuracy) ───
+
+    private fun updateToolbarForPath(path: String) {
+        if (path == "/") {
+            showHomeToolbar()
+        } else {
+            val tabTitle = tabTitles[path]
+            if (tabTitle != null) {
+                showPageToolbar(tabTitle)
+            } else {
+                showPageToolbar(getSubPageTitle(path))
+            }
+        }
+    }
+
+    private fun getSubPageTitle(path: String): String {
+        subPageTitles[path]?.let { return it }
+        return when {
+            path.startsWith("/sim/") -> "সিমুলেশন"
+            path.startsWith("/exam/") -> "পরীক্ষা"
+            path.startsWith("/class/") -> "ক্লাস"
+            path.startsWith("/guide/") -> "গাইড"
+            path.startsWith("/practice/") -> "অনুশীলন"
+            path.startsWith("/cq/") -> "সৃজনশীল প্রশ্ন"
+            path.startsWith("/daily") -> "আজকের পড়া"
+            else -> "সূত্র"
+        }
+    }
+
+    /** Called by SuttroBridge.updateTitle() — dynamic title from web (#7) */
+    private fun onDynamicTitleUpdate(title: String) {
+        if (currentPath != "/" && title.isNotBlank()) {
+            // Only override if not a main tab (those have fixed Bengali titles)
+            val isTabPage = tabTitles.containsKey(currentPath)
+            if (!isTabPage) {
+                toolbarTitle.text = title.replace(" | সূত্র", "").replace(" - সূত্র", "").trim()
+            }
+        }
+    }
+
+    private fun onWebPageChanged(path: String) {
+        currentPath = path
+        updateToolbarForPath(path)
+
+        // Sync bottom nav without triggering listener
+        val tabId = tabPaths.entries.find { (_, p) ->
+            if (p == "/") path == "/" else path.startsWith(p)
+        }?.key
+        if (tabId != null && !isNavigatingFromTab) {
+            bottomNav.menu.findItem(tabId)?.isChecked = true
+        }
+        isNavigatingFromTab = false
+
+        // Immersive pages — hide nav
+        val hideNav = path.startsWith("/sim/") || path.startsWith("/class/") || path.startsWith("/exam/")
+        bottomNav.visibility = if (hideNav) View.GONE else View.VISIBLE
+        toolbarContainer.visibility = if (path.startsWith("/sim/")) View.GONE else View.VISIBLE
+
+        // Disable swipe-refresh on immersive pages (#9)
+        swipeRefresh.isEnabled = !hideNav
+    }
+
+    // ─── Logout ───
+
+    private fun handleLogout() {
+        sessionManager.clearSession()
+        sessionManager.isOnboardingDone = false
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
+    }
+}

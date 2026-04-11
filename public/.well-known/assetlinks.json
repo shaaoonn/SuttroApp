@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.suttro.app",
+      "sha256_cert_fingerprints": [
+        "2E:CF:0E:7C:8E:A8:AC:5C:4A:73:BF:17:FF:9B:1D:6D:04:BA:84:CA:D7:C1:86:31:FA:1D:81:89:1D:31:A1:F9"
+      ]
+    }
+  }
+]

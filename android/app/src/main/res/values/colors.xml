@@ -4,4 +4,16 @@
     <color name="colorPrimaryDark">#134E4A</color>
     <color name="colorAccent">#0D9488</color>
     <color name="splash_bg">#F0FDFA</color>
+    <color name="bg_teal_light">#F0FDFA</color>
+    <color name="text_muted">#94A3B8</color>
+    <color name="text_label">#5F9EA0</color>
+    <color name="border_light">#E2E8F0</color>
+
+    <!-- Theme-aware colors (light mode values) -->
+    <color name="surface_color">#FFFFFF</color>
+    <color name="background_color">#FFFFFF</color>
+    <color name="toolbar_bg">#FFFFFF</color>
+    <color name="card_bg">#FFFFFF</color>
+    <color name="text_primary">#134E4A</color>
+    <color name="bottomnav_bg">#FFFFFF</color>
 </resources>

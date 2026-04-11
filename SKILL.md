@@ -140,41 +140,38 @@ Refs:    D:\APPS AND WEB\Suttro App\references\
 ## 🏗️ SYSTEM ARCHITECTURE
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    suttro.app (Next.js 14+ PWA)              │
-│                                                              │
-│  ┌────────────────────────────────────────────────────────┐  │
-│  │  Simulation Engine (HTML5 Canvas + React Components)   │  │
-│  │  • Dot-grid background (graph paper)                   │  │
-│  │  • Google Maps-style pan/zoom (hand mode)              │  │
-│  │  • Direct interaction (mouse mode)                     │  │
-│  │  • Fixed floating control panels                       │  │
-│  │  • YouTube-like inline ↔ fullscreen toggle             │  │
-│  └────────────────────────────────────────────────────────┘  │
-│                                                              │
-│  ┌────────────────────────────────────────────────────────┐  │
-│  │  Video Player (HLS Streaming)                          │  │
-│  │  • Same player shell as simulations                    │  │
-│  │  • Inline + fullscreen (YouTube pattern)               │  │
-│  │  • Daily class recordings archive                      │  │
-│  └────────────────────────────────────────────────────────┘  │
-│                                                              │
-│  ┌───────────┐ ┌───────────┐ ┌────────────┐ ┌───────────┐  │
-│  │ User Auth │ │ Dashboard │ │  Payment   │ │ Content   │  │
-│  │ Phone OTP │ │ Progress  │ │ bKash/Nagad│ │ API (NCTB)│  │
-│  └───────────┘ └───────────┘ └────────────┘ └───────────┘  │
-│                                                              │
-│  ┌────────────────────────────────────────────────────────┐  │
-│  │  PostgreSQL (Supabase) + Redis + Coolify/Contabo VPS  │  │
-│  └────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                     suttro.app (Next.js 16 PWA)                       │
+│                                                                       │
+│  ┌──────────────────┐ ┌──────────────────┐ ┌──────────────────────┐  │
+│  │ Simulation Engine │ │  Video Player    │ │ Exam & Practice      │  │
+│  │ Canvas + React    │ │  HLS + YouTube   │ │ MCQ + CQ + SRS       │  │
+│  │ Dot-grid, pan/zoom│ │  PlayerShell     │ │ Auto-grading         │  │
+│  └──────────────────┘ └──────────────────┘ └──────────────────────┘  │
+│                                                                       │
+│  ┌──────────┐ ┌──────────┐ ┌────────┐ ┌──────────┐ ┌─────────────┐  │
+│  │ Auth     │ │ Gamify   │ │ Payment│ │ Guide    │ │ Daily       │  │
+│  │ OTP +   │ │ XP,Badge │ │ bKash  │ │ Chapter  │ │ Lessons     │  │
+│  │ Google   │ │ Leader   │ │        │ │ Mastery  │ │ Class 9/10  │  │
+│  └──────────┘ └──────────┘ └────────┘ └──────────┘ └─────────────┘  │
+│                                                                       │
+│  ┌────────────────────────────────────────────────────────────────┐   │
+│  │  CMS API (Dynamic site content, /api/site-content)            │   │
+│  │  + Google Sheets sync + Admin Panel (admin.suttro.app)        │   │
+│  └────────────────────────────────────────────────────────────────┘   │
+│                                                                       │
+│  ┌────────────────────────────────────────────────────────────────┐   │
+│  │  PostgreSQL (Self-hosted Supabase) + Coolify + Contabo VPS    │   │
+│  │  Kong API Gateway at api.suttro.app                           │   │
+│  └────────────────────────────────────────────────────────────────┘   │
+└──────────────────────────────────────────────────────────────────────┘
         ▲               ▲               ▲
         │               │               │
-   ┌────┴────┐   ┌──────┴──────┐  ┌─────┴─────┐
-   │ Desktop │   │ Mobile      │  │  Hybrid   │
-   │ Browser │   │ Browser     │  │  App      │
-   │ (PWA)   │   │ (Responsive)│  │ (WebView) │
-   └─────────┘   └─────────────┘  └───────────┘
+   ┌────┴────┐   ┌──────┴──────┐  ┌─────┴──────────────────────────┐
+   │ Desktop │   │ Mobile      │  │  Android App (Capacitor 8.x)   │
+   │ Browser │   │ Browser     │  │  WebView → suttro.app          │
+   │ (PWA)   │   │ (Responsive)│  │  Play Store (signed AAB/APK)   │
+   └─────────┘   └─────────────┘  └────────────────────────────────┘
 ```
 
 → **Full tech stack**: `references/tech-stack.md`
@@ -247,15 +244,41 @@ User shares: suttro.app/sim/ohms-law
 
 | Page | Route | Purpose |
 |------|-------|---------|
-| হোম | `/` | Hero with live simulation demo, stats, features |
+| হোম | `/` | Hero with live simulation, stats, features (Desktop/Mobile variants) |
+| গাইড | `/guide` | Study guide — chapter content, mastery tracker, practice |
+| পরীক্ষা | `/exams` | MCQ exam list by subject, class filter |
+| পরীক্ষা প্লেয়ার | `/exam/[slug]` | Exam attempt — auto-grading, results, CQ viewer |
 | সিমুলেশন | `/simulations` | Gallery of all simulations by subject/chapter |
 | সিমুলেশন প্লেয়ার | `/sim/[slug]` | Individual simulation (canvas player) |
-| ক্লাস আর্কাইভ | `/classes` | Video recordings by date/chapter |
-| ক্লাস প্লেয়ার | `/class/[slug]` | Individual video (video player) |
+| ক্লাস আর্কাইভ | `/classes` | Video recordings with subject filter |
+| ক্লাস প্লেয়ার | `/class/[slug]` | Video player (HLS + YouTube) |
+| আজকের পড়া | `/daily` | Daily lesson — class 9/10 filtered |
+| অনুশীলন | `/practice` | Practice mode with SRS |
+| রিভিউ | `/review` | Review past content |
+| ড্যাশবোর্ড | `/dashboard` | Stats, XP, recent activity, progress |
+| প্রোফাইল | `/profile` | Edit name, class level, account settings |
+| অ্যাচিভমেন্ট | `/achievements` | Badges and milestones |
+| লিডারবোর্ড | `/leaderboard` | Rankings by XP |
+| লগইন | `/login` | Phone OTP + Google OAuth |
+| অনবোর্ডিং | `/onboarding` | First-time setup — class selection + name |
+| প্রাইসিং | `/pricing` | Free + Premium plans, donate option |
+| পেমেন্ট | `/payment` | bKash payment flow (success/failed pages) |
+| গোপনীয়তা নীতি | `/privacy` | Privacy policy (Bengali + English) |
+| শর্তাবলী | `/terms` | Terms of service (Bengali + English) |
 | আমাদের সম্পর্কে | `/about` | Teacher story, EJOSB IT, mission |
-| লগইন | `/login` | Phone OTP authentication |
-| ড্যাশবোর্ড | `/dashboard` | Progress, bookmarks, downloads |
-| প্রাইসিং | `/pricing` | Freemium plans |
+
+### Admin Panel (Separate Next.js app at `/admin/`)
+| Feature | Route | Notes |
+|---------|-------|-------|
+| Analytics | `/admin/analytics` | Charts, user metrics |
+| Users | `/admin/users` | User management CRUD |
+| Exams | `/admin/exams` | Create/edit MCQ exams |
+| CQ | `/admin/cq` | Creative questions editor |
+| Daily Lessons | `/admin/daily-lessons` | Manage daily content + reviews |
+| Classes | `/admin/classes` | Video class CRUD |
+| Plans | `/admin/plans` | Subscription plan management |
+| Content | `/admin/content` | Dynamic site content CMS |
+| CSV Import | `/admin/questions/import` | Bulk question import |
 
 ### Hero Section (Homepage)
 - **NOT a static image** (unlike Shikho)
@@ -269,56 +292,52 @@ User shares: suttro.app/sim/ohms-law
 
 ## 🔧 TECH STACK
 
-| Component | Technology | Reason |
-|-----------|-----------|--------|
-| Framework | Next.js 14+ (App Router) | Existing repo, SSR+SSG, PWA ready |
-| Simulation | HTML5 Canvas 2D + React | PhET-proven, lightweight, mobile-friendly |
-| Graphs | D3.js | Data visualization in simulations |
-| Pan/Zoom | CSS transform + pointer events | Google Maps pattern, no library needed |
-| Video | HLS.js + Cloudflare Stream or Bunny.net | Adaptive bitrate, CDN |
-| Database | PostgreSQL (Supabase) | Auth, progress, user data |
-| Cache | Redis | Session, rate limiting |
-| Auth | Supabase Auth (Phone OTP) | Bangladesh-friendly, no email needed |
-| Payment | bKash/Nagad API | Local payment, no card needed |
-| Hosting | Coolify on Contabo VPS | Existing EJOSB IT infra |
-| App Shell | Capacitor.js or WebView | Hybrid app for Play Store |
-| Offline | Service Worker + encrypted IndexedDB | Netflix-style DRM |
-| Deep Links | Android App Links + Universal Links | Smart redirect page |
-| AI Content | Claude Code | NCTB book → simulation generation |
+| Component | Technology | Version | Notes |
+|-----------|-----------|---------|-------|
+| Framework | Next.js (App Router) | 16.2 | React 19, static export for Capacitor |
+| Styling | Tailwind CSS | v4 | PostCSS, CSS variables |
+| Simulation | HTML5 Canvas 2D + React | — | PhET-proven, lightweight |
+| Pan/Zoom | CSS transform + pointer events | — | Google Maps pattern |
+| Video | HLS.js + YouTube embed | 1.6 | PlayerShell shared with sim player |
+| Database | PostgreSQL (Self-hosted Supabase) | — | Kong at api.suttro.app |
+| Auth | Supabase Auth (Phone OTP + Google OAuth) | — | Auth gate in Capacitor app |
+| Payment | bKash API | — | Initiate + callback flow |
+| Hosting | Coolify on Contabo VPS | — | Docker, auto-deploy on push |
+| Mobile App | Capacitor | 8.3 | Server URL mode → suttro.app in WebView |
+| Admin Panel | Next.js (separate app) | 16.2 | Separate Dockerfile |
+| Data Sync | Google Sheets API + Google Drive | — | Profile sync, content upload |
+| Gamification | Custom (XP, badges, SRS, leaderboard) | — | 22 API routes |
+| CMS | Custom API + admin panel | — | Dynamic site content |
+| AI Content | Claude Code | — | NCTB book → simulation generation |
 
 → **Full tech details**: `references/tech-stack.md`
 
 ---
 
-## 🚀 BUILD PRIORITIES
+## 🚀 BUILD PHASES (Updated)
 
-### Phase 1 — MVP (Week 1-4)
-1. Extend existing `bd-virtual-science-lab` Next.js repo
-2. Build simulation canvas with dot-grid, pan/zoom, hand/mouse modes
-3. Create 5 Physics simulations (NCTB Class 9, Chapter 1-5)
-4. Build YouTube-like player shell (inline + fullscreen)
-5. Landing page with live hero simulation
-6. Deploy to Coolify on Contabo VPS
+### Phase 1 — MVP Foundation ✅ COMPLETE
+Simulation engine, website, canvas player, first simulations, deploy to Coolify
 
-### Phase 2 — Video + Auth (Week 5-8)
-7. Video player with HLS streaming
-8. Daily class recording upload system
-9. Phone OTP authentication (Supabase)
-10. User dashboard with progress tracking
-11. PWA setup (installable, offline shell)
+### Phase 2 — Content + Auth + Gamification ✅ COMPLETE
+Video player, phone OTP + Google OAuth, exam system, guide, daily lessons,
+practice mode, XP, badges, leaderboard, SRS, bKash payment
 
-### Phase 3 — App + Monetization (Month 3-4)
-12. Android WebView app → Play Store
-13. Deep linking + smart redirect
-14. Offline download with encrypted storage
-15. bKash/Nagad payment integration
-16. Freemium model (some free, rest paid)
+### Phase 2.5 — CMS + Admin + Branding ✅ COMPLETE
+Admin panel (separate Next.js), dynamic CMS, Google Sheets sync,
+Design v2.0 light teal redesign, new brand logo
 
-### Phase 4 — Scale (Month 5+)
-17. Chemistry + Biology simulations
-18. AI-powered simulation generation (Claude Code pipeline)
-19. iOS app
-20. Student community features
+### Phase 3 — Android App + Play Store ✅ COMPLETE
+Capacitor 8.x WebView app, auth gate, onboarding, privacy policy,
+terms of service, signed AAB/APK builds, new app icons
+
+### Phase 4 — Scale (NEXT)
+- Chemistry + Biology simulations
+- AI-powered simulation generation (Claude Code pipeline)
+- iOS app
+- Offline downloads with encrypted storage
+- Deep linking + smart redirect
+- Student community features
 
 ---
 
@@ -354,80 +373,161 @@ Before starting any development:
 ## 📊 PROGRESS TRACKER
 <!-- Claude Code: আপডেট করো প্রতিটি session-এর পর -->
 
-### Phase 1 — MVP Foundation
+### Phase 1 — MVP Foundation ✅
 | # | Task | Status | Date | Notes |
 |---|------|--------|------|-------|
-| 1.1 | Next.js project setup (SuttroApp repo) | ✅ Done | 2026-04-02 | Next.js 16.2 + Tailwind v4 + TypeScript |
-| 1.2 | Brand tokens + fonts + Tailwind config | ✅ Done | 2026-04-02 | CSS variables, 4 Google Fonts, subject colors |
-| 1.3 | Empty simulation player template (`_template/`) | ✅ Done | 2026-04-02 | Full player shell with toolbar, pan/zoom, modes |
-| 1.4 | Player shell (topbar + bottombar + fullscreen) | ✅ Done | 2026-04-02 | PlayerShell + BottomToolbar shared components |
-| 1.5 | Dot grid canvas background | ✅ Done | 2026-04-02 | DotGridCanvas component, CSS radial-gradient |
-| 1.6 | Pan/zoom (hand mode) implementation | ✅ Done | 2026-04-02 | PanZoomContainer + usePanZoom hook, CSS transform |
-| 1.7 | Mouse mode (object interaction) | ✅ Done | 2026-04-02 | SimObject with mode-aware drag, selection, labels |
-| 1.8 | Floating control panel component | ✅ Done | 2026-04-02 | ControlPanel — slot-based variable sliders |
-| 1.9 | Readout panel component | ✅ Done | 2026-04-02 | ReadoutPanel + FormulaDisplay components |
-| 1.10 | Fit-to-screen button | ✅ Done | 2026-04-02 | fitToScreen in BottomToolbar, resets pan/zoom |
+| 1.1 | Next.js project setup | ✅ | 2026-04-02 | Next.js 16.2 + Tailwind v4 + TypeScript |
+| 1.2 | Brand tokens + fonts + Tailwind config | ✅ | 2026-04-02 | CSS variables, 4 Google Fonts, subject colors |
+| 1.3 | Simulation template (`_template/`) | ✅ | 2026-04-02 | Full player shell with toolbar, pan/zoom, modes |
+| 1.4 | Player shell (topbar + bottombar + fullscreen) | ✅ | 2026-04-02 | PlayerShell + BottomToolbar shared components |
+| 1.5 | Dot grid + Pan/zoom + Mouse mode + Controls | ✅ | 2026-04-02 | DotGridCanvas, PanZoomContainer, SimObject, ControlPanel, ReadoutPanel |
+| 1.6 | Ohm's Law simulation (flagship) | ✅ | 2026-04-02 | Battery, Resistor, Bulb, Ammeter, ElectronFlow |
+| 1.7 | Light Reflection + Refraction simulations | ✅ | 2026-04-03 | Mirror, rays, θᵢ=θᵣ, Snell's law |
+| 1.8 | Website — all pages + navigation | ✅ | 2026-04-03 | Home, simulations, classes, about, pricing, login, dashboard, 404 |
+| 1.9 | Docker + PWA + Deploy to Coolify | ✅ | 2026-04-03 | Multi-stage build, manifest.json, auto-deploy |
 
-### Phase 1B — First Simulations
+### Phase 2 — Content + Auth + Gamification ✅
 | # | Task | Status | Date | Notes |
 |---|------|--------|------|-------|
-| 1B.1 | Ohm's Law simulation (flagship) | ✅ Done | 2026-04-02 | Circuit with Battery, Resistor, Bulb, Ammeter, ElectronFlow |
-| 1B.2 | Light Reflection simulation | ✅ Done | 2026-04-03 | Mirror, rays, normal, angle arcs, θᵢ=θᵣ |
-| 1B.3 | Newton's Laws simulation | ⬜ Pending | — | — |
-| 1B.4 | Wave Properties simulation | ⬜ Pending | — | — |
-| 1B.5 | Circuit Builder simulation | ⬜ Pending | — | — |
+| 2.1 | Video player (HLS + YouTube) | ✅ | 2026-04-03 | HLS.js, speed control, progress bar, fullscreen, YouTubePlayer |
+| 2.2 | Phone OTP auth (Supabase) | ✅ | 2026-04-03 | AuthProvider, lazy init, OTP flow |
+| 2.3 | Google OAuth | ✅ | 2026-04-10 | signInWithOAuth, redirect handling |
+| 2.4 | Profile API (GET/PATCH) | ✅ | 2026-04-10 | Auto-create on first login, service-role key |
+| 2.5 | Exam system | ✅ | 2026-04-10 | ExamPlayer, ExamResult, ExamFilter, ExamTabs, CQViewer, CQFilter |
+| 2.6 | Guide / Chapter system | ✅ | 2026-04-10 | ChapterContentView, ChapterMastery, PracticeButton |
+| 2.7 | Daily lesson system | ✅ | 2026-04-10 | Daily challenge + scoring, class 9/10 filter |
+| 2.8 | Practice mode + SRS | ✅ | 2026-04-10 | Spaced repetition algorithm, practice sessions |
+| 2.9 | XP system | ✅ | 2026-04-10 | XP earning, tracking, lib/xp.ts |
+| 2.10 | Badge/Achievement system | ✅ | 2026-04-10 | lib/badges.ts, /api/badges, /achievements page |
+| 2.11 | Leaderboard | ✅ | 2026-04-10 | /api/leaderboard, /leaderboard page |
+| 2.12 | bKash payment integration | ✅ | 2026-04-10 | /api/payment/bkash — initiate + callback |
+| 2.13 | Subscription plans | ✅ | 2026-04-10 | /api/plans, /api/subscription, admin plan manager |
+| 2.14 | Google Sheets sync | ✅ | 2026-04-10 | Profile sync to Google Sheets on user create/update |
+| 2.15 | Content tracker / Analytics | ✅ | 2026-04-10 | ContentTracker component, /api/track |
+| 2.16 | TTS (Text-to-speech) | ✅ | 2026-04-10 | /api/tts for audio content |
 
-### Phase 1C — Website
+### Phase 2.5A — CMS + Admin Panel ✅
 | # | Task | Status | Date | Notes |
 |---|------|--------|------|-------|
-| 1C.1 | Landing page with hero simulation | ✅ Done | 2026-04-03 | Hero with live OhmsLaw sim, stats, features, gallery, CTA |
-| 1C.2 | Simulation gallery page | ✅ Done | 2026-04-03 | Subject filter tabs, SimulationCard component |
-| 1C.3 | Individual simulation page | ✅ Done | 2026-04-03 | Breadcrumb, sidebar, formulas, variables, share/NCTB ref |
-| 1C.4 | Responsive navigation | ✅ Done | 2026-04-03 | Navbar with subject dropdown, MobileMenu, Footer (4-col) |
-| 1C.4a | About page | ✅ Done | 2026-04-03 | Mission, teacher story, EJOSB IT, vision sections |
-| 1C.4b | Pricing page | ✅ Done | 2026-04-03 | Free + Premium (৳299/mo) plan cards |
-| 1C.4c | Classes page | ✅ Done | 2026-04-03 | Placeholder "coming soon" for HLS video archive |
-| 1C.4d | Login page | ✅ Done | 2026-04-03 | Phone OTP UI with +880 prefix |
-| 1C.4e | Dashboard page | ✅ Done | 2026-04-03 | Stats, recent activity, offline downloads section |
-| 1C.4f | Class player page | ✅ Done | 2026-04-03 | /class/[slug] with video placeholder, breadcrumb |
-| 1C.4g | Custom 404 page | ✅ Done | 2026-04-03 | Bangla "৪০৪ পেজ পাওয়া যায়নি" |
-| 1C.5 | Dockerfile + docker-compose | ✅ Done | 2026-04-03 | Multi-stage build, standalone output, .dockerignore |
-| 1C.6 | PWA setup | ✅ Done | 2026-04-03 | manifest.json, service worker, PWARegister component |
-| 1C.7 | Deploy to Coolify | ✅ Done | 2026-04-03 | suttro.ejobsit.com — Dockerfile, auto-deploy on push |
+| A.1 | Admin panel (separate Next.js app) | ✅ | 2026-04-10 | `/admin/` — own Dockerfile, node_modules, .env |
+| A.2 | Dynamic site content CMS | ✅ | 2026-04-10 | /api/site-content + admin/content editor |
+| A.3 | Exams CRUD (admin) | ✅ | 2026-04-10 | admin/exams — create, edit, list |
+| A.4 | CQ editor (admin) | ✅ | 2026-04-10 | admin/cq — creative questions collections |
+| A.5 | Daily lessons manager (admin) | ✅ | 2026-04-10 | admin/daily-lessons — CRUD + reviews |
+| A.6 | Classes manager (admin) | ✅ | 2026-04-10 | admin/classes — video class CRUD |
+| A.7 | Users manager (admin) | ✅ | 2026-04-10 | admin/users — list, view profiles |
+| A.8 | Plans manager (admin) | ✅ | 2026-04-10 | admin/plans — subscription plan config |
+| A.9 | Analytics dashboard (admin) | ✅ | 2026-04-10 | admin/analytics — charts |
+| A.10 | CSV question import | ✅ | 2026-04-10 | admin/questions/import — bulk upload |
+| A.11 | CMS live update fix | ✅ | 2026-04-10 | /api/revalidate ISR cache invalidation |
 
-### Phase 2 — Video + Auth
+### Phase 2.5B — Design v2.0 + Branding ✅
 | # | Task | Status | Date | Notes |
 |---|------|--------|------|-------|
-| 2.1 | Video player (HLS) | ✅ Done | 2026-04-03 | VideoPlayer component with HLS.js, speed control, progress bar, fullscreen |
-| 2.2 | Class archive page | ✅ Done | 2026-04-03 | Subject filters, class recording cards with thumbnails, "শীঘ্রই আসছে" |
-| 2.3 | Phone OTP auth (Supabase) | ✅ Done | 2026-04-03 | AuthProvider context, lazy Supabase init, login OTP flow, auth-aware Navbar |
-| 2.4 | User dashboard | ✅ Done | 2026-04-03 | Protected route, stats, recent activity, offline downloads, sign out |
-| 2.5 | PWA enhancements | ⬜ Pending | — | Offline sim caching, install prompt |
+| D.1 | Light Teal Gradient redesign | ✅ | 2026-04-10 | Full palette swap — all pages updated |
+| D.2 | New brand logo (সূত্র stylized) | ✅ | 2026-04-10 | Logo with orange wave, web + icons generated |
+| D.3 | Subject colors update | ✅ | 2026-04-10 | Bio #EC4899, Physics #3B82F6, Chem #7C3AED |
+| D.4 | Mobile layout (AppBar + BottomNav) | ✅ | 2026-04-10 | 4-tab nav: হোম, শেখো, পরীক্ষা, আমি |
+| D.5 | Desktop/Mobile home variants | ✅ | 2026-04-10 | DesktopHome + MobileHome components |
 
-### Design v2.0 — Light Teal Gradient Redesign
+### Phase 3 — Android App + Play Store ✅
 | # | Task | Status | Date | Notes |
 |---|------|--------|------|-------|
-| D.1 | Branding guide v2.0 | ✅ Done | 2026-04-10 | references/branding.md replaced with new palette |
-| D.2 | CSS variables + globals.css | ✅ Done | 2026-04-10 | All vars updated to teal/gradient system |
-| D.3 | Navbar redesign | ✅ Done | 2026-04-10 | White bg, teal logo, gradient buttons, amber streak |
-| D.4 | Homepage redesign | ✅ Done | 2026-04-10 | Gradient hero, teal stats, amber trust, dark CTA |
-| D.5 | Footer redesign | ✅ Done | 2026-04-10 | Dark teal #134E4A bg, cyan hover |
-| D.6 | BottomNav redesign | ✅ Done | 2026-04-10 | Teal active, slate inactive |
-| D.7 | Login page redesign | ✅ Done | 2026-04-10 | Gradient bg, shadow card, gradient buttons |
-| D.8 | Pricing page redesign | ✅ Done | 2026-04-10 | Teal border highlight, gradient badge/buttons |
-| D.9 | Dashboard redesign | ✅ Done | 2026-04-10 | Teal gradient XP banner, all vars updated |
-| D.10 | MobileMenu redesign | ✅ Done | 2026-04-10 | White bg, gradient primary buttons |
-| D.11 | Subject colors update | ✅ Done | 2026-04-10 | Biology #EC4899, Physics #3B82F6 across all files |
-| D.12 | Exam components update | ✅ Done | 2026-04-10 | ExamPlayer, ExamResult, ExamFilter, CQViewer |
-| D.13 | All old colors removed | ✅ Done | 2026-04-10 | No #0B1D3A, #1B6B4A, #2563EB, #059669 remaining |
+| 3.1 | Capacitor 8.x setup | ✅ | 2026-04-11 | Server URL mode → suttro.app in WebView |
+| 3.2 | Android signing keystore | ✅ | 2026-04-11 | CN=Suttro, O=Suttro, L=Dhaka, C=BD |
+| 3.3 | Build config (R8, ProGuard, splits) | ✅ | 2026-04-11 | minify + shrink, 64-bit NDK, proguard-optimize |
+| 3.4 | Network security config | ✅ | 2026-04-11 | HTTPS-only + sslip.io cleartext for self-hosted Supabase |
+| 3.5 | OAuth in-app fix | ✅ | 2026-04-11 | skipBrowserRedirect + manual navigate → stays in WebView |
+| 3.6 | Keyboard scroll fix | ✅ | 2026-04-11 | Keyboard.resize: 'body' + resizeOnFullScreen |
+| 3.7 | Auth gate (force login in app) | ✅ | 2026-04-11 | AuthGate component, detects SuttroApp user-agent |
+| 3.8 | Loading/splash screen | ✅ | 2026-04-11 | Capacitor splash (2s) + AuthGate loading (logo + dots) |
+| 3.9 | Onboarding page | ✅ | 2026-04-11 | Class 9/10 selection + name input, Google auto-fill |
+| 3.10 | Privacy policy page | ✅ | 2026-04-11 | Bengali + English summary, Play Store ready |
+| 3.11 | Terms of service page | ✅ | 2026-04-11 | Bengali + English summary |
+| 3.12 | Android icons (new logo) | ✅ | 2026-04-11 | All mipmap densities + adaptive icon foreground |
+| 3.13 | Android splash (new logo) | ✅ | 2026-04-11 | splash.png + brand color #F0FDFA |
+| 3.14 | allowNavigation for OAuth | ✅ | 2026-04-11 | Google, gstatic, sslip.io, bKash, Supabase domains |
+| 3.15 | AAB build (Play Store) | ✅ | 2026-04-11 | releases/suttro-v1.1.0.aab (4.0 MB) |
+| 3.16 | APK build (sideload) | ✅ | 2026-04-11 | releases/suttro-v1.1.0.apk (3.1 MB) |
+
+### Recent Fixes
+| # | Fix | Date | Commit |
+|---|-----|------|--------|
+| F.1 | Docker Node.js memory limit (VPS OOM) | 2026-04-10 | `559f332` |
+| F.2 | CMS live update (revalidation) | 2026-04-10 | `db0a440` |
+| F.3 | Class 9/10 daily lesson filter | 2026-04-10 | `db0a440` |
+| F.4 | Donate option on pricing page | 2026-04-10 | `db0a440` |
+| F.5 | Profile save RLS bypass | 2026-04-10 | `0edf417` |
+| F.6 | BottomNav hide on login/onboarding | 2026-04-11 | `4872c97` |
+| F.7 | AppBar hide on login/onboarding | 2026-04-11 | `4872c97` |
+
+### Phase 4 — Scale (NEXT)
+| # | Task | Status | Notes |
+|---|------|--------|-------|
+| 4.1 | Newton's Laws simulation | ⬜ Pending | — |
+| 4.2 | Wave Properties simulation | ⬜ Pending | — |
+| 4.3 | Circuit Builder simulation | ⬜ Pending | — |
+| 4.4 | Chemistry simulations | ⬜ Pending | — |
+| 4.5 | Biology simulations | ⬜ Pending | — |
+| 4.6 | AI simulation generation pipeline | ⬜ Pending | Claude Code NCTB→sim |
+| 4.7 | Offline downloads (encrypted) | ⬜ Pending | Netflix-style DRM |
+| 4.8 | Deep linking + smart redirect | ⬜ Pending | App Links |
+| 4.9 | iOS app | ⬜ Pending | WKWebView via Capacitor |
+| 4.10 | PWA enhancements | ⬜ Pending | Offline caching, install prompt |
 
 ### Simulation Registry
 <!-- Claude Code: নতুন সিমুলেশন তৈরি হলে এখানে যোগ করো -->
 | Slug | Subject | Chapter | Class | Status |
 |------|---------|---------|-------|--------|
-| _template | — | — | — | ✅ Template created |
+| _template | — | — | — | ✅ Template |
 | ohms-law | Physics | Ch.11 | 9 | ✅ Done |
 | light-reflection | Physics | Ch.10 | 9 | ✅ Done |
 | light-refraction | Physics | Ch.10 | 9 | ✅ Done |
+
+### API Routes Summary (22 endpoints)
+```
+/api/admin          /api/badges         /api/chapter-progress
+/api/daily-challenge /api/daily-lesson   /api/dashboard
+/api/exam-attempt   /api/leaderboard    /api/payment (bkash/)
+/api/plans          /api/practice       /api/profile
+/api/revalidate     /api/sheets         /api/site-content
+/api/srs            /api/subscription   /api/track
+/api/tts            /api/upload         /api/xp
+```
+
+### Key Files Quick Reference
+```
+src/lib/auth-context.tsx   — Auth state (OTP + Google OAuth)
+src/lib/xp.ts              — XP progression logic
+src/lib/badges.ts          — Achievement system
+src/lib/srs.ts             — Spaced Repetition algorithm
+src/lib/bkash.ts           — bKash payment gateway
+src/lib/subscription.ts    — Subscription/plan logic
+src/lib/site-content.ts    — CMS content fetching
+src/lib/google-sheets.ts   — Google Sheets API sync
+src/lib/google-drive.ts    — Google Drive integration
+src/components/AuthGate.tsx — Auth gate + loading screen
+capacitor.config.ts        — Android app config
+android/app/build.gradle   — Android signing + build
+```
+
+### Android Build Commands
+```bash
+# Environment (Windows)
+export JAVA_HOME="C:/Users/Ahsanullah Shaon/.jdk/jdk-21.0.10+7"
+export ANDROID_SDK_ROOT="C:/Users/Ahsanullah Shaon/.android-sdk"
+export _JAVA_OPTIONS="-Djava.net.preferIPv4Stack=true -Djdk.net.unixdomain.tmpdir=C:/tmp"
+
+# Sync + Build
+npx cap sync android
+cd android && ./gradlew bundleRelease assembleRelease --no-daemon
+
+# Output
+releases/suttro-v1.1.0.aab  (Play Store)
+releases/suttro-v1.1.0.apk  (Sideload/Testing)
+
+# Verify signing
+java -jar $ANDROID_SDK_ROOT/build-tools/35.0.0/lib/apksigner.jar verify --print-certs releases/suttro-v1.1.0.apk
+```
 
 <!-- Status symbols: ⬜ Pending | 🔄 In Progress | ✅ Done | ❌ Blocked -->

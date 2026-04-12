@@ -9,7 +9,8 @@ import admin from 'firebase-admin';
 // Flow:
 // 1. Verify Firebase ID token (server-side)
 // 2. Find or create user in Supabase by phone number
-// 3. Return Supabase session tokens
+// 3. Sign in via email+password (pseudo-email from phone)
+// 4. Return Supabase session tokens
 // ─────────────────────────────────────────────
 
 function getFirebaseAdmin() {
@@ -24,13 +25,19 @@ function getFirebaseAdmin() {
   return admin;
 }
 
-function getSupabase() {
+function getSupabaseAdmin() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) return null;
   return createClient(url, key, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
+}
+
+/** Convert phone number to a pseudo-email for Supabase auth */
+function phoneToEmail(phone: string): string {
+  // +8801712345678 → 8801712345678@phone.suttro.app
+  return `${phone.replace(/\+/g, '')}@phone.suttro.app`;
 }
 
 export async function POST(request: NextRequest) {
@@ -43,6 +50,7 @@ export async function POST(request: NextRequest) {
     // 1. Verify Firebase ID token
     const firebaseAdmin = getFirebaseAdmin();
     if (!firebaseAdmin) {
+      console.error('Firebase Admin not configured — missing env vars');
       return NextResponse.json({ error: 'Firebase not configured' }, { status: 503 });
     }
 
@@ -59,125 +67,81 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No phone number in token' }, { status: 400 });
     }
 
-    // 2. Find or create user in Supabase
-    const sb = getSupabase();
-    if (!sb) {
+    // 2. Get Supabase admin client
+    const sb = getSupabaseAdmin();
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!sb || !supabaseUrl || !anonKey) {
       return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
     }
 
-    // Try to find existing user by phone
-    const { data: existingUsers } = await sb.auth.admin.listUsers();
-    const existingUser = existingUsers?.users?.find(
-      (u) => u.phone === phoneNumber
-    );
+    const pseudoEmail = phoneToEmail(phoneNumber);
+    const tempPassword = `fb_${Date.now()}_${crypto.randomUUID()}`;
 
-    let userId: string;
+    // 3. Find existing user by phone OR pseudo-email
+    let userId: string | null = null;
+
+    // Try by phone first
+    const { data: allUsers } = await sb.auth.admin.listUsers({ perPage: 1000 });
+    const existingUser = allUsers?.users?.find(
+      (u) => u.phone === phoneNumber || u.email === pseudoEmail
+    );
 
     if (existingUser) {
       userId = existingUser.id;
-    } else {
-      // Create new user with phone number
-      const { data: newUser, error: createErr } = await sb.auth.admin.createUser({
+
+      // Update user: set pseudo-email, phone confirmed, temp password
+      const { error: updateErr } = await sb.auth.admin.updateUserById(userId, {
+        email: pseudoEmail,
         phone: phoneNumber,
-        phone_confirm: true, // Already verified by Firebase
+        phone_confirm: true,
+        email_confirm: true,
+        password: tempPassword,
+      });
+
+      if (updateErr) {
+        console.error('Update user error:', updateErr);
+        return NextResponse.json({ error: 'ইউজার আপডেট করতে সমস্যা' }, { status: 500 });
+      }
+    } else {
+      // Create new user
+      const { data: newUser, error: createErr } = await sb.auth.admin.createUser({
+        email: pseudoEmail,
+        phone: phoneNumber,
+        phone_confirm: true,
+        email_confirm: true,
+        password: tempPassword,
       });
 
       if (createErr || !newUser?.user) {
         console.error('Create user error:', createErr);
-        return NextResponse.json({ error: 'Failed to create user' }, { status: 500 });
+        return NextResponse.json({ error: 'ইউজার তৈরি করতে সমস্যা' }, { status: 500 });
       }
       userId = newUser.user.id;
     }
 
-    // 3. Generate Supabase session using admin API
-    // Use generateLink to create a magic link, then extract the token
-    // Or use the admin API to create a session directly
-
-    // The cleanest approach: use signInWithPassword with a generated token
-    // Actually, we'll use the admin API to generate an access token
-    const { data: sessionData, error: sessionErr } =
-      await sb.auth.admin.generateLink({
-        type: 'magiclink',
-        email: `${phoneNumber.replace('+', '')}@phone.suttro.app`,
-      });
-
-    // Alternative approach: create a custom JWT or use admin session generation
-    // Since Supabase admin API doesn't directly create sessions,
-    // we'll update the user's email as a workaround and sign them in
-
-    // Better approach: Use Supabase's admin to set phone confirmed and
-    // directly generate session tokens
-    // The simplest way is to use admin.updateUserById and then signInWithOtp auto-confirm
-
-    // Cleanest approach: Use Supabase REST API directly to generate session
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl || !serviceKey) {
-      return NextResponse.json({ error: 'Supabase not configured' }, { status: 503 });
-    }
-
-    // Generate a one-time password and auto-verify it
-    // Step 1: Send OTP (won't actually send SMS since we're using service role)
-    const otpResponse = await fetch(`${supabaseUrl}/auth/v1/admin/generate_link`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${serviceKey}`,
-        apikey: serviceKey,
-      },
-      body: JSON.stringify({
-        type: 'phone_change',
-        phone: phoneNumber,
-      }),
+    // 4. Sign in with pseudo-email + temp password to get session
+    const anonClient = createClient(supabaseUrl, anonKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
     });
-
-    // Alternative: Direct session creation via admin
-    // Use a workaround: create a temporary OTP and verify it immediately
-
-    // Actually the simplest approach for self-hosted Supabase:
-    // Create/update user → generate a session token via custom approach
-
-    // Let's use the most reliable method: generate link via magic link
-    // and extract the session
-
-    // BEST approach: Use Supabase JS admin to directly sign in
-    // by creating a one-time token
-
-    // Generate a random password, set it, sign in with it, then remove it
-    const tempPassword = `firebase_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-
-    // Update user with temp password
-    const { error: updateErr } = await sb.auth.admin.updateUserById(userId, {
-      password: tempPassword,
-      phone: phoneNumber,
-      phone_confirm: true,
-    });
-
-    if (updateErr) {
-      console.error('Update user error:', updateErr);
-      return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
-    }
-
-    // Sign in with temp password to get session
-    // We need a client-side Supabase for this
-    const { createClient: createAnonClient } = await import('@supabase/supabase-js');
-    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || serviceKey;
-    const anonClient = createAnonClient(supabaseUrl, anonKey);
 
     const { data: signInData, error: signInErr } = await anonClient.auth.signInWithPassword({
-      phone: phoneNumber,
+      email: pseudoEmail,
       password: tempPassword,
+    });
+
+    // 5. Clean up temp password immediately (set random unguessable one)
+    await sb.auth.admin.updateUserById(userId, {
+      password: crypto.randomUUID() + crypto.randomUUID(),
     });
 
     if (signInErr || !signInData.session) {
       console.error('Sign in error:', signInErr);
-      // Clean up temp password
-      await sb.auth.admin.updateUserById(userId, { password: undefined });
-      return NextResponse.json({ error: 'Failed to create session' }, { status: 500 });
+      return NextResponse.json({ error: 'সেশন তৈরি করতে সমস্যা' }, { status: 500 });
     }
 
-    // Return the session tokens
+    // 6. Return session tokens
     return NextResponse.json({
       access_token: signInData.session.access_token,
       refresh_token: signInData.session.refresh_token,
@@ -186,6 +150,7 @@ export async function POST(request: NextRequest) {
       user: {
         id: signInData.session.user.id,
         phone: signInData.session.user.phone,
+        email: signInData.session.user.email,
       },
     });
   } catch (err) {

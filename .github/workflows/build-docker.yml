@@ -8,6 +8,7 @@ on:
       - 'admin/**'
       - '*.md'
       - '.github/workflows/build-apk.yml'
+      - '.github/workflows/get-sha.yml'
   workflow_dispatch:
 
 env:
@@ -56,3 +57,11 @@ jobs:
             NEXT_PUBLIC_FIREBASE_API_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
             NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=suttro-5c3cd.firebaseapp.com
             NEXT_PUBLIC_FIREBASE_PROJECT_ID=suttro-5c3cd
+
+      - name: Trigger Coolify Redeploy
+        if: success()
+        run: |
+          curl -s -X GET \
+            -H "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}" \
+            "${{ secrets.COOLIFY_WEBHOOK_URL }}" \
+            --max-time 30 || echo "Coolify webhook sent (may take time to process)"

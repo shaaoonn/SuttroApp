@@ -1,0 +1,20 @@
+name: Get SHA Fingerprints
+
+on:
+  workflow_dispatch:
+
+jobs:
+  get-sha:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Decode keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Get SHA fingerprints
+        run: keytool -list -v -keystore keystore.jks -alias suttro -storepass suttro2026 2>&1 | grep -E "SHA1:|SHA256:|SHA-1:|SHA-256:"

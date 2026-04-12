@@ -15,9 +15,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-# Build needs ~1.5GB+ for Firebase/Capacitor/googleapis
-# Build on GitHub Actions (7GB RAM), NOT on VPS
-ENV NODE_OPTIONS="--max-old-space-size=4096"
+# firebase-admin is now in serverExternalPackages, so build needs less RAM
+# Works on both GitHub Actions (7GB) and VPS (2-4GB)
+ENV NODE_OPTIONS="--max-old-space-size=2048"
 
 # Accept build-time env vars for NEXT_PUBLIC_ variables
 ARG NEXT_PUBLIC_SUPABASE_URL

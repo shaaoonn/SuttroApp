@@ -27,39 +27,31 @@ class SupabaseApi {
             .build()
     }
 
-    /** Send OTP to phone number */
-    suspend fun sendOtp(phone: String): Result<Unit> = withContext(Dispatchers.IO) {
-        try {
-            val body = """{"phone":"$phone"}"""
-            val request = buildRequest("/auth/v1/otp", body)
-            val response = client.newCall(request).execute()
-            if (response.isSuccessful) {
-                Result.success(Unit)
-            } else {
-                val errorBody = response.body?.string() ?: "Unknown error"
-                Result.failure(Exception("[${response.code}] ${parseError(errorBody)}"))
+    /**
+     * Exchange Firebase ID token for Supabase session
+     * Calls our Next.js API endpoint which verifies Firebase token
+     * and returns Supabase session tokens
+     */
+    suspend fun exchangeFirebaseToken(firebaseIdToken: String): Result<String> =
+        withContext(Dispatchers.IO) {
+            try {
+                val body = """{"firebase_token":"$firebaseIdToken"}"""
+                val request = Request.Builder()
+                    .url("${SuttroConfig.WEB_URL}/api/auth/firebase-exchange")
+                    .addHeader("Content-Type", "application/json")
+                    .post(body.toRequestBody(jsonType))
+                    .build()
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string() ?: ""
+                if (response.isSuccessful && responseBody.contains("access_token")) {
+                    Result.success(responseBody)
+                } else {
+                    Result.failure(Exception("[${response.code}] ${parseError(responseBody)}"))
+                }
+            } catch (e: Exception) {
+                Result.failure(Exception("নেটওয়ার্ক: ${e.javaClass.simpleName}: ${e.message}"))
             }
-        } catch (e: Exception) {
-            Result.failure(Exception("নেটওয়ার্ক: ${e.javaClass.simpleName}: ${e.message}"))
         }
-    }
-
-    /** Verify OTP and return raw session JSON */
-    suspend fun verifyOtp(phone: String, token: String): Result<String> = withContext(Dispatchers.IO) {
-        try {
-            val body = """{"phone":"$phone","token":"$token","type":"sms"}"""
-            val request = buildRequest("/auth/v1/verify", body)
-            val response = client.newCall(request).execute()
-            val responseBody = response.body?.string() ?: ""
-            if (response.isSuccessful && responseBody.contains("access_token")) {
-                Result.success(responseBody)
-            } else {
-                Result.failure(Exception("[${response.code}] ${parseError(responseBody)}"))
-            }
-        } catch (e: Exception) {
-            Result.failure(Exception("নেটওয়ার্ক: ${e.javaClass.simpleName}: ${e.message}"))
-        }
-    }
 
     /** Sign in with Google ID token and return raw session JSON */
     suspend fun signInWithGoogle(idToken: String): Result<String> = withContext(Dispatchers.IO) {

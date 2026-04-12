@@ -19,13 +19,24 @@ import androidx.credentials.CustomCredential
 import androidx.lifecycle.lifecycleScope
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
+import com.google.firebase.auth.PhoneAuthProvider
 import com.suttro.app.util.SupabaseApi
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var sessionManager: SessionManager
     private val api = SupabaseApi()
+    private val firebaseAuth = FirebaseAuth.getInstance()
+
+    // Firebase Phone Auth
+    private var verificationId: String? = null
+    private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
 
     // Views — Phone step
     private lateinit var phoneSection: LinearLayout
@@ -54,6 +65,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         sessionManager = SessionManager(this)
+        firebaseAuth.setLanguageCode("bn") // Bengali
         rootView = findViewById(R.id.login_root)
 
         // Phone step views
@@ -107,27 +119,23 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // ─── OTP Digit Boxes (#4) ───
+    // ─── OTP Digit Boxes ───
 
     private fun setupOtpBoxes() {
         for (i in otpBoxes.indices) {
             val box = otpBoxes[i]
 
-            // Auto-advance on digit entry
             box.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable?) {
                     val text = s?.toString() ?: ""
                     if (text.length == 1) {
-                        // Update box visual
                         box.setBackgroundResource(R.drawable.bg_otp_box_filled)
                         box.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                        // Move to next box
                         if (i < otpBoxes.size - 1) {
                             otpBoxes[i + 1].requestFocus()
                         } else {
-                            // Last box filled — auto verify
                             box.clearFocus()
                             handleVerifyOtp()
                         }
@@ -137,7 +145,6 @@ class LoginActivity : AppCompatActivity() {
                 }
             })
 
-            // Handle backspace — move to previous box
             box.setOnKeyListener { _, keyCode, event ->
                 if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN) {
                     if (box.text.isEmpty() && i > 0) {
@@ -149,7 +156,6 @@ class LoginActivity : AppCompatActivity() {
                 false
             }
 
-            // Focus visual
             box.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus && box.text.isEmpty()) {
                     box.setBackgroundResource(R.drawable.bg_otp_box_focused)
@@ -159,14 +165,13 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // Handle paste (6 digits pasted at once)
+        // Handle paste
         otpBoxes[0].addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val text = s?.toString() ?: ""
                 if (text.length > 1) {
-                    // Pasted multi-digit — distribute across boxes
                     val digits = text.replace(Regex("\\D"), "").take(6)
                     otpBoxes[0].removeTextChangedListener(this)
                     for (j in digits.indices) {
@@ -196,7 +201,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // ─── Auth Handlers ───
+    // ─── Firebase Phone Auth ───
 
     private fun handleSendOtp() {
         val raw = phoneInput.text.toString().replace(Regex("\\D"), "")
@@ -209,22 +214,48 @@ class LoginActivity : AppCompatActivity() {
         setLoading(true)
         hideError()
 
-        lifecycleScope.launch {
-            api.sendOtp(fullPhone).fold(
-                onSuccess = {
+        val options = PhoneAuthOptions.newBuilder(firebaseAuth)
+            .setPhoneNumber(fullPhone)
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(this)
+            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                    // Auto-verification (e.g., auto SMS retrieval)
+                    signInWithFirebaseCredential(credential)
+                }
+
+                override fun onVerificationFailed(e: FirebaseException) {
+                    setLoading(false)
+                    val msg = when {
+                        e.message?.contains("invalid", ignoreCase = true) == true ->
+                            "সঠিক ফোন নম্বর দাও"
+                        e.message?.contains("quota", ignoreCase = true) == true ->
+                            "আজকের SMS সীমা শেষ — কাল আবার চেষ্টা করো"
+                        e.message?.contains("too-many", ignoreCase = true) == true ||
+                        e.message?.contains("blocked", ignoreCase = true) == true ->
+                            "অনেকবার চেষ্টা করেছো — কিছুক্ষণ পর আবার চেষ্টা করো"
+                        else -> "OTP পাঠানো যায়নি: ${e.message}"
+                    }
+                    showError(msg)
+                    rootView.performHapticFeedback(HapticFeedbackConstants.REJECT)
+                }
+
+                override fun onCodeSent(
+                    vId: String,
+                    token: PhoneAuthProvider.ForceResendingToken
+                ) {
+                    verificationId = vId
+                    resendToken = token
                     setLoading(false)
                     phoneSection.visibility = View.GONE
                     otpSection.visibility = View.VISIBLE
                     otpPhoneLabel.text = "$fullPhone নম্বরে কোড পাঠানো হয়েছে"
                     otpBoxes[0].requestFocus()
-                },
-                onFailure = { e ->
-                    setLoading(false)
-                    showError(e.message ?: "OTP পাঠানো যায়নি")
-                    rootView.performHapticFeedback(HapticFeedbackConstants.REJECT)
                 }
-            )
-        }
+            })
+            .build()
+
+        PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
     private fun handleVerifyOtp() {
@@ -234,11 +265,54 @@ class LoginActivity : AppCompatActivity() {
             rootView.performHapticFeedback(HapticFeedbackConstants.REJECT)
             return
         }
+        val vId = verificationId
+        if (vId == null) {
+            showError("আগে OTP পাঠাও")
+            return
+        }
         setLoading(true)
         hideError()
 
+        val credential = PhoneAuthProvider.getCredential(vId, otp)
+        signInWithFirebaseCredential(credential)
+    }
+
+    private fun signInWithFirebaseCredential(credential: PhoneAuthCredential) {
+        firebaseAuth.signInWithCredential(credential)
+            .addOnSuccessListener { authResult ->
+                // Get Firebase ID token, then exchange for Supabase session
+                authResult.user?.getIdToken(true)?.addOnSuccessListener { tokenResult ->
+                    val firebaseToken = tokenResult.token
+                    if (firebaseToken != null) {
+                        exchangeForSupabaseSession(firebaseToken)
+                    } else {
+                        setLoading(false)
+                        showError("Firebase token পাওয়া যায়নি")
+                    }
+                }?.addOnFailureListener { e ->
+                    setLoading(false)
+                    showError("Token error: ${e.message}")
+                }
+            }
+            .addOnFailureListener { e ->
+                setLoading(false)
+                val msg = when {
+                    e.message?.contains("invalid", ignoreCase = true) == true ->
+                        "ভুল OTP — আবার চেষ্টা করো"
+                    e.message?.contains("expired", ignoreCase = true) == true ->
+                        "OTP মেয়াদ শেষ — আবার পাঠাও"
+                    else -> "OTP যাচাই ব্যর্থ: ${e.message}"
+                }
+                showError(msg)
+                rootView.performHapticFeedback(HapticFeedbackConstants.REJECT)
+                clearOtpBoxes()
+                otpBoxes[0].requestFocus()
+            }
+    }
+
+    private fun exchangeForSupabaseSession(firebaseToken: String) {
         lifecycleScope.launch {
-            api.verifyOtp(fullPhone, otp).fold(
+            api.exchangeFirebaseToken(firebaseToken).fold(
                 onSuccess = { sessionJson ->
                     sessionManager.saveSession(sessionJson)
                     setLoading(false)
@@ -247,14 +321,14 @@ class LoginActivity : AppCompatActivity() {
                 },
                 onFailure = { e ->
                     setLoading(false)
-                    showError(e.message ?: "OTP যাচাই ব্যর্থ")
+                    showError(e.message ?: "লগইন করতে সমস্যা হয়েছে")
                     rootView.performHapticFeedback(HapticFeedbackConstants.REJECT)
-                    clearOtpBoxes()
-                    otpBoxes[0].requestFocus()
                 }
             )
         }
     }
+
+    // ─── Google Sign-In ───
 
     private fun handleGoogleSignIn() {
         setLoading(true)

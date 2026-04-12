@@ -51,7 +51,16 @@ export async function POST(request: NextRequest) {
     }
 
     // 1. Verify Firebase ID token
-    const firebaseAdmin = await getFirebaseAdmin();
+    let firebaseAdmin;
+    try {
+      firebaseAdmin = await getFirebaseAdmin();
+    } catch (initErr: any) {
+      console.error('Firebase Admin init crashed:', initErr);
+      return NextResponse.json(
+        { error: 'Firebase init error', detail: initErr?.message || String(initErr) },
+        { status: 503 }
+      );
+    }
     if (!firebaseAdmin) {
       console.error('Firebase Admin not configured — missing env vars');
       return NextResponse.json({ error: 'Firebase not configured' }, { status: 503 });
@@ -156,8 +165,11 @@ export async function POST(request: NextRequest) {
         email: signInData.session.user.email,
       },
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error('Firebase exchange error:', err);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error', detail: err?.message || String(err) },
+      { status: 500 }
+    );
   }
 }

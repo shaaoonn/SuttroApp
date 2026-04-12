@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { sendPushNotification } from '@/lib/firebase-admin';
+
+// Force dynamic — prevent Next.js from evaluating at build time
+export const dynamic = 'force-dynamic';
 
 // ─────────────────────────────────────────────
 // Admin Send Notification API
@@ -134,6 +136,8 @@ export async function POST(request: NextRequest) {
 
     for (let i = 0; i < fcmTokens.length; i += 500) {
       const batch = fcmTokens.slice(i, i + 500);
+      // Dynamic import to avoid build-time firebase-admin initialization
+      const { sendPushNotification } = await import('@/lib/firebase-admin');
       const result = await sendPushNotification(batch, title, body, {
         type,
         path,

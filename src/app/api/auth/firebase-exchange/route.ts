@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import admin from 'firebase-admin';
+
+// Force dynamic — firebase-admin can't initialize at build time
+export const dynamic = 'force-dynamic';
 
 // ─────────────────────────────────────────────
 // Firebase → Supabase Token Exchange API
@@ -13,7 +15,8 @@ import admin from 'firebase-admin';
 // 4. Return Supabase session tokens
 // ─────────────────────────────────────────────
 
-function getFirebaseAdmin() {
+async function getFirebaseAdmin() {
+  const admin = (await import('firebase-admin')).default;
   if (admin.apps.length > 0) return admin;
   const projectId = process.env.FIREBASE_PROJECT_ID;
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
@@ -48,7 +51,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 1. Verify Firebase ID token
-    const firebaseAdmin = getFirebaseAdmin();
+    const firebaseAdmin = await getFirebaseAdmin();
     if (!firebaseAdmin) {
       console.error('Firebase Admin not configured — missing env vars');
       return NextResponse.json({ error: 'Firebase not configured' }, { status: 503 });

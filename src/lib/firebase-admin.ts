@@ -1,11 +1,18 @@
-import admin from 'firebase-admin';
-
 // ─────────────────────────────────────────────
-// Firebase Admin SDK — singleton initialization
+// Firebase Admin SDK — lazy initialization
 // Used for server-side push notification sending
+// Dynamic import to prevent build-time crash
 // ─────────────────────────────────────────────
 
-function getFirebaseAdmin() {
+let _admin: typeof import('firebase-admin') | null = null;
+
+async function getFirebaseAdmin() {
+  if (!_admin) {
+    _admin = (await import('firebase-admin')).default as typeof import('firebase-admin');
+  }
+
+  const admin = _admin as typeof import('firebase-admin') & { apps: unknown[]; initializeApp: (...args: unknown[]) => void; credential: { cert: (config: Record<string, string>) => unknown }; messaging: () => { sendEachForMulticast: (msg: unknown) => Promise<{ successCount: number; failureCount: number; responses: Array<{ success: boolean; error?: { code: string } }> }> }; };
+
   if (admin.apps.length > 0) return admin;
 
   const projectId = process.env.FIREBASE_PROJECT_ID;
@@ -24,8 +31,6 @@ function getFirebaseAdmin() {
   return admin;
 }
 
-export const firebaseAdmin = getFirebaseAdmin();
-
 /**
  * Send push notification to specific FCM tokens
  */
@@ -35,15 +40,16 @@ export async function sendPushNotification(
   body: string,
   data?: Record<string, string>
 ): Promise<{ success: number; failure: number }> {
+  const firebaseAdmin = await getFirebaseAdmin();
   if (!firebaseAdmin) throw new Error('Firebase Admin not initialized');
   if (tokens.length === 0) return { success: 0, failure: 0 };
 
-  const message: admin.messaging.MulticastMessage = {
+  const message = {
     tokens,
     notification: { title, body },
     data: data || {},
     android: {
-      priority: 'high',
+      priority: 'high' as const,
       notification: {
         channelId: data?.channel || 'suttro_general',
         icon: 'ic_launcher',
@@ -52,12 +58,13 @@ export async function sendPushNotification(
     },
   };
 
-  const response = await firebaseAdmin.messaging().sendEachForMulticast(message);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const response = await (firebaseAdmin as any).messaging().sendEachForMulticast(message);
 
   // Clean up invalid tokens
   if (response.failureCount > 0) {
     const invalidTokens: string[] = [];
-    response.responses.forEach((resp, idx) => {
+    response.responses.forEach((resp: { success: boolean; error?: { code: string } }, idx: number) => {
       if (
         !resp.success &&
         resp.error &&

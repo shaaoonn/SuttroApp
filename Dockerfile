@@ -15,9 +15,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-# Memory for build — kept moderate for VPS compatibility
-# Heavy builds should use GitHub Actions → GHCR instead
-ENV NODE_OPTIONS="--max-old-space-size=1024"
+# Build needs ~1.5GB+ for Firebase/Capacitor/googleapis
+# Build on GitHub Actions (7GB RAM), NOT on VPS
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 
 # Accept build-time env vars for NEXT_PUBLIC_ variables
 ARG NEXT_PUBLIC_SUPABASE_URL

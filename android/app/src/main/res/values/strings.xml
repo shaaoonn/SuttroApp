@@ -5,8 +5,15 @@
     <string name="package_name">com.suttro.app</string>
     <string name="custom_url_scheme">com.suttro.app</string>
 
-    <!-- Login -->
+    <!-- Login (Google only) -->
+    <string name="login_tagline">বিজ্ঞান পড়ার সবচেয়ে সহজ উপায়</string>
     <string name="login_title">লগ ইন করো</string>
+    <string name="login_subtitle">Google অ্যাকাউন্ট দিয়ে এক ট্যাপে</string>
+    <string name="btn_google_primary">Google দিয়ে লগ ইন করো</string>
+    <string name="login_terms">লগ ইন করলে শর্তাবলী ও গোপনীয়তা নীতি মেনে নিচ্ছ</string>
+    <string name="login_help">সাহায্য দরকার? help@suttro.app</string>
+
+    <!-- Deprecated login strings (kept for compatibility) -->
     <string name="phone_label">ফোন নম্বর</string>
     <string name="phone_hint">01XXXXXXXXX</string>
     <string name="btn_send_otp">OTP পাঠাও</string>
@@ -21,9 +28,14 @@
     <string name="welcome_subtitle">তোমার তথ্য দিয়ে শুরু করো</string>
     <string name="name_label">তোমার নাম</string>
     <string name="name_hint">নাম লেখো</string>
+    <string name="phone_label_optional">ফোন নম্বর (ঐচ্ছিক)</string>
     <string name="class_label">তুমি কোন ক্লাসে পড়ো?</string>
     <string name="class_9">ক্লাস ৯</string>
     <string name="class_10">ক্লাস ১০</string>
+    <string name="department_label">তোমার বিভাগ</string>
+    <string name="dept_science">বিজ্ঞান</string>
+    <string name="dept_humanities">মানবিক</string>
+    <string name="dept_commerce">বানিজ্য</string>
     <string name="btn_start">শুরু করো</string>
 
     <!-- Bottom Navigation -->

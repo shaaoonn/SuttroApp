@@ -88,11 +88,23 @@ class SupabaseApi {
         }
     }
 
-    /** Update user profile (name + class_level) via Next.js API */
-    suspend fun updateProfile(accessToken: String, name: String, classLevel: Int): Result<Unit> =
+    /** Update user profile (name + class_level + phone + department) via Next.js API */
+    suspend fun updateProfile(
+        accessToken: String,
+        name: String,
+        classLevel: Int,
+        phone: String? = null,
+        department: String? = null
+    ): Result<Unit> =
         withContext(Dispatchers.IO) {
             try {
-                val body = """{"name":"$name","class_level":$classLevel}"""
+                val obj = com.google.gson.JsonObject().apply {
+                    addProperty("name", name)
+                    addProperty("class_level", classLevel)
+                    if (phone != null) addProperty("phone", phone) else add("phone", com.google.gson.JsonNull.INSTANCE)
+                    if (department != null) addProperty("department", department) else add("department", com.google.gson.JsonNull.INSTANCE)
+                }
+                val body = obj.toString()
                 val request = Request.Builder()
                     .url("${SuttroConfig.WEB_URL}/api/profile")
                     .addHeader("Authorization", "Bearer $accessToken")

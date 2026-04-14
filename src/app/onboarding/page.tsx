@@ -6,17 +6,25 @@ import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
 
 // ─────────────────────────────────────────────
-// Onboarding — Class selection + Name setup
-// Shown after first login/signup
-// Google users get auto-filled name
-// Phone users must enter name
+// Onboarding — Collect name, phone, class, department
+// Shown after first Google login
 // ─────────────────────────────────────────────
+
+type Department = 'science' | 'humanities' | 'commerce';
+
+const DEPARTMENTS: { id: Department; label: string; icon: string }[] = [
+  { id: 'science', label: 'বিজ্ঞান', icon: '🔬' },
+  { id: 'humanities', label: 'মানবিক', icon: '📚' },
+  { id: 'commerce', label: 'বানিজ্য', icon: '💼' },
+];
 
 export default function OnboardingPage() {
   const router = useRouter();
   const { user, session, loading: authLoading } = useAuth();
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [classLevel, setClassLevel] = useState<9 | 10>(9);
+  const [department, setDepartment] = useState<Department>('science');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [checking, setChecking] = useState(true);
@@ -54,6 +62,14 @@ export default function OnboardingPage() {
       return;
     }
 
+    // Phone is optional, but if provided must be valid
+    const phoneDigits = phone.replace(/\D/g, '');
+    if (phoneDigits && phoneDigits.length < 10) {
+      setError('সঠিক মোবাইল নম্বর দাও (১১ সংখ্যা)');
+      return;
+    }
+    const fullPhone = phoneDigits ? `+880${phoneDigits.replace(/^0+/, '')}` : null;
+
     setSaving(true);
     setError(null);
 
@@ -67,6 +83,8 @@ export default function OnboardingPage() {
         body: JSON.stringify({
           name: name.trim(),
           class_level: classLevel,
+          phone: fullPhone,
+          department,
         }),
       });
 
@@ -104,12 +122,12 @@ export default function OnboardingPage() {
 
   return (
     <div
-      className="flex-1 flex flex-col items-center justify-center px-5"
+      className="flex-1 flex flex-col items-center justify-center px-5 py-8"
       style={{ background: 'linear-gradient(160deg, #F0FDFA, #F5F3FF)' }}
     >
       <div className="w-full max-w-sm">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <Image
             src="/logo.png"
             alt="সূত্র"
@@ -147,7 +165,7 @@ export default function OnboardingPage() {
           )}
 
           {/* Name Input */}
-          <div className="mb-5">
+          <div className="mb-4">
             <label
               className="block text-sm font-medium mb-1.5"
               style={{ color: '#134E4A' }}
@@ -168,13 +186,52 @@ export default function OnboardingPage() {
             />
             {user?.user_metadata?.full_name && (
               <p className="text-xs mt-1" style={{ color: '#94A3B8' }}>
-                Google থেকে নেওয়া — চাইলে পরিবর্তন করতে পারো
+                Google থেকে নেওয়া — চাইলে পরিবর্তন করো
               </p>
             )}
           </div>
 
+          {/* Phone Input */}
+          <div className="mb-4">
+            <label
+              className="block text-sm font-medium mb-1.5"
+              style={{ color: '#134E4A' }}
+            >
+              ফোন নম্বর{' '}
+              <span className="font-normal" style={{ color: '#94A3B8' }}>
+                (ঐচ্ছিক)
+              </span>
+            </label>
+            <div
+              className="flex rounded-xl overflow-hidden"
+              style={{ border: '1.5px solid #E2E8F0' }}
+            >
+              <span
+                className="flex items-center px-3 text-sm"
+                style={{
+                  background: '#F8FAFB',
+                  color: '#94A3B8',
+                  borderRight: '1px solid #E2E8F0',
+                }}
+              >
+                +880
+              </span>
+              <input
+                type="tel"
+                placeholder="01XXXXXXXXX"
+                value={phone}
+                onChange={(e) =>
+                  setPhone(e.target.value.replace(/\D/g, ''))
+                }
+                maxLength={11}
+                className="flex-1 px-3 py-3 text-sm outline-none"
+                style={{ color: '#134E4A' }}
+              />
+            </div>
+          </div>
+
           {/* Class Selection */}
-          <div className="mb-6">
+          <div className="mb-4">
             <label
               className="block text-sm font-medium mb-2"
               style={{ color: '#134E4A' }}
@@ -187,19 +244,47 @@ export default function OnboardingPage() {
                   key={cls}
                   type="button"
                   onClick={() => setClassLevel(cls)}
-                  className="py-4 rounded-xl text-center font-semibold suttro-transition"
+                  className="py-3 rounded-xl text-center font-semibold suttro-transition"
                   style={{
                     border: `2px solid ${classLevel === cls ? '#0D9488' : '#E2E8F0'}`,
                     background: classLevel === cls ? '#F0FDFA' : 'white',
                     color: classLevel === cls ? '#0D9488' : '#94A3B8',
                   }}
                 >
-                  <span className="text-2xl block mb-1">
+                  <span className="text-xl block">
                     {cls === 9 ? '৯' : '১০'}
                   </span>
                   <span className="text-xs">
                     ক্লাস {cls === 9 ? '৯' : '১০'}
                   </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Department Selection */}
+          <div className="mb-6">
+            <label
+              className="block text-sm font-medium mb-2"
+              style={{ color: '#134E4A' }}
+            >
+              তোমার বিভাগ
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {DEPARTMENTS.map((dept) => (
+                <button
+                  key={dept.id}
+                  type="button"
+                  onClick={() => setDepartment(dept.id)}
+                  className="py-3 rounded-xl text-center suttro-transition"
+                  style={{
+                    border: `2px solid ${department === dept.id ? '#0D9488' : '#E2E8F0'}`,
+                    background: department === dept.id ? '#F0FDFA' : 'white',
+                    color: department === dept.id ? '#0D9488' : '#94A3B8',
+                  }}
+                >
+                  <span className="text-xl block mb-0.5">{dept.icon}</span>
+                  <span className="text-xs font-semibold">{dept.label}</span>
                 </button>
               ))}
             </div>

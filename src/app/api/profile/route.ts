@@ -85,9 +85,18 @@ export async function PATCH(request: NextRequest) {
   const body = await request.json();
   const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
 
-  // Only allow updating name and class_level
+  // Allow updating name, class_level, phone, department
   if (body.name !== undefined) updates.name = body.name;
   if (body.class_level !== undefined) updates.class_level = Number(body.class_level);
+  if (body.phone !== undefined) updates.phone = body.phone || null;
+  if (body.department !== undefined) {
+    const dept = String(body.department).toLowerCase();
+    if (['science', 'humanities', 'commerce'].includes(dept)) {
+      updates.department = dept;
+    } else if (body.department === null || body.department === '') {
+      updates.department = null;
+    }
+  }
 
   const { data, error } = await sb
     .from('profiles')

@@ -23,14 +23,14 @@
             </intent-filter>
         </activity>
 
-        <!-- Native Login (Google Credential Manager + Phone OTP) -->
+        <!-- Native Login (Google Credential Manager — phone OTP removed to save Firebase costs) -->
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.Auth"
             android:windowSoftInputMode="adjustResize"
             android:exported="false" />
 
-        <!-- Onboarding (name + class selection) -->
+        <!-- Onboarding (name + phone + class + department) -->
         <activity
             android:name=".OnboardingActivity"
             android:theme="@style/AppTheme.Auth"

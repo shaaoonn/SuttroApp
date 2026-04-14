@@ -32,6 +32,10 @@ export default function ProfilePage() {
   const [classLevel, setClassLevel] = useState(9);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   useEffect(() => {
     if (!loading && !user) router.push('/login');
@@ -60,6 +64,34 @@ export default function ProfilePage() {
     if (session?.access_token) fetchProfile();
     else if (!loading) setProfileLoading(false);
   }, [session?.access_token, loading, fetchProfile]);
+
+  const handleDeleteAccount = async () => {
+    if (!session?.access_token) return;
+    if (deleteConfirmText.trim() !== 'DELETE') {
+      setDeleteError('"DELETE" লিখো (বড় হাতের)');
+      return;
+    }
+    setDeleting(true);
+    setDeleteError('');
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (res.ok) {
+        // Account deleted — sign out and redirect
+        await signOut();
+        router.push('/login?deleted=1');
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setDeleteError(data.error || 'অ্যাকাউন্ট ডিলিট করতে সমস্যা হয়েছে');
+        setDeleting(false);
+      }
+    } catch {
+      setDeleteError('নেটওয়ার্ক সমস্যা');
+      setDeleting(false);
+    }
+  };
 
   const handleSave = async () => {
     if (!session?.access_token) return;
@@ -280,10 +312,19 @@ export default function ProfilePage() {
           {/* Logout */}
           <button
             onClick={() => signOut()}
-            className="w-full py-2.5 rounded-xl text-xs font-medium suttro-transition"
+            className="w-full py-2.5 rounded-xl text-xs font-medium suttro-transition mb-2"
             style={{ border: '1px solid #FCA5A5', color: '#DC2626' }}
           >
             লগ আউট
+          </button>
+
+          {/* Delete account (Google Play Policy requirement) */}
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className="w-full py-2.5 rounded-xl text-[11px] font-medium suttro-transition"
+            style={{ background: 'transparent', color: '#94A3B8', textDecoration: 'underline' }}
+          >
+            অ্যাকাউন্ট ডিলিট করো
           </button>
         </div>
       </div>
@@ -374,11 +415,106 @@ export default function ProfilePage() {
             )}
           </div>
 
-          <button onClick={() => signOut()} className="w-full py-3 rounded-[10px] text-base font-medium border suttro-transition hover:bg-red-50" style={{ borderColor: '#FCA5A5', color: '#DC2626' }}>
+          <button onClick={() => signOut()} className="w-full py-3 rounded-[10px] text-base font-medium border suttro-transition hover:bg-red-50 mb-3" style={{ borderColor: '#FCA5A5', color: '#DC2626' }}>
             লগ আউট
+          </button>
+
+          {/* Delete account (Google Play Policy requirement) */}
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className="w-full py-3 rounded-[10px] text-sm font-medium suttro-transition"
+            style={{ background: 'transparent', color: '#94A3B8', textDecoration: 'underline' }}
+          >
+            অ্যাকাউন্ট ডিলিট করো
           </button>
         </div>
       </div>
+
+      {/* Delete account confirmation modal */}
+      {showDeleteModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.5)' }}
+          onClick={() => !deleting && setShowDeleteModal(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl p-5"
+            style={{ background: 'white' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="text-center mb-4">
+              <div className="text-4xl mb-2">⚠️</div>
+              <h2 className="text-lg font-bold mb-1" style={{ color: '#DC2626' }}>
+                অ্যাকাউন্ট ডিলিট করবে?
+              </h2>
+              <p className="text-xs" style={{ color: '#64748B' }}>
+                এই কাজটি করা যাবে না আবার। তোমার প্রোফাইল, পরীক্ষার ফলাফল, অগ্রগতি সবকিছু চিরতরে মুছে যাবে।
+              </p>
+            </div>
+
+            <div
+              className="rounded-lg p-3 mb-4 text-xs"
+              style={{ background: '#FEF2F2', color: '#991B1B', border: '1px solid #FECACA' }}
+            >
+              <strong>যা যা মুছে যাবে:</strong>
+              <ul className="mt-1 ml-4 list-disc space-y-0.5">
+                <li>তোমার নাম, ইমেইল, ফোন</li>
+                <li>সব পরীক্ষার ফলাফল</li>
+                <li>সব দৈনিক পাঠের অগ্রগতি</li>
+                <li>সাবস্ক্রিপশন তথ্য</li>
+                <li>Google লগইন সংযোগ</li>
+              </ul>
+            </div>
+
+            <div className="mb-3">
+              <label className="block text-xs font-medium mb-1.5" style={{ color: '#134E4A' }}>
+                নিশ্চিত হতে নিচে <code className="font-bold">DELETE</code> লেখো (বড় হাতের)
+              </label>
+              <input
+                type="text"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                disabled={deleting}
+                placeholder="DELETE"
+                className="w-full px-3 py-2.5 rounded-lg text-sm outline-none focus:ring-2 focus:ring-red-400"
+                style={{ border: '1px solid #FCA5A5', color: '#134E4A', background: '#FFFBFB' }}
+              />
+            </div>
+
+            {deleteError && (
+              <div
+                className="rounded-lg px-3 py-2 text-xs mb-3"
+                style={{ background: '#FEE2E2', color: '#DC2626' }}
+              >
+                {deleteError}
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setDeleteConfirmText('');
+                  setDeleteError('');
+                }}
+                disabled={deleting}
+                className="flex-1 py-2.5 rounded-lg text-sm font-medium suttro-transition disabled:opacity-50"
+                style={{ border: '1px solid #E2E8F0', color: '#64748B' }}
+              >
+                বাতিল
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleting || deleteConfirmText.trim() !== 'DELETE'}
+                className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white suttro-transition disabled:opacity-50"
+                style={{ background: '#DC2626' }}
+              >
+                {deleting ? 'ডিলিট হচ্ছে...' : 'স্থায়ীভাবে ডিলিট'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

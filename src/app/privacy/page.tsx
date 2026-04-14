@@ -16,7 +16,7 @@ export default function PrivacyPage() {
           গোপনীয়তা নীতি
         </h1>
         <p className="text-sm mb-8" style={{ color: '#94A3B8' }}>
-          সর্বশেষ আপডেট: ১১ এপ্রিল, ২০২৬
+          সর্বশেষ আপডেট: ১৪ এপ্রিল, ২০২৬
         </p>
 
         <div className="space-y-6 text-sm leading-relaxed" style={{ color: '#334155' }}>
@@ -33,10 +33,11 @@ export default function PrivacyPage() {
           <Section title="২. আমরা যা সংগ্রহ করি">
             <p className="font-medium mb-2">অ্যাকাউন্ট তথ্য:</p>
             <ul className="list-disc list-inside space-y-1 ml-2 mb-3">
-              <li>ফোন নম্বর (ফোন দিয়ে লগইন করলে)</li>
-              <li>নাম ও ইমেইল (Google দিয়ে লগইন করলে)</li>
+              <li>নাম ও ইমেইল (Google অ্যাকাউন্ট থেকে)</li>
               <li>প্রোফাইল ছবি (Google অ্যাকাউন্ট থেকে)</li>
-              <li>ক্লাস লেভেল (৯ বা ১০)</li>
+              <li>ফোন নম্বর (ঐচ্ছিক)</li>
+              <li>ক্লাস (৯ বা ১০)</li>
+              <li>বিভাগ (বিজ্ঞান, মানবিক, বাণিজ্য)</li>
             </ul>
             <p className="font-medium mb-2">ব্যবহারের তথ্য:</p>
             <ul className="list-disc list-inside space-y-1 ml-2 mb-3">
@@ -68,18 +69,23 @@ export default function PrivacyPage() {
             </p>
             <ul className="list-disc list-inside space-y-1 ml-2">
               <li>
-                <strong>Supabase</strong> — ডেটাবেস ও ব্যবহারকারী যাচাইকরণ
+                <strong>Supabase</strong> — ডেটাবেস ও ব্যবহারকারী যাচাইকরণ (self-hosted)
               </li>
               <li>
-                <strong>Google</strong> — লগইন যাচাইকরণ (Google Sign-In)
+                <strong>Google Sign-In</strong> — লগইন যাচাইকরণ
+              </li>
+              <li>
+                <strong>Firebase Cloud Messaging</strong> — পুশ নোটিফিকেশন
               </li>
               <li>
                 <strong>YouTube</strong> — ভিডিও ক্লাস হোস্টিং
               </li>
             </ul>
             <p className="mt-2">
-              এই সেবাগুলোর নিজস্ব গোপনীয়তা নীতি রয়েছে। আমরা শুধুমাত্র
-              প্রয়োজনীয় তথ্যই এদের সাথে শেয়ার করি।
+              আমরা তোমার ব্যক্তিগত তথ্য বিজ্ঞাপন, মার্কেটিং বা তৃতীয় পক্ষের
+              কাছে <strong>কখনোই বিক্রি করি না</strong>। এই সেবাগুলোর নিজস্ব
+              গোপনীয়তা নীতি রয়েছে এবং আমরা শুধুমাত্র প্রয়োজনীয় তথ্যই এদের
+              সাথে শেয়ার করি।
             </p>
           </Section>
 
@@ -110,11 +116,34 @@ export default function PrivacyPage() {
             </ul>
           </Section>
 
-          <Section title="৮. ডেটা সংরক্ষণ">
+          <Section title="৮. ডেটা সংরক্ষণ ও মুছে ফেলা">
+            <p className="mb-3">
+              তোমার অ্যাকাউন্ট সক্রিয় থাকা পর্যন্ত আমরা তোমার তথ্য সংরক্ষণ করি।
+              তুমি যেকোনো সময় অ্যাকাউন্ট ডিলিট করতে পারবে:
+            </p>
+            <ul className="list-disc list-inside space-y-1 ml-2 mb-3">
+              <li>
+                <strong>অ্যাপ/ওয়েবে:</strong> প্রোফাইল পেজে গিয়ে{' '}
+                <a href="/delete-account" style={{ color: '#0D9488', textDecoration: 'underline' }}>
+                  "অ্যাকাউন্ট ডিলিট করো"
+                </a>{' '}
+                বাটনে ট্যাপ করে
+              </li>
+              <li>
+                <strong>সরাসরি লিংক:</strong>{' '}
+                <a href="/delete-account" style={{ color: '#0D9488', textDecoration: 'underline' }}>
+                  suttro.app/delete-account
+                </a>
+              </li>
+              <li>
+                <strong>ইমেইল:</strong> help@suttro.app-এ অনুরোধ পাঠিয়ে
+              </li>
+            </ul>
             <p>
-              তোমার অ্যাকাউন্ট সক্রিয় থাকা পর্যন্ত আমরা তোমার তথ্য সংরক্ষণ
-              করি। অ্যাকাউন্ট মুছে ফেলার অনুরোধ করলে, ৩০ দিনের মধ্যে সকল
-              ব্যক্তিগত তথ্য মুছে ফেলা হবে।
+              অ্যাকাউন্ট ডিলিট করলে <strong>সাথে সাথেই</strong> তোমার প্রোফাইল,
+              পরীক্ষার ফলাফল, অগ্রগতি ও Google লগইন সংযোগ — সবকিছু আমাদের সার্ভার
+              থেকে স্থায়ীভাবে মুছে যাবে। ডায়াগনস্টিক লগ ৯০ দিনের মধ্যে স্বয়ংক্রিয়
+              ভাবে মুছে যায়।
             </p>
           </Section>
 
@@ -144,8 +173,9 @@ export default function PrivacyPage() {
               <p className="font-medium" style={{ color: '#134E4A' }}>
                 সূত্র (Suttro)
               </p>
-              <p className="mt-1">ইমেইল: contact@suttro.app</p>
+              <p className="mt-1">ইমেইল: help@suttro.app</p>
               <p>ওয়েবসাইট: https://suttro.app</p>
+              <p className="mt-1">অ্যাকাউন্ট ডিলিট: https://suttro.app/delete-account</p>
             </div>
           </Section>
         </div>
@@ -172,9 +202,15 @@ export default function PrivacyPage() {
               advertising purposes.
             </p>
             <p>
-              Users can request account deletion by contacting us at
-              contact@suttro.app. Upon request, all personal data will be deleted
-              within 30 days.
+              Users can delete their account instantly in two ways:
+              (1) in-app — tap "অ্যাকাউন্ট ডিলিট করো" on the profile page, or
+              (2) on the web — visit{' '}
+              <a href="/delete-account" style={{ color: '#0D9488' }}>
+                suttro.app/delete-account
+              </a>
+              . All personal data, exam results, progress, and authentication
+              links are permanently deleted immediately. For assistance, contact
+              help@suttro.app.
             </p>
           </div>
         </div>

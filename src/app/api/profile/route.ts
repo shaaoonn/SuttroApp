@@ -116,3 +116,52 @@ export async function PATCH(request: NextRequest) {
 
   return NextResponse.json(data);
 }
+
+// ─────────────────────────────────────────────
+// DELETE /api/profile — Permanent account deletion
+// Google Play Policy 2024 requires in-app account deletion
+// Deletes: profile row, all user data (cascades via FK), auth user
+// ─────────────────────────────────────────────
+export async function DELETE(request: NextRequest) {
+  const sb = getAdminSupabase();
+  if (!sb) return NextResponse.json({ error: 'not configured' }, { status: 503 });
+
+  const token = getUser(request);
+  if (!token) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
+  const { data: { user } } = await sb.auth.getUser(token);
+  if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
+  const userId = user.id;
+
+  try {
+    // 1. Delete profile row (cascades to exam_results, daily_lesson_progress, push_tokens, etc. via FK)
+    const { error: profileError } = await sb
+      .from('profiles')
+      .delete()
+      .eq('id', userId);
+
+    if (profileError) {
+      console.error('[DELETE /profile] profile delete error:', profileError);
+    }
+
+    // 2. Delete the auth user itself (this fully removes them — they can't log back in)
+    const { error: authError } = await sb.auth.admin.deleteUser(userId);
+
+    if (authError) {
+      console.error('[DELETE /profile] auth delete error:', authError);
+      return NextResponse.json({ error: authError.message }, { status: 500 });
+    }
+
+    // 3. Background sync (remove from Google Sheets)
+    if (isSheetsConfigured()) {
+      syncAllProfiles().catch(() => {});
+    }
+
+    return NextResponse.json({ success: true, deleted: userId });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'unknown error';
+    console.error('[DELETE /profile] fatal:', err);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}

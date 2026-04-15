@@ -50,13 +50,29 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET: Check sync status
+// GET: Check sync status — shows which env vars are missing (no secrets leaked)
 export async function GET() {
+  const envStatus = {
+    GOOGLE_OAUTH_CLIENT_ID: !!process.env.GOOGLE_OAUTH_CLIENT_ID,
+    GOOGLE_OAUTH_CLIENT_SECRET: !!process.env.GOOGLE_OAUTH_CLIENT_SECRET,
+    GOOGLE_OAUTH_REFRESH_TOKEN: !!process.env.GOOGLE_OAUTH_REFRESH_TOKEN,
+    GOOGLE_DRIVE_ROOT_FOLDER_ID: !!process.env.GOOGLE_DRIVE_ROOT_FOLDER_ID,
+  };
+  const missing = Object.entries(envStatus)
+    .filter(([, v]) => !v)
+    .map(([k]) => k);
+
   if (!isSheetsConfigured()) {
-    return NextResponse.json({ configured: false });
+    return NextResponse.json({
+      configured: false,
+      missing,
+      envStatus,
+      hint: 'Set these env vars in production (Vercel/Coolify) and redeploy',
+    });
   }
   return NextResponse.json({
     configured: true,
+    envStatus,
     endpoint: '/api/sheets/sync-profiles',
     method: 'POST',
     auth: 'x-cron-secret or Bearer token (service role key)',

@@ -4,6 +4,31 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
 
 // ─────────────────────────────────────────────
+// Open bKash URL inside the app (Chrome Custom Tab on Android,
+// SFSafariViewController on iOS) when running in Capacitor.
+// Falls back to normal navigation on the web.
+// ─────────────────────────────────────────────
+async function openPaymentURL(url: string) {
+  const isNative = typeof window !== 'undefined'
+    && !!(window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor?.isNativePlatform?.();
+
+  if (isNative) {
+    try {
+      const { Browser } = await import('@capacitor/browser');
+      await Browser.open({
+        url,
+        presentationStyle: 'fullscreen',
+        windowName: '_self',
+      });
+      return;
+    } catch {
+      // fall through to web fallback
+    }
+  }
+  window.location.href = url;
+}
+
+// ─────────────────────────────────────────────
 // Pricing — Plan cards + Donation
 // Design reference Page 8
 // ─────────────────────────────────────────────
@@ -62,7 +87,7 @@ export default function PricingClient() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Payment initiation failed');
-      window.location.href = data.bkashURL;
+      await openPaymentURL(data.bkashURL);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'কিছু একটা ভুল হয়েছে');
       setLoading(null);
@@ -92,7 +117,7 @@ export default function PricingClient() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Payment initiation failed');
-      window.location.href = data.bkashURL;
+      await openPaymentURL(data.bkashURL);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'কিছু একটা ভুল হয়েছে');
       setDonateLoading(false);

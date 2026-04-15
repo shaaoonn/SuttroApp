@@ -53,7 +53,11 @@ export async function GET(request: NextRequest) {
 
     // Background sync to Google Sheets (new user created)
     if (isSheetsConfigured()) {
-      syncAllProfiles().catch(() => {});
+      syncAllProfiles().catch((err) => {
+        console.error('[profile GET] Sheets sync failed:', err instanceof Error ? err.message : err);
+      });
+    } else {
+      console.warn('[profile GET] Sheets sync skipped — GOOGLE_OAUTH_* env vars not configured');
     }
 
     return NextResponse.json({
@@ -111,7 +115,11 @@ export async function PATCH(request: NextRequest) {
 
   // Background sync to Google Sheets (profile updated)
   if (isSheetsConfigured()) {
-    syncAllProfiles().catch(() => {});
+    syncAllProfiles().catch((err) => {
+      console.error('[profile PATCH] Sheets sync failed:', err instanceof Error ? err.message : err);
+    });
+  } else {
+    console.warn('[profile PATCH] Sheets sync skipped — GOOGLE_OAUTH_* env vars not configured');
   }
 
   return NextResponse.json(data);
@@ -155,7 +163,9 @@ export async function DELETE(request: NextRequest) {
 
     // 3. Background sync (remove from Google Sheets)
     if (isSheetsConfigured()) {
-      syncAllProfiles().catch(() => {});
+      syncAllProfiles().catch((err) => {
+        console.error('[profile DELETE] Sheets sync failed:', err instanceof Error ? err.message : err);
+      });
     }
 
     return NextResponse.json({ success: true, deleted: userId });

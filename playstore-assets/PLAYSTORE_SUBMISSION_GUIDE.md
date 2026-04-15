@@ -1,6 +1,6 @@
 # Suttro — Play Store Submission Guide
 
-**Version:** 2.1.0 (versionCode 3)
+**Version:** 2.1.1 (versionCode 4)
 **Package:** com.suttro.app
 **AAB file:** `app-release.aab` (from GitHub Actions artifact)
 
@@ -223,6 +223,12 @@ Nice-to-have — can skip initially.
 - Public release
 - Google review: 1-7 days (usually 2-3 days for first release)
 - Staged rollout recommended: start at 5% → 20% → 50% → 100% over a week
+
+### Release notes (v2.1.1)
+```
+• বিকাশ পেমেন্ট এখন অ্যাপের ভেতরেই — ব্রাউজারে যেতে হবে না
+• কর্মক্ষমতা ও স্থিতিশীলতা উন্নতি
+```
 
 ### Release notes (v2.1.0)
 ```

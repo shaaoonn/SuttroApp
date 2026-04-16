@@ -19,6 +19,7 @@ async function getLessons() {
     class_level: row.class_level,
     total_marks: row.total_marks,
     is_published: row.is_published,
+    departments: row.departments || [],
     item_count: row.daily_lesson_items?.[0]?.count ?? 0,
   }));
 }

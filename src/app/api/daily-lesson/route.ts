@@ -41,16 +41,20 @@ export async function GET(req: NextRequest) {
   const dateParam = req.nextUrl.searchParams.get('date');
   const targetDate = dateParam || today;
 
-  // Get user's class_level from profile (default: 10)
+  // Get user's class_level and department from profile
   let classLevel = 10;
+  let userDepartment: string | null = null;
   if (userId) {
     const { data: profile } = await sb
       .from('profiles')
-      .select('class_level')
+      .select('class_level, department')
       .eq('id', userId)
       .single();
     if (profile?.class_level) {
       classLevel = profile.class_level;
+    }
+    if (profile?.department) {
+      userDepartment = profile.department;
     }
   }
 
@@ -60,14 +64,40 @@ export async function GET(req: NextRequest) {
     classLevel = parseInt(classParam);
   }
 
-  // Fetch the lesson for the target date filtered by class_level
-  const { data: lesson } = await sb
+  // Fetch lessons for the target date filtered by class_level
+  // Then pick the one matching user's department
+  const { data: lessons } = await sb
     .from('daily_lessons')
     .select('*')
     .eq('lesson_date', targetDate)
     .eq('is_published', true)
-    .eq('class_level', classLevel)
-    .single();
+    .eq('class_level', classLevel);
+
+  // Department filtering:
+  // - Empty/null departments array = lesson is for ALL departments
+  // - Non-empty departments array = lesson is only for those departments
+  // Pick the best matching lesson
+  let lesson = null;
+  if (lessons && lessons.length > 0) {
+    if (lessons.length === 1) {
+      // Only one lesson — check if it's for this user's department
+      const l = lessons[0];
+      const deps = l.departments || [];
+      if (deps.length === 0 || !userDepartment || deps.includes(userDepartment)) {
+        lesson = l;
+      }
+    } else {
+      // Multiple lessons — find the one targeting user's department,
+      // or fall back to the "all departments" one
+      lesson = lessons.find((l: any) => {
+        const deps = l.departments || [];
+        return deps.length > 0 && userDepartment && deps.includes(userDepartment);
+      }) || lessons.find((l: any) => {
+        const deps = l.departments || [];
+        return deps.length === 0;
+      }) || null;
+    }
+  }
 
   if (!lesson) {
     return NextResponse.json({ lesson: null, classLevel, message: 'আজকের জন্য কোনো পড়া নির্ধারিত হয়নি' });

@@ -53,6 +53,7 @@ export default async function EditDailyLessonPage({ params }: PageProps) {
     class_level: lesson.class_level || 10,
     total_marks: lesson.total_marks || 100,
     is_published: lesson.is_published,
+    departments: lesson.departments || [],
   };
 
   const formItems = (items || []).map((item: any) => ({

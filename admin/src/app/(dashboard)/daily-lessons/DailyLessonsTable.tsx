@@ -12,6 +12,7 @@ interface LessonRow {
   class_level: number;
   total_marks: number;
   is_published: boolean;
+  departments: string[];
   item_count: number;
 }
 
@@ -58,6 +59,8 @@ export default function DailyLessonsTable({ lessons: initial }: { lessons: Lesso
               <tr style={{ background: '#f8fafc', borderBottom: '1px solid var(--admin-border)' }}>
                 <th className="text-left px-4 py-3 text-sm font-semibold" style={{ color: 'var(--admin-muted)' }}>তারিখ</th>
                 <th className="text-left px-4 py-3 text-sm font-semibold" style={{ color: 'var(--admin-muted)' }}>শিরোনাম</th>
+                <th className="text-left px-4 py-3 text-sm font-semibold" style={{ color: 'var(--admin-muted)' }}>ক্লাস</th>
+                <th className="text-left px-4 py-3 text-sm font-semibold" style={{ color: 'var(--admin-muted)' }}>বিভাগ</th>
                 <th className="text-left px-4 py-3 text-sm font-semibold" style={{ color: 'var(--admin-muted)' }}>আইটেম</th>
                 <th className="text-left px-4 py-3 text-sm font-semibold" style={{ color: 'var(--admin-muted)' }}>নম্বর</th>
                 <th className="text-left px-4 py-3 text-sm font-semibold" style={{ color: 'var(--admin-muted)' }}>স্ট্যাটাস</th>
@@ -85,6 +88,21 @@ export default function DailyLessonsTable({ lessons: initial }: { lessons: Lesso
                       )}
                     </td>
                     <td className="px-4 py-3 text-sm font-medium">{lesson.title}</td>
+                    <td className="px-4 py-3 text-sm">
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-700">
+                        {lesson.class_level}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      {lesson.departments && lesson.departments.length > 0
+                        ? lesson.departments.map((d: string) => (
+                            <span key={d} className="mr-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-teal-100 text-teal-700">
+                              {d === 'science' ? 'বিজ্ঞান' : d === 'humanities' ? 'মানবিক' : d === 'commerce' ? 'বাণিজ্য' : d}
+                            </span>
+                          ))
+                        : <span className="text-xs" style={{ color: 'var(--admin-muted)' }}>সবার</span>
+                      }
+                    </td>
                     <td className="px-4 py-3 text-sm">{lesson.item_count}টি</td>
                     <td className="px-4 py-3 text-sm">{lesson.total_marks}</td>
                     <td className="px-4 py-3">
@@ -122,7 +140,7 @@ export default function DailyLessonsTable({ lessons: initial }: { lessons: Lesso
               })}
               {lessons.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-sm" style={{ color: 'var(--admin-muted)' }}>
+                  <td colSpan={8} className="px-4 py-8 text-center text-sm" style={{ color: 'var(--admin-muted)' }}>
                     কোনো পড়া তৈরি হয়নি
                   </td>
                 </tr>

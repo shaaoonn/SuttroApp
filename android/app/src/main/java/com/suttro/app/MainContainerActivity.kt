@@ -8,12 +8,17 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Message
+import android.provider.MediaStore
 import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.OvershootInterpolator
 import android.webkit.CookieManager
+import android.webkit.PermissionRequest
+import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
@@ -25,13 +30,16 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
+import java.io.File
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -62,6 +70,47 @@ class MainContainerActivity : AppCompatActivity() {
     private var isNavigatingFromTab = false
     private var currentPath = "/"
     private var isFirstLoad = true
+
+    // ═══ File chooser state (for <input type="file">) ═══
+    private var filePathCallback: ValueCallback<Array<Uri>>? = null
+    private var cameraPhotoUri: Uri? = null
+    private var pendingCameraRequest: PermissionRequest? = null
+
+    // Launcher for file chooser (system picker + camera capture)
+    private val fileChooserLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val callback = filePathCallback
+        filePathCallback = null
+        if (callback == null) return@registerForActivityResult
+
+        val uris: Array<Uri>? = if (result.resultCode != RESULT_OK) {
+            null
+        } else {
+            // If user took a camera photo, data.data is null but cameraPhotoUri holds the result
+            val fromChooser = WebChromeClient.FileChooserParams.parseResult(result.resultCode, result.data)
+            when {
+                !fromChooser.isNullOrEmpty() -> fromChooser
+                cameraPhotoUri != null -> arrayOf(cameraPhotoUri!!)
+                else -> null
+            }
+        }
+        callback.onReceiveValue(uris)
+        cameraPhotoUri = null
+    }
+
+    // Launcher for camera permission (from WebView getUserMedia or <input capture>)
+    private val cameraPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        val req = pendingCameraRequest
+        pendingCameraRequest = null
+        if (granted && req != null) {
+            req.grant(req.resources)
+        } else {
+            req?.deny()
+        }
+    }
 
     // Tab path mapping — 4 tabs
     private val tabPaths = mapOf(
@@ -346,15 +395,36 @@ class MainContainerActivity : AppCompatActivity() {
         )
         webView.addJavascriptInterface(bridge, SuttroBridge.INTERFACE_NAME)
 
+        // Multi-window support (for target="_blank" links — PDFs, external previews)
+        settings.setSupportMultipleWindows(true)
+        settings.javaScriptCanOpenWindowsAutomatically = true
+
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                val url = request.url.toString()
+                val uri = request.url
+                val url = uri.toString()
+                val host = uri.host?.lowercase() ?: ""
+                val scheme = uri.scheme?.lowercase() ?: ""
+
+                // Logout redirect
                 if (url.contains("suttro.app/login")) {
                     handleLogout()
                     return true
                 }
-                if (url.contains("suttro.app")) return false
-                try { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) } catch (_: Exception) {}
+
+                // Telephone / email / SMS / market — let the system handle
+                if (scheme in setOf("tel", "mailto", "sms", "market", "intent")) {
+                    try { startActivity(Intent(Intent.ACTION_VIEW, uri)) } catch (_: Exception) {}
+                    return true
+                }
+
+                // Hosts allowed to load INSIDE WebView (bKash + Google Drive for PDFs + YouTube + OAuth)
+                if (isInAppHost(host)) {
+                    return false
+                }
+
+                // Truly external — open in system browser
+                try { startActivity(Intent(Intent.ACTION_VIEW, uri)) } catch (_: Exception) {}
                 return true
             }
 
@@ -388,7 +458,153 @@ class MainContainerActivity : AppCompatActivity() {
                     swipeRefresh.isRefreshing = false
                 }
             }
+
+            // ═══ File input support — <input type="file"> ═══
+            override fun onShowFileChooser(
+                webView: WebView?,
+                callback: ValueCallback<Array<Uri>>?,
+                params: FileChooserParams?
+            ): Boolean {
+                // Release any stale callback first
+                filePathCallback?.onReceiveValue(null)
+                filePathCallback = callback
+
+                try {
+                    val contentIntent = params?.createIntent() ?: Intent(Intent.ACTION_GET_CONTENT).apply {
+                        addCategory(Intent.CATEGORY_OPENABLE)
+                        type = "*/*"
+                    }
+                    contentIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+                    val acceptTypes = params?.acceptTypes?.toList() ?: emptyList()
+                    val wantsImage = acceptTypes.isEmpty() ||
+                        acceptTypes.any { it.startsWith("image/") || it == "*/*" || it.contains("image") }
+
+                    // Add camera capture as extra option when images are acceptable
+                    val extraIntents = mutableListOf<Intent>()
+                    if (wantsImage) {
+                        try {
+                            val imageFile = File.createTempFile("camera_", ".jpg", cacheDir)
+                            cameraPhotoUri = FileProvider.getUriForFile(
+                                this@MainContainerActivity,
+                                "${applicationContext.packageName}.fileprovider",
+                                imageFile
+                            )
+                            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+                                putExtra(MediaStore.EXTRA_OUTPUT, cameraPhotoUri)
+                                addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            }
+                            extraIntents.add(cameraIntent)
+                        } catch (e: Exception) {
+                            Log.w("FileChooser", "Camera intent unavailable", e)
+                        }
+                    }
+
+                    val chooser = Intent(Intent.ACTION_CHOOSER).apply {
+                        putExtra(Intent.EXTRA_INTENT, contentIntent)
+                        putExtra(Intent.EXTRA_TITLE, "ফাইল বাছাই করো")
+                        if (extraIntents.isNotEmpty()) {
+                            putExtra(Intent.EXTRA_INITIAL_INTENTS, extraIntents.toTypedArray())
+                        }
+                    }
+
+                    fileChooserLauncher.launch(chooser)
+                    return true
+                } catch (e: Exception) {
+                    Log.e("FileChooser", "Failed to launch file chooser", e)
+                    filePathCallback = null
+                    cameraPhotoUri = null
+                    Toast.makeText(
+                        this@MainContainerActivity,
+                        "ফাইল বাছাইকারী খুলতে সমস্যা হয়েছে",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return false
+                }
+            }
+
+            // ═══ target="_blank" → load inside the SAME WebView ═══
+            override fun onCreateWindow(
+                view: WebView?,
+                isDialog: Boolean,
+                isUserGesture: Boolean,
+                resultMsg: Message?
+            ): Boolean {
+                val transport = resultMsg?.obj as? WebView.WebViewTransport ?: return false
+                // Create a throwaway WebView that captures the popup URL and redirects to our main WebView
+                val tempWebView = WebView(this@MainContainerActivity)
+                tempWebView.webViewClient = object : WebViewClient() {
+                    override fun shouldOverrideUrlLoading(v: WebView, request: WebResourceRequest): Boolean {
+                        val target = request.url.toString()
+                        val host = request.url.host?.lowercase() ?: ""
+                        if (isInAppHost(host)) {
+                            webView.loadUrl(target)
+                        } else {
+                            try { startActivity(Intent(Intent.ACTION_VIEW, request.url)) } catch (_: Exception) {}
+                        }
+                        return true
+                    }
+                }
+                transport.webView = tempWebView
+                resultMsg.sendToTarget()
+                return true
+            }
+
+            // ═══ Permission request (camera/mic for WebRTC) ═══
+            override fun onPermissionRequest(request: PermissionRequest?) {
+                request ?: return
+                runOnUiThread {
+                    val resources = request.resources ?: emptyArray()
+                    if (resources.contains(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
+                        if (ContextCompat.checkSelfPermission(this@MainContainerActivity, Manifest.permission.CAMERA)
+                            == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            request.grant(resources)
+                        } else {
+                            pendingCameraRequest = request
+                            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                        }
+                    } else {
+                        // Grant non-camera resources (mic etc.) directly — DOMStorage/MidiSysex not sensitive here
+                        request.grant(resources)
+                    }
+                }
+            }
         }
+    }
+
+    /**
+     * Hosts allowed to load INSIDE the WebView rather than being punted to the system browser.
+     * Covers:
+     *  - suttro.app itself
+     *  - bKash payment flow
+     *  - Google Drive URLs (PDF preview + image serving from uploaded homework)
+     *  - YouTube embeds
+     *  - Google OAuth redirects
+     */
+    private fun isInAppHost(host: String): Boolean {
+        if (host.isEmpty()) return false
+        val inAppSuffixes = listOf(
+            // Suttro
+            "suttro.app",
+            // bKash
+            "bkash.com",
+            "bka.sh",
+            // Google Drive / preview / CDN
+            "drive.google.com",
+            "docs.google.com",
+            "googleusercontent.com",
+            // YouTube
+            "youtube.com",
+            "youtu.be",
+            "youtube-nocookie.com",
+            "ytimg.com",
+            // Google OAuth
+            "accounts.google.com",
+            "google.com"
+        )
+        return inAppSuffixes.any { host == it || host.endsWith(".$it") }
     }
 
     private fun hideWebNavigation(view: WebView?) {

@@ -84,7 +84,10 @@ export default function FileUploader({
       }
 
       setProgress(100);
-      onChange(data.url, isImageFile ? 'image' : 'pdf', data.fileId);
+      // For PDFs use Drive's preview URL (renders inside the app WebView);
+      // for images use directUrl (serves the raw image).
+      const finalUrl = isPdfFile ? (data.viewUrl || data.url) : data.url;
+      onChange(finalUrl, isImageFile ? 'image' : 'pdf', data.fileId);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'আপলোড ব্যর্থ হয়েছে।';
       setError(msg);

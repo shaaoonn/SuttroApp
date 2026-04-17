@@ -5,27 +5,13 @@ import { useAuth } from '@/lib/auth-context';
 import { SkeletonList } from '@/components/native/Skeleton';
 
 // ─────────────────────────────────────────────
-// Open bKash URL inside the app (Chrome Custom Tab on Android,
-// SFSafariViewController on iOS) when running in Capacitor.
-// Falls back to normal navigation on the web.
+// Open bKash payment URL. Inside the Android app, the native WebView's
+// shouldOverrideUrlLoading() whitelists bkash.com / bka.sh hosts so the
+// redirect stays INSIDE the app (no external browser). On the public web
+// this just navigates the current tab. Capacitor.Browser is intentionally
+// NOT used — the Android shell is pure Kotlin, not Capacitor.
 // ─────────────────────────────────────────────
 async function openPaymentURL(url: string) {
-  const isNative = typeof window !== 'undefined'
-    && !!(window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor?.isNativePlatform?.();
-
-  if (isNative) {
-    try {
-      const { Browser } = await import('@capacitor/browser');
-      await Browser.open({
-        url,
-        presentationStyle: 'fullscreen',
-        windowName: '_self',
-      });
-      return;
-    } catch {
-      // fall through to web fallback
-    }
-  }
   window.location.href = url;
 }
 

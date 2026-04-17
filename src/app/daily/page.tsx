@@ -668,7 +668,9 @@ function HomeworkSubmission({
         });
         const data = await res.json();
         if (!res.ok || !data.success) throw new Error(data.error || 'PDF আপলোড ব্যর্থ');
-        pdfUrls.push(data.url);
+        // Use Drive's preview URL for PDFs so it renders inside the app WebView.
+        // directUrl (lh3...) serves raw PDF bytes which trigger a download instead.
+        pdfUrls.push(data.viewUrl || data.url);
         if (data.fileId) gdriveFileIds.push(data.fileId);
       }
 

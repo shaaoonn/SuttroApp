@@ -34,6 +34,8 @@ jobs:
           cat > android/gradle.properties << 'EOF'
           org.gradle.jvmargs=-Xmx2048m
           android.useAndroidX=true
+          SUTTRO_STORE_PASSWORD=suttro2026
+          SUTTRO_KEY_PASSWORD=suttro2026
           EOF
 
       - name: Make gradlew executable

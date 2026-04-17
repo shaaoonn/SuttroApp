@@ -190,7 +190,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { item_id, type, mcq_answers, text_answer, photo_urls, gdrive_file_ids } = body;
+  const { item_id, type, mcq_answers, text_answer, photo_urls, pdf_urls, gdrive_file_ids } = body;
 
   if (!item_id || !type) {
     return NextResponse.json({ error: 'Missing item_id or type' }, { status: 400 });
@@ -256,8 +256,20 @@ export async function POST(req: NextRequest) {
       submissionData.gdrive_file_ids = gdrive_file_ids;
     }
 
+  } else if (type === 'pdf') {
+    // Student submitted a PDF (e.g. handwritten work scanned to PDF)
+    submissionData.pdf_urls = pdf_urls || [];
+    // Allow merging with text answer if both provided
+    if (text_answer) submissionData.text_answer = text_answer;
+
+  } else if (type === 'mixed') {
+    // Combination submission: text + photos + PDFs
+    if (text_answer) submissionData.text_answer = text_answer;
+    if (photo_urls && photo_urls.length > 0) submissionData.photo_urls = photo_urls;
+    if (pdf_urls && pdf_urls.length > 0) submissionData.pdf_urls = pdf_urls;
+
   } else if (type === 'completion') {
-    // Just mark as completed (for videos, sims, PDFs)
+    // Just mark as completed (for videos, sims, PDFs, model exam)
     submissionData.marks_given = item.marks; // full marks for completion
   }
 

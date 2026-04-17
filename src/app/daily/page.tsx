@@ -21,6 +21,7 @@ const CATEGORY_LABELS: Record<string, { label: string; icon: string; color: stri
 const ITEM_TYPE_ICONS: Record<string, string> = {
   video: '▶', simulation: '🔬', pdf: '📄', image: '🖼️',
   note: '📝', mcq_set: '✅', written_question: '✍️',
+  model_exam: '📝', cq_set: '📋',
 };
 
 const SUBJECT_LABELS: Record<string, { label: string; color: string }> = {
@@ -53,6 +54,7 @@ interface Submission {
   feedback?: string;
   text_answer?: string;
   photo_urls?: string[];
+  pdf_urls?: string[];
 }
 
 interface LessonItem {
@@ -67,6 +69,11 @@ interface LessonItem {
   marks: number;
   subject_id?: string;
   chapter_num?: number;
+  // ── New fields ──
+  attachment_url?: string | null;
+  attachment_type?: 'image' | 'pdf' | null;
+  exam_paper_id?: string | null;
+  cq_collection_id?: string | null;
   mcqs: McqQuestion[];
   submission: Submission | null;
 }
@@ -417,6 +424,9 @@ function ItemCard({
             </div>
           )}
 
+          {/* ── Universal attachment preview (image or PDF) ── */}
+          {item.attachment_url && <AttachmentPreview url={item.attachment_url} type={item.attachment_type || undefined} />}
+
           {/* Content-based items */}
           {['video', 'simulation', 'pdf', 'image', 'note'].includes(item.item_type) && (
             <ContentItemBody item={item} session={session} onSubmit={onSubmit} />
@@ -430,6 +440,16 @@ function ItemCard({
           {/* Written Question */}
           {item.item_type === 'written_question' && (
             <WrittenQuestionBody item={item} session={session} onSubmit={onSubmit} />
+          )}
+
+          {/* Model Exam — link to full exam paper */}
+          {item.item_type === 'model_exam' && (
+            <ModelExamBody item={item} session={session} onSubmit={onSubmit} />
+          )}
+
+          {/* CQ Set — link to creative-question collection */}
+          {item.item_type === 'cq_set' && (
+            <CqSetBody item={item} session={session} onSubmit={onSubmit} />
           )}
         </div>
       )}
@@ -633,7 +653,184 @@ function McqSetBody({
 }
 
 // ─────────────────────────────────────────────
-// Written Question (text + photo upload)
+// Attachment Preview — shows image or PDF link
+// for any item with attachment_url set
+// ─────────────────────────────────────────────
+
+function AttachmentPreview({ url, type }: { url: string; type?: 'image' | 'pdf' }) {
+  // Detect type from URL if not explicitly provided
+  const isPdf = type === 'pdf' || url.toLowerCase().endsWith('.pdf');
+
+  if (isPdf) {
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mb-2 flex items-center gap-2 p-2.5 rounded-lg suttro-transition active:scale-[0.98]"
+        style={{ background: '#FEF2F2', border: '1px solid #FECACA', color: '#991B1B' }}
+      >
+        <span className="text-lg">📄</span>
+        <span className="text-[12px] font-medium">PDF সংযুক্তি দেখো →</span>
+      </a>
+    );
+  }
+
+  return (
+    <div className="mb-2">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={url}
+        alt="attachment"
+        className="w-full rounded-lg border"
+        style={{ maxHeight: 320, objectFit: 'contain', borderColor: '#E2E8F0', background: '#F8FAFC' }}
+      />
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// Model Exam Body — link to full /exam/{id} flow
+// ─────────────────────────────────────────────
+
+function ModelExamBody({
+  item, session, onSubmit,
+}: {
+  item: LessonItem;
+  session: { access_token: string } | null;
+  onSubmit: () => void;
+}) {
+  const isCompleted = item.submission?.is_completed ?? false;
+  const [marking, setMarking] = useState(false);
+  const examId = item.exam_paper_id || item.content_ref;
+
+  const handleMarkComplete = async () => {
+    if (!session || isCompleted) return;
+    setMarking(true);
+    await fetch('/api/daily-lesson', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ item_id: item.id, type: 'completion' }),
+    });
+    setMarking(false);
+    onSubmit();
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      {item.content_body && (
+        <div className="text-[13px] leading-relaxed" style={{ color: '#334155', whiteSpace: 'pre-wrap' }}>
+          {item.content_body}
+        </div>
+      )}
+      {examId ? (
+        <Link
+          href={`/exam/${examId}`}
+          className="flex items-center gap-2 p-3 rounded-lg text-[13px] font-semibold suttro-transition active:scale-[0.98]"
+          style={{ background: 'linear-gradient(135deg, #7C3AED, #A855F7)', color: 'white' }}
+        >
+          <span className="text-base">📝</span>
+          মডেল পরীক্ষা দাও →
+        </Link>
+      ) : (
+        <div className="text-[12px] text-center py-2" style={{ color: '#94A3B8' }}>
+          পরীক্ষার লিংক পাওয়া যায়নি
+        </div>
+      )}
+      {!isCompleted && examId && (
+        <button
+          onClick={handleMarkComplete}
+          disabled={marking || !session}
+          className="w-full py-2 rounded-lg text-[12px] font-medium suttro-transition active:scale-[0.98]"
+          style={{ background: '#F0FDFA', color: '#0D9488', border: '1px solid #99F6E4', opacity: marking ? 0.6 : 1 }}
+        >
+          {marking ? 'সংরক্ষণ...' : '✓ পরীক্ষা শেষ করেছি'}
+        </button>
+      )}
+      {isCompleted && (
+        <div className="text-center py-1 text-[12px] font-semibold" style={{ color: '#16A34A' }}>
+          ✅ মডেল পরীক্ষা সম্পন্ন
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// CQ Set Body — link to creative question collection
+// ─────────────────────────────────────────────
+
+function CqSetBody({
+  item, session, onSubmit,
+}: {
+  item: LessonItem;
+  session: { access_token: string } | null;
+  onSubmit: () => void;
+}) {
+  const isCompleted = item.submission?.is_completed ?? false;
+  const [marking, setMarking] = useState(false);
+  const collectionId = item.cq_collection_id || item.content_ref;
+
+  const handleMarkComplete = async () => {
+    if (!session || isCompleted) return;
+    setMarking(true);
+    await fetch('/api/daily-lesson', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ item_id: item.id, type: 'completion' }),
+    });
+    setMarking(false);
+    onSubmit();
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      {item.content_body && (
+        <div className="text-[13px] leading-relaxed" style={{ color: '#334155', whiteSpace: 'pre-wrap' }}>
+          {item.content_body}
+        </div>
+      )}
+      {collectionId ? (
+        <Link
+          href={`/cq/${collectionId}`}
+          className="flex items-center gap-2 p-3 rounded-lg text-[13px] font-semibold suttro-transition active:scale-[0.98]"
+          style={{ background: 'linear-gradient(135deg, #059669, #10B981)', color: 'white' }}
+        >
+          <span className="text-base">📋</span>
+          সৃজনশীল প্রশ্ন দেখো →
+        </Link>
+      ) : (
+        <div className="text-[12px] text-center py-2" style={{ color: '#94A3B8' }}>
+          সৃজনশীল প্রশ্ন কালেকশন পাওয়া যায়নি
+        </div>
+      )}
+      {!isCompleted && collectionId && (
+        <button
+          onClick={handleMarkComplete}
+          disabled={marking || !session}
+          className="w-full py-2 rounded-lg text-[12px] font-medium suttro-transition active:scale-[0.98]"
+          style={{ background: '#F0FDFA', color: '#0D9488', border: '1px solid #99F6E4', opacity: marking ? 0.6 : 1 }}
+        >
+          {marking ? 'সংরক্ষণ...' : '✓ পড়া হয়েছে'}
+        </button>
+      )}
+      {isCompleted && (
+        <div className="text-center py-1 text-[12px] font-semibold" style={{ color: '#16A34A' }}>
+          ✅ সম্পন্ন
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// Written Question (text + photo + PDF upload)
 // ─────────────────────────────────────────────
 
 function WrittenQuestionBody({
@@ -643,14 +840,44 @@ function WrittenQuestionBody({
   session: { access_token: string } | null;
   onSubmit: () => void;
 }) {
+  const { supabase } = useAuth();
   const isCompleted = item.submission?.is_completed ?? false;
-  const [textAnswer, setTextAnswer] = useState(item.submission?.text_answer || '');
+  const draftKey = `daily-draft-${item.id}`;
+
+  // Auto-save draft to localStorage; restore on mount
+  const [textAnswer, setTextAnswer] = useState(() => {
+    if (item.submission?.text_answer) return item.submission.text_answer;
+    if (typeof window !== 'undefined') {
+      try { return localStorage.getItem(draftKey) || ''; } catch { return ''; }
+    }
+    return '';
+  });
+  const [draftSaved, setDraftSaved] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState('');
-  const [mode, setMode] = useState<'text' | 'photo'>('text');
+  const [mode, setMode] = useState<'text' | 'photo' | 'pdf'>('text');
   const fileRef = useRef<HTMLInputElement>(null);
+  const pdfRef = useRef<HTMLInputElement>(null);
+
+  // Debounced auto-save text draft to localStorage every 1.5s
+  useEffect(() => {
+    if (isCompleted) return;
+    const timer = setTimeout(() => {
+      try {
+        if (textAnswer) {
+          localStorage.setItem(draftKey, textAnswer);
+          setDraftSaved(true);
+          setTimeout(() => setDraftSaved(false), 1500);
+        } else {
+          localStorage.removeItem(draftKey);
+        }
+      } catch { /* localStorage may be disabled */ }
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [textAnswer, draftKey, isCompleted]);
 
   const handleTextSubmit = async () => {
     if (!session || !textAnswer.trim()) return;
@@ -663,6 +890,7 @@ function WrittenQuestionBody({
       },
       body: JSON.stringify({ item_id: item.id, type: 'text', text_answer: textAnswer }),
     });
+    try { localStorage.removeItem(draftKey); } catch { /* ignore */ }
     setLoading(false);
     onSubmit();
   };
@@ -675,6 +903,62 @@ function WrittenQuestionBody({
     const reader = new FileReader();
     reader.onload = () => setPhotoPreview(reader.result as string);
     reader.readAsDataURL(file);
+  };
+
+  const handlePdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf') {
+      alert('শুধু PDF ফাইল গ্রহণ করা হবে');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      alert('PDF সাইজ ১০MB-এর বেশি হতে পারবে না');
+      return;
+    }
+    setPdfFile(file);
+  };
+
+  const handlePdfSubmit = async () => {
+    if (!session || !pdfFile || !supabase) {
+      if (!supabase) alert('Supabase সংযোগ নেই');
+      return;
+    }
+    setLoading(true);
+    setUploadProgress('আপলোড হচ্ছে...');
+
+    try {
+      const ext = pdfFile.name.split('.').pop() || 'pdf';
+      const filename = `submissions/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+      const { error: upErr } = await supabase.storage
+        .from('daily-lessons')
+        .upload(filename, pdfFile, { contentType: 'application/pdf', upsert: false });
+
+      if (upErr) throw upErr;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('daily-lessons')
+        .getPublicUrl(filename);
+
+      setUploadProgress('জমা দেওয়া হচ্ছে...');
+
+      await fetch('/api/daily-lesson', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ item_id: item.id, type: 'pdf', pdf_urls: [publicUrl] }),
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'আপলোড ব্যর্থ হয়েছে';
+      alert(msg);
+    }
+
+    setLoading(false);
+    setUploadProgress('');
+    onSubmit();
   };
 
   const handlePhotoSubmit = async () => {
@@ -754,6 +1038,22 @@ function WrittenQuestionBody({
             📷 ছবি জমা দেওয়া হয়েছে
           </div>
         )}
+        {item.submission?.pdf_urls && item.submission.pdf_urls.length > 0 && (
+          <div className="flex flex-col gap-1">
+            {item.submission.pdf_urls.map((url, i) => (
+              <a
+                key={i}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[12px] font-medium px-2 py-1.5 rounded-lg flex items-center gap-1.5"
+                style={{ background: '#FEF2F2', color: '#991B1B', border: '1px solid #FECACA' }}
+              >
+                📄 PDF {i + 1} জমা দেওয়া হয়েছে →
+              </a>
+            ))}
+          </div>
+        )}
         <div className="text-center py-1 text-[12px] font-semibold"
           style={{ color: isPending ? '#F59E0B' : '#16A34A' }}>
           {isPending ? '⏳ মূল্যায়ন হচ্ছে...' : `✅ নম্বর: ${Math.round(Number(marksGiven))}/${item.marks}`}
@@ -771,7 +1071,7 @@ function WrittenQuestionBody({
         </div>
       )}
 
-      {/* Mode toggle */}
+      {/* Mode toggle — text / photo / PDF */}
       <div className="flex gap-1.5">
         <button
           onClick={() => setMode('text')}
@@ -782,7 +1082,7 @@ function WrittenQuestionBody({
             border: `1px solid ${mode === 'text' ? '#BFDBFE' : '#E2E8F0'}`,
           }}
         >
-          ✏️ লিখে দাও
+          ✏️ লিখো
         </button>
         <button
           onClick={() => setMode('photo')}
@@ -793,11 +1093,22 @@ function WrittenQuestionBody({
             border: `1px solid ${mode === 'photo' ? '#FED7AA' : '#E2E8F0'}`,
           }}
         >
-          📷 ছবি তুলে দাও
+          📷 ছবি
+        </button>
+        <button
+          onClick={() => setMode('pdf')}
+          className="flex-1 py-2 rounded-lg text-[12px] font-semibold transition-all"
+          style={{
+            background: mode === 'pdf' ? '#FEF2F2' : '#F8FAFC',
+            color: mode === 'pdf' ? '#991B1B' : '#94A3B8',
+            border: `1px solid ${mode === 'pdf' ? '#FECACA' : '#E2E8F0'}`,
+          }}
+        >
+          📄 PDF
         </button>
       </div>
 
-      {mode === 'text' ? (
+      {mode === 'text' && (
         <>
           <textarea
             value={textAnswer}
@@ -807,6 +1118,11 @@ function WrittenQuestionBody({
             className="w-full px-3 py-2 rounded-lg text-[13px] resize-none outline-none"
             style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', color: '#1E293B' }}
           />
+          {/* Auto-save indicator */}
+          <div className="flex items-center justify-between text-[10px]" style={{ color: draftSaved ? '#16A34A' : '#94A3B8' }}>
+            <span>{draftSaved ? '✓ ড্রাফট সংরক্ষিত' : 'লেখা চলাকালীন স্বয়ংক্রিয় সংরক্ষণ'}</span>
+            <span>{textAnswer.length} অক্ষর</span>
+          </div>
           <button
             onClick={handleTextSubmit}
             disabled={loading || !textAnswer.trim() || !session}
@@ -816,7 +1132,9 @@ function WrittenQuestionBody({
             {loading ? 'জমা হচ্ছে...' : 'জমা দাও'}
           </button>
         </>
-      ) : (
+      )}
+
+      {mode === 'photo' && (
         <>
           <input
             ref={fileRef}
@@ -828,6 +1146,7 @@ function WrittenQuestionBody({
           />
           {photoPreview ? (
             <div className="relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={photoPreview} alt="preview" className="w-full rounded-lg" style={{ maxHeight: 200, objectFit: 'cover' }} />
               <button
                 onClick={() => { setPhotoPreview(null); setSelectedFile(null); if (fileRef.current) fileRef.current.value = ''; }}
@@ -854,6 +1173,58 @@ function WrittenQuestionBody({
               style={{ background: 'linear-gradient(135deg, #EA580C, #FB923C)' }}
             >
               {loading ? (uploadProgress || 'আপলোড হচ্ছে...') : '📤 ছবি জমা দাও'}
+            </button>
+          )}
+        </>
+      )}
+
+      {mode === 'pdf' && (
+        <>
+          <input
+            ref={pdfRef}
+            type="file"
+            accept="application/pdf"
+            onChange={handlePdfChange}
+            className="hidden"
+          />
+          {pdfFile ? (
+            <div
+              className="flex items-center gap-3 p-3 rounded-lg"
+              style={{ background: '#FEF2F2', border: '1px solid #FECACA' }}
+            >
+              <div className="w-10 h-10 rounded bg-red-100 flex items-center justify-center text-xl">📄</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[12px] font-semibold truncate" style={{ color: '#991B1B' }}>{pdfFile.name}</div>
+                <div className="text-[10px]" style={{ color: '#94A3B8' }}>
+                  {(pdfFile.size / 1024 / 1024).toFixed(2)} MB
+                </div>
+              </div>
+              <button
+                onClick={() => { setPdfFile(null); if (pdfRef.current) pdfRef.current.value = ''; }}
+                className="text-[10px] px-2 py-1 rounded text-red-600 bg-white"
+              >
+                ✕ সরাও
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => pdfRef.current?.click()}
+              className="w-full py-6 rounded-lg text-center suttro-transition active:scale-[0.98]"
+              style={{ background: '#F8FAFC', border: '2px dashed #E2E8F0', color: '#94A3B8' }}
+            >
+              <div className="text-2xl mb-1">📄</div>
+              <div className="text-[12px]">PDF ফাইল সিলেক্ট করো</div>
+              <div className="text-[10px] mt-0.5">সর্বোচ্চ ১০MB</div>
+            </button>
+          )}
+          {pdfFile && (
+            <button
+              onClick={handlePdfSubmit}
+              disabled={loading || !session}
+              className="w-full py-2.5 rounded-xl text-[13px] font-semibold text-white suttro-transition active:scale-[0.98] disabled:opacity-50"
+              style={{ background: 'linear-gradient(135deg, #DC2626, #EF4444)' }}
+            >
+              {loading ? (uploadProgress || 'আপলোড হচ্ছে...') : '📤 PDF জমা দাও'}
             </button>
           )}
         </>

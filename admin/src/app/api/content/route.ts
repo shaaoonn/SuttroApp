@@ -6,7 +6,7 @@ import { getSupabaseAdmin } from '@/lib/supabase-admin';
 // dropdown selection in the daily lesson form.
 //
 // Query params:
-//   type     = 'video' | 'exam' | 'simulation'
+//   type     = 'video' | 'exam' | 'simulation' | 'cq'
 //   subject  = 'physics' | 'chemistry' | ...  (optional filter)
 //   class    = 9 | 10                          (optional filter)
 //   q        = search query                    (optional)
@@ -78,6 +78,40 @@ export async function GET(req: NextRequest) {
           total_marks: e.total_marks,
           duration: e.duration,
           created_at: e.created_at,
+        })),
+      });
+    }
+
+    if (type === 'cq') {
+      // cq_collections are subject-wide buckets (no class_level filter beyond default)
+      let q = supabase
+        .from('cq_collections')
+        .select('id, subject_id, subject_bn, class_level, is_published, created_at')
+        .eq('is_published', true)
+        .order('subject_id', { ascending: true });
+
+      if (subject) q = q.eq('subject_id', subject);
+      if (classLevel) q = q.eq('class_level', Number(classLevel));
+
+      const { data, error } = await q.limit(100);
+      if (error) throw error;
+
+      // Filter by query against subject_bn (since collections have no title)
+      const filtered = query
+        ? (data || []).filter(c =>
+            c.subject_bn?.toLowerCase().includes(query.toLowerCase()) ||
+            c.id?.toLowerCase().includes(query.toLowerCase())
+          )
+        : (data || []);
+
+      return NextResponse.json({
+        items: filtered.map(c => ({
+          id: c.id,
+          title: `${c.subject_bn} — সৃজনশীল প্রশ্ন (ক্লাস ${c.class_level})`,
+          subject_id: c.subject_id,
+          chapter_num: null,
+          class_level: c.class_level,
+          created_at: c.created_at,
         })),
       });
     }

@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase-browser';
+import FileUploader from '@/components/FileUploader';
 
 // ─────────────────────────────────────────────
 // DailyLessonForm — Create/Edit আজকের পড়া
@@ -50,6 +51,8 @@ const ITEM_TYPES = [
   { value: 'note', label: '📝 কাস্টম নোট' },
   { value: 'mcq_set', label: '✅ MCQ সেট' },
   { value: 'written_question', label: '✍️ লিখিত প্রশ্ন' },
+  { value: 'model_exam', label: '📝 মডেল পরীক্ষা (সাইটের সম্পূর্ণ পরীক্ষা)' },
+  { value: 'cq_set', label: '📋 সৃজনশীল প্রশ্ন সেট (সাইটের কালেকশন)' },
 ];
 
 const CATEGORIES = [
@@ -90,6 +93,12 @@ interface ItemData {
   chapter_num: number;
   gdrive_file_id: string;
   mcqs: McqData[];
+  // ── New attachment fields (any item can have a file attached) ──
+  attachment_url: string | null;
+  attachment_type: 'image' | 'pdf' | null;
+  // ── Link to existing site content ──
+  exam_paper_id: string | null;       // for model_exam type
+  cq_collection_id: string | null;    // for cq_set type
 }
 
 interface LessonFormData {
@@ -145,6 +154,10 @@ const EMPTY_ITEM: ItemData = {
   chapter_num: 0,
   gdrive_file_id: '',
   mcqs: [],
+  attachment_url: null,
+  attachment_type: null,
+  exam_paper_id: null,
+  cq_collection_id: null,
 };
 
 const EMPTY_MCQ: McqData = {
@@ -217,9 +230,18 @@ export default function DailyLessonForm({ initialData, initialItems, isEdit }: D
         chapter_num: content.chapter_num || 0,
         content_ref: content.id,
       };
-      // For exams, set the marks from the exam's total_marks
+      // For exams (mcq_set picker), set marks from total_marks
       if (contentType === 'exam' && content.total_marks) {
         next[idx].marks = content.total_marks;
+      }
+      // For model_exam, store exam_paper_id (separate from content_ref)
+      if (contentType === 'model_exam') {
+        next[idx].exam_paper_id = content.id;
+        if (content.total_marks) next[idx].marks = content.total_marks;
+      }
+      // For cq_set, store cq_collection_id
+      if (contentType === 'cq_set') {
+        next[idx].cq_collection_id = content.id;
       }
       return next;
     });
@@ -309,6 +331,11 @@ export default function DailyLessonForm({ initialData, initialItems, isEdit }: D
           chapter_num: item.chapter_num || null,
           gdrive_file_id: item.gdrive_file_id || null,
           sort_order: i,
+          // ── New fields ──
+          attachment_url: item.attachment_url || null,
+          attachment_type: item.attachment_type || null,
+          exam_paper_id: item.exam_paper_id || null,
+          cq_collection_id: item.cq_collection_id || null,
         })
         .select('id')
         .single();
@@ -515,6 +542,34 @@ export default function DailyLessonForm({ initialData, initialItems, isEdit }: D
                   </div>
                 )}
 
+                {/* ── Content Picker: Model Exam (full exam paper) ── */}
+                {item.item_type === 'model_exam' && (
+                  <ContentPicker
+                    contentType="model_exam"
+                    apiType="exam"
+                    item={item}
+                    classLevel={form.class_level}
+                    selectedRef={item.exam_paper_id}
+                    onSelect={(content) => selectContent(idx, content, 'model_exam')}
+                    onManualRef={(ref) => updateItem(idx, 'exam_paper_id', ref || null)}
+                    hideManualLink
+                  />
+                )}
+
+                {/* ── Content Picker: CQ Collection ── */}
+                {item.item_type === 'cq_set' && (
+                  <ContentPicker
+                    contentType="cq"
+                    apiType="cq"
+                    item={item}
+                    classLevel={form.class_level}
+                    selectedRef={item.cq_collection_id}
+                    onSelect={(content) => selectContent(idx, content, 'cq_set')}
+                    onManualRef={(ref) => updateItem(idx, 'cq_collection_id', ref || null)}
+                    hideManualLink
+                  />
+                )}
+
                 {/* Subject + Chapter (shown when not auto-filled by picker, or for manual override) */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
@@ -544,7 +599,29 @@ export default function DailyLessonForm({ initialData, initialItems, isEdit }: D
                     onChange={e => updateItem(idx, 'description', e.target.value)} />
                 </div>
 
-                {/* File Upload for PDF/image */}
+                {/* ── Universal attachment (image/PDF) — works for ANY item type ── */}
+                <div>
+                  <label className="admin-label flex items-center gap-2">
+                    📎 প্রশ্নের ছবি/PDF সংযুক্ত করো
+                    <span className="text-[10px] font-normal" style={{ color: 'var(--admin-text-secondary)' }}>
+                      (ঐচ্ছিক — যেকোনো প্রশ্নের সাথে দেখাবে)
+                    </span>
+                  </label>
+                  <FileUploader
+                    value={item.attachment_url}
+                    bucket="daily-lessons"
+                    folder={`attachments/${form.lesson_date}`}
+                    accept="image/*,application/pdf"
+                    label="ছবি বা PDF আপলোড করো"
+                    maxSizeMB={10}
+                    onChange={(url, type) => {
+                      updateItem(idx, 'attachment_url', url);
+                      updateItem(idx, 'attachment_type', type);
+                    }}
+                  />
+                </div>
+
+                {/* File Upload for PDF/image (legacy GDrive media_url path) */}
                 {['pdf', 'image'].includes(item.item_type) && (
                   <FileUploadField
                     item={item}
@@ -664,13 +741,21 @@ function ContentPicker({
   onSelect,
   onManualRef,
   optional,
+  apiType,
+  selectedRef,
+  hideManualLink,
 }: {
-  contentType: 'video' | 'exam';
+  contentType: 'video' | 'exam' | 'model_exam' | 'cq';
   item: ItemData;
   classLevel: number;
   onSelect: (content: ContentItem) => void;
   onManualRef: (ref: string) => void;
   optional?: boolean;
+  // For new pickers (model_exam / cq), the selected id lives in
+  // a different field (exam_paper_id / cq_collection_id) instead of content_ref.
+  apiType?: 'video' | 'exam' | 'cq';
+  selectedRef?: string | null;
+  hideManualLink?: boolean;
 }) {
   const [contents, setContents] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -680,9 +765,11 @@ function ContentPicker({
   const [useManual, setUseManual] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const effectiveApiType = apiType || (contentType === 'video' ? 'video' : 'exam');
+
   const fetchContent = useCallback(async (subjectFilter: string, searchQuery: string) => {
     setLoading(true);
-    const params = new URLSearchParams({ type: contentType, class: String(classLevel) });
+    const params = new URLSearchParams({ type: effectiveApiType, class: String(classLevel) });
     if (subjectFilter) params.set('subject', subjectFilter);
     if (searchQuery) params.set('q', searchQuery);
 
@@ -694,7 +781,7 @@ function ContentPicker({
       setContents([]);
     }
     setLoading(false);
-  }, [contentType, classLevel]);
+  }, [effectiveApiType, classLevel]);
 
   useEffect(() => {
     if (isOpen) {
@@ -713,12 +800,17 @@ function ContentPicker({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const label = contentType === 'video' ? 'ভিডিও ক্লাস' : 'পরীক্ষা';
-  const selectedLabel = item.content_ref
-    ? contents.find(c => c.id === item.content_ref)?.title || item.content_ref
+  const label =
+    contentType === 'video' ? 'ভিডিও ক্লাস' :
+    contentType === 'cq' ? 'সৃজনশীল প্রশ্ন কালেকশন' :
+    contentType === 'model_exam' ? 'মডেল পরীক্ষা' :
+    'পরীক্ষা';
+  const currentRef = selectedRef !== undefined ? selectedRef : item.content_ref;
+  const selectedLabel = currentRef
+    ? contents.find(c => c.id === currentRef)?.title || currentRef
     : '';
 
-  if (useManual) {
+  if (useManual && !hideManualLink) {
     return (
       <div className="space-y-2">
         <div className="flex items-center justify-between">
@@ -730,7 +822,7 @@ function ContentPicker({
             ← সাইট থেকে বাছাই করো
           </button>
         </div>
-        <input className="admin-input" value={item.content_ref}
+        <input className="admin-input" value={currentRef || ''}
           onChange={e => onManualRef(e.target.value)}
           placeholder={contentType === 'video' ? 'ohms-law বা https://youtube.com/...' : 'ssc-2024-physics বা https://...'} />
       </div>
@@ -743,14 +835,16 @@ function ContentPicker({
         <label className="admin-label">
           {label} সিলেক্ট করো {optional && <span className="text-xs font-normal" style={{ color: 'var(--admin-text-secondary)' }}>(ঐচ্ছিক — নিজে MCQ লিখতে পারো)</span>}
         </label>
-        <button type="button" className="text-xs font-medium" style={{ color: 'var(--admin-text-secondary)' }}
-          onClick={() => setUseManual(true)}>
-          বাহ্যিক লিংক দাও →
-        </button>
+        {!hideManualLink && (
+          <button type="button" className="text-xs font-medium" style={{ color: 'var(--admin-text-secondary)' }}
+            onClick={() => setUseManual(true)}>
+            বাহ্যিক লিংক দাও →
+          </button>
+        )}
       </div>
 
       {/* Selected content display */}
-      {item.content_ref && !isOpen && (
+      {currentRef && !isOpen && (
         <div className="flex items-center gap-2 p-2.5 rounded-lg" style={{ background: '#F0FDF4', border: '1px solid #BBF7D0' }}>
           <span className="text-sm font-medium" style={{ color: '#166534' }}>
             ✅ {selectedLabel}
@@ -766,15 +860,15 @@ function ContentPicker({
       )}
 
       {/* Dropdown trigger */}
-      {(!item.content_ref || isOpen) && (
+      {(!currentRef || isOpen) && (
         <div>
           <button
             type="button"
             className="admin-input w-full text-left flex items-center justify-between"
             onClick={() => setIsOpen(!isOpen)}
           >
-            <span className={item.content_ref ? '' : 'opacity-50'}>
-              {item.content_ref ? selectedLabel : `${label} বাছাই করো...`}
+            <span className={currentRef ? '' : 'opacity-50'}>
+              {currentRef ? selectedLabel : `${label} বাছাই করো...`}
             </span>
             <span className="text-xs">{isOpen ? '▲' : '▼'}</span>
           </button>
@@ -833,7 +927,7 @@ function ContentPicker({
                 )}
 
                 {!loading && contents.map(content => {
-                  const isSelected = item.content_ref === content.id;
+                  const isSelected = currentRef === content.id;
                   const subjColor = SUBJECT_COLORS[content.subject_id];
                   return (
                     <button

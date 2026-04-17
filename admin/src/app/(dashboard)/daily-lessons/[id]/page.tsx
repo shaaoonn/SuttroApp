@@ -69,6 +69,11 @@ export default async function EditDailyLessonPage({ params }: PageProps) {
     subject_id: item.subject_id || '',
     chapter_num: item.chapter_num || 0,
     gdrive_file_id: item.gdrive_file_id || '',
+    // ── New fields ──
+    attachment_url: item.attachment_url || null,
+    attachment_type: item.attachment_type || null,
+    exam_paper_id: item.exam_paper_id || null,
+    cq_collection_id: item.cq_collection_id || null,
     mcqs: (mcqsByItem[item.id] || []).map((mcq: any) => ({
       question: mcq.question,
       option_ka: mcq.option_ka,

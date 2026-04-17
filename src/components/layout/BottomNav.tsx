@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { isNativeApp } from '@/lib/native-bridge';
+import { useHaptic } from '@/components/native/Toast';
 
 // ─────────────────────────────────────────────
 // BottomNav — 4-tab native-style bottom bar
@@ -81,6 +82,7 @@ const NAV_ITEMS = [
 export default function BottomNav() {
   const pathname = usePathname();
   const [native, setNative] = useState(false);
+  const vibrate = useHaptic();
   useEffect(() => { setNative(isNativeApp()); }, []);
 
   // Hide in native app (native BottomNavigationView replaces this)
@@ -114,7 +116,8 @@ export default function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full active:opacity-70 suttro-transition"
+              onClick={() => vibrate(8)}
+              className="tappable flex flex-col items-center justify-center gap-0.5 flex-1 h-full"
               style={{ color: isActive ? '#0D9488' : '#94A3B8' }}
             >
               {isActive ? item.iconFilled : item.icon}

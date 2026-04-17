@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { SkeletonList } from '@/components/native/Skeleton';
 
 // ─────────────────────────────────────────────
 // Leaderboard — Top-3 podium + list
@@ -97,9 +98,8 @@ export default function LeaderboardPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-16">
-          <div className="text-3xl mb-3 animate-pulse">⏳</div>
-          <p style={{ color: '#94A3B8' }}>লোড হচ্ছে...</p>
+        <div className="px-4 py-6">
+          <SkeletonList count={6} />
         </div>
       ) : entries.length === 0 ? (
         <div className="text-center py-16">

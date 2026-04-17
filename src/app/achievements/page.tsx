@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
+import { Skeleton, SkeletonStatGrid } from '@/components/native/Skeleton';
 
 interface Badge {
   id: string;
@@ -42,9 +43,12 @@ export default function AchievementsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center" style={{ background: 'var(--suttro-surface)' }}>
-        <div className="animate-spin h-8 w-8 border-3 rounded-full"
-          style={{ borderColor: 'var(--suttro-primary) transparent transparent transparent' }} />
+      <div style={{ background: 'var(--suttro-surface)', minHeight: '70vh' }}>
+        <div className="mx-auto max-w-3xl px-4 py-8 fade-in">
+          <Skeleton className="h-7 w-48 mb-2" />
+          <Skeleton className="h-4 w-32 mb-6" />
+          <SkeletonStatGrid count={6} />
+        </div>
       </div>
     );
   }

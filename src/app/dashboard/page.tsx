@@ -5,6 +5,7 @@ import { useAuth } from '@/lib/auth-context';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { calculateLevel, xpForNextLevel } from '@/lib/xp';
+import { SkeletonPage, SkeletonList } from '@/components/native/Skeleton';
 
 // ─────────────────────────────────────────────
 // Dashboard — Profile & Progress
@@ -208,14 +209,8 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div
-        className="flex-1 flex items-center justify-center"
-        style={{ background: '#F8FAFB' }}
-      >
-        <div className="text-center">
-          <div className="text-3xl mb-3 animate-pulse">⏳</div>
-          <p style={{ color: '#94A3B8' }}>লোড হচ্ছে...</p>
-        </div>
+      <div className="flex-1" style={{ background: '#F8FAFB' }}>
+        <SkeletonPage />
       </div>
     );
   }
@@ -607,9 +602,7 @@ export default function DashboardPage() {
               পরীক্ষার ইতিহাস
             </h2>
             {dataLoading ? (
-              <div className="text-center py-8">
-                <div className="text-2xl mb-2 animate-pulse">⏳</div>
-              </div>
+              <SkeletonList count={3} />
             ) : data?.examAttempts && data.examAttempts.length > 0 ? (
               <div className="space-y-2">
                 {data.examAttempts.map((attempt) => {
@@ -695,9 +688,7 @@ export default function DashboardPage() {
               সম্প্রতি কার্যকলাপ
             </h2>
             {dataLoading ? (
-              <div className="text-center py-8">
-                <div className="text-2xl mb-2 animate-pulse">⏳</div>
-              </div>
+              <SkeletonList count={3} />
             ) : data?.recentActivity &&
               data.recentActivity.length > 0 ? (
               <div className="space-y-2">

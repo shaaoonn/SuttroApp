@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { SUBJECT_LABELS, SUBJECT_COLORS } from '@/lib/constants';
+import { Skeleton } from '@/components/native/Skeleton';
 
 interface Question {
   id: number;
@@ -107,11 +108,17 @@ export default function PracticePage() {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center" style={{ background: 'var(--suttro-surface)' }}>
-        <div className="text-center">
-          <div className="animate-spin h-8 w-8 border-3 rounded-full mx-auto mb-3"
-            style={{ borderColor: `${color} transparent transparent transparent` }} />
-          <p style={{ color: 'var(--suttro-muted)' }}>প্রশ্ন লোড হচ্ছে...</p>
+      <div style={{ background: 'var(--suttro-surface)', minHeight: '60vh' }}>
+        <div className="mx-auto max-w-2xl px-4 py-6 fade-in space-y-4">
+          <Skeleton className="h-6 w-1/3" />
+          <div className="p-4 bg-white rounded-xl border border-gray-100 space-y-3">
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-5/6" />
+            <Skeleton className="h-12 w-full" rounded="lg" />
+            <Skeleton className="h-12 w-full" rounded="lg" />
+            <Skeleton className="h-12 w-full" rounded="lg" />
+            <Skeleton className="h-12 w-full" rounded="lg" />
+          </div>
         </div>
       </div>
     );

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
+import { Skeleton, SkeletonList } from '@/components/native/Skeleton';
 
 // ─────────────────────────────────────────────
 // আজকের পড়া — Daily Lesson Page
@@ -135,9 +136,13 @@ export default function DailyLessonPage() {
 
   if (phase === 'loading') {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center" style={{ background: '#F8FAFC' }}>
-        <div className="animate-spin h-8 w-8 border-3 rounded-full"
-          style={{ borderColor: '#0D9488 transparent transparent transparent' }} />
+      <div style={{ background: '#F8FAFC', minHeight: '60vh' }}>
+        <div className="mx-auto max-w-2xl px-4 py-6 fade-in space-y-4">
+          <Skeleton className="h-7 w-2/3" />
+          <Skeleton className="h-4 w-1/3" />
+          <Skeleton className="h-3 w-full" rounded="full" />
+          <SkeletonList count={4} />
+        </div>
       </div>
     );
   }

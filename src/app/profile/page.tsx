@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
+import { Skeleton, SkeletonList } from '@/components/native/Skeleton';
 
 // ─────────────────────────────────────────────
 // Profile — View & edit student profile
@@ -124,10 +125,16 @@ export default function ProfilePage() {
 
   if (loading || profileLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center" style={{ background: '#F8FAFB' }}>
-        <div className="text-center">
-          <div className="text-3xl mb-3 animate-pulse">⏳</div>
-          <p style={{ color: '#94A3B8' }}>লোড হচ্ছে...</p>
+      <div className="flex-1" style={{ background: '#F8FAFB' }}>
+        <div className="mx-auto max-w-2xl px-4 py-6 fade-in space-y-4">
+          <div className="flex items-center gap-4">
+            <Skeleton className="w-20 h-20" rounded="full" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-5 w-2/3" />
+              <Skeleton className="h-3 w-1/2" />
+            </div>
+          </div>
+          <SkeletonList count={4} />
         </div>
       </div>
     );

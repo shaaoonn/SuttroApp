@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { isNativeApp } from '@/lib/native-bridge';
+import { useHaptic } from '@/components/native/Toast';
 
 // ─────────────────────────────────────────────
 // AppBar — Native-style top bar (mobile only)
@@ -55,6 +56,7 @@ export default function AppBar() {
   const router = useRouter();
   const { user } = useAuth();
   const [native, setNative] = useState(false);
+  const vibrate = useHaptic();
   useEffect(() => { setNative(isNativeApp()); }, []);
 
   // Hide in native app (native MaterialToolbar replaces this)
@@ -189,8 +191,8 @@ export default function AppBar() {
           /* ── Sub-page: back button + centered title ── */
           <>
             <button
-              onClick={() => router.back()}
-              className="flex items-center justify-center w-10 h-10 -ml-2 rounded-full active:bg-black/5 suttro-transition"
+              onClick={() => { vibrate(8); router.back(); }}
+              className="tappable flex items-center justify-center w-10 h-10 -ml-2 rounded-full"
               aria-label="পেছনে যাও"
             >
               <svg

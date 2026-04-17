@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
+import { Skeleton } from '@/components/native/Skeleton';
 
 interface SRSCard {
   cardId: number;
@@ -58,9 +59,18 @@ export default function ReviewPage() {
 
   if (phase === 'loading') {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center" style={{ background: 'var(--suttro-surface)' }}>
-        <div className="animate-spin h-8 w-8 border-3 rounded-full"
-          style={{ borderColor: 'var(--suttro-primary) transparent transparent transparent' }} />
+      <div style={{ background: 'var(--suttro-surface)', minHeight: '60vh' }}>
+        <div className="mx-auto max-w-2xl px-4 py-6 fade-in space-y-4">
+          <Skeleton className="h-7 w-1/2" />
+          <div className="p-4 bg-white rounded-xl border border-gray-100 space-y-3">
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-5/6" />
+            <Skeleton className="h-12 w-full" rounded="lg" />
+            <Skeleton className="h-12 w-full" rounded="lg" />
+            <Skeleton className="h-12 w-full" rounded="lg" />
+            <Skeleton className="h-12 w-full" rounded="lg" />
+          </div>
+        </div>
       </div>
     );
   }

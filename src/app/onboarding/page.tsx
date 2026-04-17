@@ -177,7 +177,7 @@ export default function OnboardingPage() {
               placeholder="নাম লেখো"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-4 py-3 rounded-xl text-base outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
               style={{
                 border: '1.5px solid #E2E8F0',
                 color: '#134E4A',
@@ -218,13 +218,14 @@ export default function OnboardingPage() {
               </span>
               <input
                 type="tel"
+                inputMode="numeric"
                 placeholder="01XXXXXXXXX"
                 value={phone}
                 onChange={(e) =>
                   setPhone(e.target.value.replace(/\D/g, ''))
                 }
                 maxLength={11}
-                className="flex-1 px-3 py-3 text-sm outline-none"
+                className="flex-1 px-3 py-3 text-base outline-none"
                 style={{ color: '#134E4A' }}
               />
             </div>
@@ -244,7 +245,7 @@ export default function OnboardingPage() {
                   key={cls}
                   type="button"
                   onClick={() => setClassLevel(cls)}
-                  className="py-3 rounded-xl text-center font-semibold suttro-transition"
+                  className="tappable py-3 rounded-xl text-center font-semibold"
                   style={{
                     border: `2px solid ${classLevel === cls ? '#0D9488' : '#E2E8F0'}`,
                     background: classLevel === cls ? '#F0FDFA' : 'white',

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
+import { SkeletonList } from '@/components/native/Skeleton';
 
 // ─────────────────────────────────────────────
 // Open bKash URL inside the app (Chrome Custom Tab on Android,
@@ -179,10 +180,7 @@ export default function PricingClient() {
         )}
 
         {plansLoading ? (
-          <div className="text-center py-16">
-            <div className="text-3xl mb-3 animate-pulse">⏳</div>
-            <p style={{ color: '#94A3B8' }}>প্ল্যান লোড হচ্ছে...</p>
-          </div>
+          <SkeletonList count={3} />
         ) : (
           <div className="flex flex-col gap-2">
             {plans.map((plan) => (

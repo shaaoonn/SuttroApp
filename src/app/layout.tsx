@@ -7,6 +7,8 @@ import BottomNav from "@/components/layout/BottomNav";
 import PWARegister from "@/components/PWARegister";
 import AuthGate from "@/components/AuthGate";
 import NativeBridgeSync from "@/components/NativeBridgeSync";
+import { ToastProvider } from "@/components/native/Toast";
+import PageTransition from "@/components/native/PageTransition";
 import { AuthProvider } from "@/lib/auth-context";
 import "./globals.css";
 
@@ -98,17 +100,21 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-bengali">
         <AuthProvider>
-          <AuthGate>
-            {/* Desktop: website navbar — Mobile: native app bar */}
-            <div className="hidden lg:block"><Navbar /></div>
-            <AppBar />
-            <main className="flex-1 flex flex-col">{children}</main>
-            {/* Desktop only: footer */}
-            <div className="hidden lg:block"><Footer /></div>
-            <BottomNav />
-          </AuthGate>
-          <PWARegister />
-          <NativeBridgeSync />
+          <ToastProvider>
+            <AuthGate>
+              {/* Desktop: website navbar — Mobile: native app bar */}
+              <div className="hidden lg:block"><Navbar /></div>
+              <AppBar />
+              <main className="flex-1 flex flex-col">
+                <PageTransition>{children}</PageTransition>
+              </main>
+              {/* Desktop only: footer */}
+              <div className="hidden lg:block"><Footer /></div>
+              <BottomNav />
+            </AuthGate>
+            <PWARegister />
+            <NativeBridgeSync />
+          </ToastProvider>
         </AuthProvider>
       </body>
     </html>

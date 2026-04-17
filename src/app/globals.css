@@ -290,3 +290,181 @@ body {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 200ms;
 }
+
+/* ─────────────────────────────────────────────
+   Native App Feel — Mobile/WebView
+   Makes the web pages feel like a real Android app
+   ───────────────────────────────────────────── */
+
+/* 1. Hover state isolation — prevent hover backgrounds sticking on touch tap */
+@media (hover: none) {
+  *:hover { background-color: inherit !important; color: inherit !important; }
+  /* But still allow explicit hover styles set via specific class */
+  .allow-hover:hover { background-color: revert !important; color: revert !important; }
+}
+
+/* 2. Hide all scrollbars in WebView (still scrollable) */
+@media (max-width: 1023px) {
+  ::-webkit-scrollbar { display: none; width: 0; height: 0; }
+  * { scrollbar-width: none; -ms-overflow-style: none; }
+}
+
+/* 3. Smooth momentum scroll on iOS WebView (also helps Android WebView) */
+html, body, .scroll-momentum {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+/* 4. No long-press text selection on UI elements (already partial), expanded */
+button, nav, header, [role="button"], .no-select,
+.nav-item, .tab-item, .toolbar-item {
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+/* 5. Fast tap — remove 300ms delay on iOS, transparent highlight on Android */
+a, button, [role="button"], .tappable {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  touch-action: manipulation;
+}
+
+/* 6. Universal press feedback — works on any element with .press class */
+.press, .tappable {
+  transition: transform 120ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 120ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.press:active, .tappable:active {
+  transform: scale(0.96);
+  opacity: 0.85;
+}
+
+/* 7. Native-style ripple — material design ripple effect */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+.ripple::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at center, currentColor 1%, transparent 1%);
+  background-position: center;
+  background-size: 15000% 15000%;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: background-size 0.6s, opacity 0.4s;
+  pointer-events: none;
+}
+.ripple:active::after {
+  background-size: 100% 100%;
+  opacity: 0.18;
+  transition: 0s;
+}
+
+/* 8. Page enter animation — fade+slide for page-level routes */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+.page-enter {
+  animation: pageEnter 240ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* 9. Skeleton shimmer — for loading states */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(226, 232, 240, 0.6) 25%,
+    rgba(241, 245, 249, 0.9) 50%,
+    rgba(226, 232, 240, 0.6) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+/* 10. Shake animation — for invalid form input feedback */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+.shake {
+  animation: shake 320ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+/* 11. Slide-up enter — for toast / bottom-sheet */
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.slide-up { animation: slideUp 280ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+
+/* 12. Fade-in — for general appearances */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.fade-in { animation: fadeIn 200ms ease-out both; }
+
+/* 13. Safe-area handling — left/right (foldables, landscape) */
+@media (max-width: 1023px) {
+  body {
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+}
+
+/* 14. Native-style focus — only on keyboard nav, not on tap */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--suttro-primary);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* 15. Form inputs — native feel (16px+ to prevent iOS zoom) */
+@media (max-width: 1023px) {
+  input[type="text"], input[type="email"], input[type="tel"],
+  input[type="password"], input[type="number"], input[type="search"],
+  textarea, select {
+    font-size: 16px !important;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 12px;
+  }
+  /* Hide spinner on number inputs in webkit */
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+/* 16. Disable image dragging in WebView (long-press save dialog avoidance) */
+img, svg {
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+}
+
+/* 17. Sticky headers — proper z-index + safe area + GPU compositing */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  padding-top: env(safe-area-inset-top, 0px);
+  will-change: transform;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* 18. Pill-button pulse on press — primary CTAs */
+.pulse-press:active {
+  transform: scale(0.94);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.35);
+}

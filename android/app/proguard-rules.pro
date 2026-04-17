@@ -44,6 +44,13 @@
 # SwipeRefreshLayout
 -keep class androidx.swiperefreshlayout.** { *; }
 
+# Material Design Components — inflated from XML (MaterialCardView, BottomNavigationView,
+# TextInputLayout, MaterialButton, MaterialToolbar). R8 full-mode would strip these and
+# crash on layout inflation. Must explicitly keep.
+-keep class com.google.android.material.** { *; }
+-keep interface com.google.android.material.** { *; }
+-dontwarn com.google.android.material.**
+
 # Firebase
 -keep class com.google.firebase.** { *; }
 -dontwarn com.google.firebase.**
@@ -56,3 +63,35 @@
     public boolean *(android.webkit.WebView, java.lang.String);
     public void *(android.webkit.WebView, java.lang.String);
 }
+
+# Kotlin coroutines (defensive — AAR ships rules but be safe)
+-dontwarn kotlinx.coroutines.**
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+
+# Kotlin metadata — required if any class is accessed via Kotlin reflection (defensive)
+-keep class kotlin.Metadata { *; }
+-keepattributes RuntimeVisibleAnnotations,AnnotationDefault
+
+# Activities/Services declared in AndroidManifest — already covered by com.suttro.app.**
+# but make explicit for R8 full-mode safety
+-keep class com.suttro.app.SplashActivity { *; }
+-keep class com.suttro.app.LoginActivity { *; }
+-keep class com.suttro.app.OnboardingActivity { *; }
+-keep class com.suttro.app.MainContainerActivity { *; }
+-keep class com.suttro.app.SuttroFirebaseService { *; }
+
+# SuttroBridge — exposed to JavaScript, all public methods must survive obfuscation
+-keep class com.suttro.app.SuttroBridge {
+    public *;
+}
+
+# Don't warn about missing optional Firebase classes
+-dontwarn com.google.firebase.analytics.connector.**
+-dontwarn javax.annotation.**
+
+# Preserve generic type info for reflective parsing (Gson JsonParser uses some)
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepattributes EnclosingMethod
+-keepattributes InnerClasses

@@ -32,7 +32,11 @@ export async function GET(req: NextRequest) {
         .order('created_at', { ascending: false });
 
       if (subject) q = q.eq('subject_id', subject);
-      if (classLevel) q = q.eq('class_level', Number(classLevel));
+      // Class filter is OFF by default — show videos for ALL class levels.
+      // Only filter when explicitly requested with class=9 or class=10 AND strict=1.
+      if (classLevel && req.nextUrl.searchParams.get('strict') === '1') {
+        q = q.eq('class_level', Number(classLevel));
+      }
       if (query) q = q.ilike('title', `%${query}%`);
 
       const { data, error } = await q.limit(100);
@@ -60,7 +64,11 @@ export async function GET(req: NextRequest) {
         .order('created_at', { ascending: false });
 
       if (subject) q = q.eq('subject_id', subject);
-      if (classLevel) q = q.eq('class_level', Number(classLevel));
+      // Class filter is OFF by default — show videos for ALL class levels.
+      // Only filter when explicitly requested with class=9 or class=10 AND strict=1.
+      if (classLevel && req.nextUrl.searchParams.get('strict') === '1') {
+        q = q.eq('class_level', Number(classLevel));
+      }
       if (query) q = q.ilike('title', `%${query}%`);
 
       const { data, error } = await q.limit(100);
@@ -91,7 +99,9 @@ export async function GET(req: NextRequest) {
         .order('subject_id', { ascending: true });
 
       if (subject) q = q.eq('subject_id', subject);
-      if (classLevel) q = q.eq('class_level', Number(classLevel));
+      if (classLevel && req.nextUrl.searchParams.get('strict') === '1') {
+        q = q.eq('class_level', Number(classLevel));
+      }
 
       const { data, error } = await q.limit(100);
       if (error) throw error;

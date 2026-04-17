@@ -604,19 +604,21 @@ export default function DailyLessonForm({ initialData, initialItems, isEdit }: D
                   <label className="admin-label flex items-center gap-2">
                     📎 প্রশ্নের ছবি/PDF সংযুক্ত করো
                     <span className="text-[10px] font-normal" style={{ color: 'var(--admin-text-secondary)' }}>
-                      (ঐচ্ছিক — যেকোনো প্রশ্নের সাথে দেখাবে)
+                      (ঐচ্ছিক — যেকোনো প্রশ্নের সাথে দেখাবে · Google Drive-এ সেভ হবে)
                     </span>
                   </label>
                   <FileUploader
                     value={item.attachment_url}
-                    bucket="daily-lessons"
-                    folder={`attachments/${form.lesson_date}`}
+                    date={form.lesson_date}
+                    subjectId={item.subject_id || undefined}
                     accept="image/*,application/pdf"
                     label="ছবি বা PDF আপলোড করো"
-                    maxSizeMB={10}
-                    onChange={(url, type) => {
+                    maxSizeMB={20}
+                    onChange={(url, type, fileId) => {
                       updateItem(idx, 'attachment_url', url);
                       updateItem(idx, 'attachment_type', type);
+                      // Reuse gdrive_file_id field to track Drive file id for the attachment
+                      if (fileId !== undefined) updateItem(idx, 'gdrive_file_id', fileId || '');
                     }}
                   />
                 </div>

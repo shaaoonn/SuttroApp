@@ -1,12 +1,11 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { supabase } from '@/lib/supabase-browser';
 
 // ═══════════════════════════════════════════════════════════════════
-// FileUploader — drop-in image/PDF uploader for Supabase Storage
+// FileUploader — drop-in image/PDF uploader for Google Drive
 //
-// Uses bucket 'daily-lessons' (must exist with public read policy).
+// Uses /api/upload (admin) which writes to Google Drive root folder.
 // Returns { url, type } via onChange when upload succeeds.
 //
 // Usage:
@@ -20,10 +19,10 @@ import { supabase } from '@/lib/supabase-browser';
 interface Props {
   value?: string | null;
   accept?: string;            // 'image/*' | 'application/pdf' | 'image/*,application/pdf'
-  onChange: (url: string | null, type: 'image' | 'pdf' | null) => void;
-  bucket?: string;            // default 'daily-lessons'
-  folder?: string;            // sub-folder inside bucket
-  maxSizeMB?: number;         // default 10
+  onChange: (url: string | null, type: 'image' | 'pdf' | null, fileId?: string | null) => void;
+  date?: string;              // for organizing in Drive (YYYY-MM-DD folder)
+  subjectId?: string;
+  maxSizeMB?: number;         // default 20
   label?: string;
 }
 
@@ -31,9 +30,9 @@ export default function FileUploader({
   value,
   accept = 'image/*,application/pdf',
   onChange,
-  bucket = 'daily-lessons',
-  folder = 'attachments',
-  maxSizeMB = 10,
+  date,
+  subjectId,
+  maxSizeMB = 20,
   label = 'ফাইল আপলোড করো',
 }: Props) {
   const [uploading, setUploading] = useState(false);
@@ -41,7 +40,7 @@ export default function FileUploader({
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const isPdf = value?.toLowerCase().endsWith('.pdf');
+  const isPdf = value?.toLowerCase().endsWith('.pdf') || value?.includes('mimeType=application/pdf');
   const isImage = value && !isPdf;
 
   async function handleFile(file: File) {
@@ -62,33 +61,30 @@ export default function FileUploader({
     }
 
     setUploading(true);
-    setProgress(10);
+    setProgress(15);
 
     try {
-      // Generate unique filename
-      const ext = file.name.split('.').pop()?.toLowerCase() || 'bin';
-      const filename = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const formData = new FormData();
+      formData.append('file', file);
+      if (date) formData.append('date', date);
+      if (subjectId) formData.append('subjectId', subjectId);
 
-      setProgress(30);
+      setProgress(40);
 
-      const { error: uploadError } = await supabase.storage
-        .from(bucket)
-        .upload(filename, file, {
-          contentType: file.type,
-          upsert: false,
-        });
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
 
-      if (uploadError) throw uploadError;
+      setProgress(85);
 
-      setProgress(80);
-
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from(bucket)
-        .getPublicUrl(filename);
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'আপলোড ব্যর্থ হয়েছে');
+      }
 
       setProgress(100);
-      onChange(publicUrl, isImageFile ? 'image' : 'pdf');
+      onChange(data.url, isImageFile ? 'image' : 'pdf', data.fileId);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'আপলোড ব্যর্থ হয়েছে।';
       setError(msg);
@@ -104,7 +100,7 @@ export default function FileUploader({
   }
 
   function handleRemove() {
-    onChange(null, null);
+    onChange(null, null, null);
     if (inputRef.current) inputRef.current.value = '';
   }
 
@@ -126,7 +122,7 @@ export default function FileUploader({
           />
           {uploading ? (
             <div>
-              <div className="text-sm mb-2">আপলোড হচ্ছে... {progress}%</div>
+              <div className="text-sm mb-2">Google Drive-এ আপলোড হচ্ছে... {progress}%</div>
               <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-teal-500 transition-all"
@@ -139,7 +135,7 @@ export default function FileUploader({
               <div className="text-2xl mb-1">📎</div>
               <div className="text-sm font-medium text-gray-700">{label}</div>
               <div className="text-xs text-gray-500 mt-0.5">
-                JPG, PNG, অথবা PDF (সর্বোচ্চ {maxSizeMB}MB)
+                JPG, PNG, অথবা PDF (সর্বোচ্চ {maxSizeMB}MB) — Google Drive-এ সেভ হবে
               </div>
             </>
           )}
@@ -159,6 +155,7 @@ export default function FileUploader({
           <div className="flex-1 min-w-0">
             <div className="text-sm font-medium truncate">
               {isPdf ? 'PDF সংযুক্ত' : 'ছবি সংযুক্ত'}
+              <span className="ml-2 text-[10px] font-normal text-gray-500">Google Drive</span>
             </div>
             <a
               href={value}
@@ -166,7 +163,7 @@ export default function FileUploader({
               rel="noopener"
               className="text-xs text-teal-600 hover:underline truncate block"
             >
-              {value.split('/').pop()}
+              ফাইল দেখো →
             </a>
           </div>
           <button

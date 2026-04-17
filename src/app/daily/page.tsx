@@ -840,7 +840,6 @@ function WrittenQuestionBody({
   session: { access_token: string } | null;
   onSubmit: () => void;
 }) {
-  const { supabase } = useAuth();
   const isCompleted = item.submission?.is_completed ?? false;
   const draftKey = `daily-draft-${item.id}`;
 
@@ -920,26 +919,26 @@ function WrittenQuestionBody({
   };
 
   const handlePdfSubmit = async () => {
-    if (!session || !pdfFile || !supabase) {
-      if (!supabase) alert('Supabase সংযোগ নেই');
-      return;
-    }
+    if (!session || !pdfFile) return;
     setLoading(true);
-    setUploadProgress('আপলোড হচ্ছে...');
+    setUploadProgress('Google Drive-এ আপলোড হচ্ছে...');
 
     try {
-      const ext = pdfFile.name.split('.').pop() || 'pdf';
-      const filename = `submissions/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      // Upload to Google Drive via existing /api/upload endpoint
+      const formData = new FormData();
+      formData.append('file', pdfFile);
+      formData.append('type', 'submission');
 
-      const { error: upErr } = await supabase.storage
-        .from('daily-lessons')
-        .upload(filename, pdfFile, { contentType: 'application/pdf', upsert: false });
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${session.access_token}` },
+        body: formData,
+      });
+      const uploadData = await uploadRes.json();
 
-      if (upErr) throw upErr;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('daily-lessons')
-        .getPublicUrl(filename);
+      if (!uploadRes.ok || !uploadData.success) {
+        throw new Error(uploadData.error || 'PDF আপলোড ব্যর্থ');
+      }
 
       setUploadProgress('জমা দেওয়া হচ্ছে...');
 
@@ -949,7 +948,12 @@ function WrittenQuestionBody({
           'Content-Type': 'application/json',
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ item_id: item.id, type: 'pdf', pdf_urls: [publicUrl] }),
+        body: JSON.stringify({
+          item_id: item.id,
+          type: 'pdf',
+          pdf_urls: [uploadData.url],
+          gdrive_file_ids: uploadData.fileId ? [uploadData.fileId] : undefined,
+        }),
       });
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'আপলোড ব্যর্থ হয়েছে';

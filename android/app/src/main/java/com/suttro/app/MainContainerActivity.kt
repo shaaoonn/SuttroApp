@@ -309,6 +309,14 @@ class MainContainerActivity : AppCompatActivity() {
         settings.useWideViewPort = true
         settings.setSupportZoom(false)
 
+        // ═══ FIX: Nested scrolling for SwipeRefreshLayout compatibility ═══
+        // Without this, vertical scroll inside WebView is intercepted by SwipeRefresh
+        // on long pages with many items (simulations, classes, daily). #scroll-bug
+        webView.isNestedScrollingEnabled = true
+        webView.overScrollMode = android.view.View.OVER_SCROLL_IF_CONTENT_SCROLLS
+        webView.isVerticalScrollBarEnabled = false
+        webView.isHorizontalScrollBarEnabled = false
+
         // Cache strategy (#10) — use cache when available
         settings.cacheMode = WebSettings.LOAD_DEFAULT
 

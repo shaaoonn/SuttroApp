@@ -336,7 +336,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Content ── */}
-      <div className="px-4 pb-6 flex flex-col gap-3">
+      <div className="px-4 pb-24 flex flex-col gap-3">
         {/* XP Progress Card */}
         <div
           className="rounded-xl p-3"

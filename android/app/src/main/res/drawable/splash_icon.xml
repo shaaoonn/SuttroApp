@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Splash icon wrapper for Android 12+ SplashScreen API.
+    Wraps ic_logo with inset to ensure content fits within the
+    Android 12+ safe zone (~108dp icon area, ~66dp content area).
+
+    Without this inset, the logo's bottom was being clipped by the
+    splash screen's circular safe-zone mask.
+-->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_logo"
+    android:inset="20%" />

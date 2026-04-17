@@ -21,7 +21,7 @@ export default async function SimulationsPage() {
 
   return (
     <div style={{ background: 'var(--suttro-surface)' }}>
-      <div className="mx-auto max-w-6xl px-6 py-10">
+      <div className="mx-auto max-w-6xl px-4 lg:px-6 py-4 lg:py-10 pb-24 lg:pb-10">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-3" style={{ color: 'var(--suttro-deep)' }}>

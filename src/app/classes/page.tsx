@@ -22,7 +22,7 @@ export default async function ClassesPage() {
           Mobile: Compact class archive
           ═══════════════════════════════════════ */}
       <div className="lg:hidden">
-        <div className="px-4 py-3 flex flex-col gap-3">
+        <div className="px-4 py-3 pb-24 flex flex-col gap-3">
           {/* Page header */}
           <div>
             <h1 className="text-lg font-bold" style={{ color: '#1E293B' }}>

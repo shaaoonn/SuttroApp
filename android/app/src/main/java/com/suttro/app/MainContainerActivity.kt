@@ -329,17 +329,21 @@ class MainContainerActivity : AppCompatActivity() {
         }
     }
 
-    // ─── SwipeRefresh (#9) ───
-
+    // ─── SwipeRefresh (DISABLED — was breaking WebView scroll) ───
+    //
+    // SwipeRefreshLayout's `canChildScrollUp` callback uses webView.scrollY,
+    // but modern Chromium-based WebView keeps view-level scrollY at 0 while
+    // the HTML document scrolls internally. That made SwipeRefresh believe
+    // the WebView was always "at top", so it intercepted every downward
+    // drag as a pull-to-refresh gesture — killing vertical scrolling across
+    // every page. The WebView is fully kept as a child of SwipeRefreshLayout
+    // for layout compatibility, but refresh behavior is turned off.
+    //
+    // If pull-to-refresh is re-added later, use `view.canScrollVertically(-1)`
+    // instead of `scrollY`, and gate on an OnScrollChangeListener toggling
+    // `swipeRefresh.isEnabled` dynamically.
     private fun setupSwipeRefresh() {
-        swipeRefresh.setColorSchemeResources(R.color.colorPrimary)
-        swipeRefresh.setOnRefreshListener {
-            webView.reload()
-        }
-        // Only trigger when WebView is scrolled to top
-        swipeRefresh.setOnChildScrollUpCallback { _, _ ->
-            webView.scrollY > 0
-        }
+        swipeRefresh.isEnabled = false
     }
 
     // ─── WebView Setup (all features integrated) ───

@@ -15,13 +15,15 @@ function getSupabase() {
   );
 }
 
-function getUserId(req: NextRequest): string | null {
+async function getVerifiedUserId(req: NextRequest): Promise<string | null> {
   const auth = req.headers.get('authorization');
   if (!auth) return null;
   try {
     const token = auth.replace('Bearer ', '');
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.sub || null;
+    const sb = getSupabase();
+    const { data: { user }, error } = await sb.auth.getUser(token);
+    if (error || !user) return null;
+    return user.id;
   } catch {
     return null;
   }
@@ -30,7 +32,7 @@ function getUserId(req: NextRequest): string | null {
 // ── GET: Today's lesson ──
 export async function GET(req: NextRequest) {
   const sb = getSupabase();
-  const userId = getUserId(req);
+  const userId = await getVerifiedUserId(req);
 
   // Bangladesh timezone: UTC+6
   const now = new Date();
@@ -76,26 +78,29 @@ export async function GET(req: NextRequest) {
   // Department filtering:
   // - Empty/null departments array = lesson is for ALL departments
   // - Non-empty departments array = lesson is only for those departments
-  // Pick the best matching lesson
+  // Priority: department-specific match > all-departments > null
   let lesson = null;
   if (lessons && lessons.length > 0) {
-    if (lessons.length === 1) {
-      // Only one lesson — check if it's for this user's department
-      const l = lessons[0];
+    // Helper: check if lesson is visible to this user
+    const isVisible = (l: { departments?: string[] }) => {
       const deps = l.departments || [];
-      if (deps.length === 0 || !userDepartment || deps.includes(userDepartment)) {
-        lesson = l;
-      }
-    } else {
-      // Multiple lessons — find the one targeting user's department,
-      // or fall back to the "all departments" one
-      lesson = lessons.find((l: any) => {
-        const deps = l.departments || [];
-        return deps.length > 0 && userDepartment && deps.includes(userDepartment);
-      }) || lessons.find((l: any) => {
-        const deps = l.departments || [];
-        return deps.length === 0;
-      }) || null;
+      if (deps.length === 0) return true; // No filter = visible to all
+      if (!userDepartment) return true;   // User has no dept = show all lessons
+      return deps.includes(userDepartment);
+    };
+
+    // Filter to only visible lessons
+    const visible = lessons.filter(isVisible);
+
+    if (visible.length === 1) {
+      lesson = visible[0];
+    } else if (visible.length > 1) {
+      // Prefer department-specific lesson over the "all" one
+      lesson = (userDepartment
+        ? visible.find((l: { departments?: string[] }) => (l.departments || []).includes(userDepartment))
+        : null
+      ) || visible.find((l: { departments?: string[] }) => (l.departments || []).length === 0)
+        || visible[0];
     }
   }
 
@@ -179,7 +184,7 @@ export async function GET(req: NextRequest) {
 // ── POST: Submit answer ──
 export async function POST(req: NextRequest) {
   const sb = getSupabase();
-  const userId = getUserId(req);
+  const userId = await getVerifiedUserId(req);
   if (!userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }

@@ -35,6 +35,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'missing fields' }, { status: 400 });
   }
 
+  // Validate types and ranges
+  if (typeof score !== 'number' || score < 0) {
+    return NextResponse.json({ error: 'invalid score' }, { status: 400 });
+  }
+  if (typeof totalMarks !== 'number' || totalMarks <= 0) {
+    return NextResponse.json({ error: 'invalid totalMarks' }, { status: 400 });
+  }
+
   // Insert exam attempt
   const { error } = await sb.from('exam_attempts').insert({
     user_id: user.id,

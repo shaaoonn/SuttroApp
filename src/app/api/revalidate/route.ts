@@ -21,9 +21,13 @@ const PAGE_MAP: Record<string, string[]> = {
 };
 
 export async function POST(req: NextRequest) {
-  // Simple secret check
+  // Secret check — requires REVALIDATE_SECRET env var
   const secret = req.headers.get('x-revalidate-secret');
-  const expectedSecret = process.env.REVALIDATE_SECRET || 'suttro-revalidate-2026';
+  const expectedSecret = process.env.REVALIDATE_SECRET;
+
+  if (!expectedSecret) {
+    return NextResponse.json({ error: 'REVALIDATE_SECRET not configured' }, { status: 503 });
+  }
 
   if (secret !== expectedSecret) {
     return NextResponse.json({ error: 'Invalid secret' }, { status: 401 });

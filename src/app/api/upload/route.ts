@@ -8,13 +8,18 @@ import { uploadSubmission, uploadContent } from '@/lib/google-drive';
 // Files stored in Google Drive, URLs stored in database
 // ─────────────────────────────────────────────
 
-function getUserId(req: NextRequest): string | null {
+async function getVerifiedUserId(req: NextRequest): Promise<string | null> {
   const auth = req.headers.get('authorization');
   if (!auth) return null;
   try {
     const token = auth.replace('Bearer ', '');
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.sub || null;
+    const sb = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+    const { data: { user }, error } = await sb.auth.getUser(token);
+    if (error || !user) return null;
+    return user.id;
   } catch {
     return null;
   }
@@ -23,7 +28,7 @@ function getUserId(req: NextRequest): string | null {
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
 export async function POST(req: NextRequest) {
-  const userId = getUserId(req);
+  const userId = await getVerifiedUserId(req);
   if (!userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }

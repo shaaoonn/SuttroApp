@@ -49,6 +49,28 @@ export async function awardXP(
   const xp = amount ?? XP_RULES[source];
   const today = new Date().toISOString().split('T')[0];
 
+  // Dedup check: prevent duplicate awards for same source+item on same day
+  // Sources that should only award once per item per day
+  const dedupSources: XPSource[] = ['exam_complete', 'exam_high_score', 'daily_challenge_complete', 'daily_challenge_perfect'];
+  if (dedupSources.includes(source) && metadata) {
+    const itemKey = metadata.item_id || metadata.exam_paper_id || metadata.challenge_date;
+    if (itemKey) {
+      const { data: existing } = await supabase
+        .from('xp_transactions')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('source', source)
+        .gte('created_at', `${today}T00:00:00`)
+        .lte('created_at', `${today}T23:59:59`)
+        .limit(1);
+      if (existing && existing.length > 0) {
+        // Already awarded today for this source — skip
+        const stats = await getUserStats(supabase, userId);
+        return { totalXP: stats.total_xp, level: stats.level, streak: stats.current_streak, xpAwarded: 0 };
+      }
+    }
+  }
+
   // Insert XP transaction
   await supabase.from('xp_transactions').insert({
     user_id: userId,

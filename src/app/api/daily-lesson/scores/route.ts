@@ -20,8 +20,11 @@ export async function GET(req: NextRequest) {
   let userId: string;
   try {
     const token = auth.replace('Bearer ', '');
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    userId = payload.sub;
+    const { data: { user }, error: authErr } = await sb.auth.getUser(token);
+    if (authErr || !user) {
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    }
+    userId = user.id;
   } catch {
     return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
   }

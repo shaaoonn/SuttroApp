@@ -11,10 +11,7 @@ export const dynamic = 'force-dynamic';
 // target: "all" | "class_9" | "class_10" | "<user_id>"
 // ─────────────────────────────────────────────
 
-// Admin user IDs who can send notifications
-const ADMIN_IDS: string[] = [
-  // Add admin user IDs here
-];
+// Admin authorization is checked via admin_users table
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -53,13 +50,14 @@ export async function POST(request: NextRequest) {
   const user = await getUser(token);
   if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
-  // Admin check — if ADMIN_IDS is empty, check user metadata for admin role
-  const isAdmin =
-    ADMIN_IDS.length === 0
-      ? user.user_metadata?.role === 'admin' || user.app_metadata?.role === 'admin'
-      : ADMIN_IDS.includes(user.id);
+  // Admin check — verify user exists in admin_users table
+  const { data: adminUser } = await sb
+    .from('admin_users')
+    .select('id, role')
+    .eq('id', user.id)
+    .single();
 
-  if (!isAdmin) {
+  if (!adminUser) {
     return NextResponse.json({ error: 'forbidden — admin only' }, { status: 403 });
   }
 
@@ -93,7 +91,7 @@ export async function POST(request: NextRequest) {
       const { data: classUsers } = await sb
         .from('profiles')
         .select('id')
-        .eq('class', classNum);
+        .eq('class_level', classNum);
 
       if (classUsers && classUsers.length > 0) {
         const userIds = classUsers.map((u: { id: string }) => u.id);

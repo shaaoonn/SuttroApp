@@ -37,11 +37,11 @@ export async function GET(request: NextRequest) {
   // Get user's class for filtering
   const { data: profile } = await sb
     .from('profiles')
-    .select('class')
+    .select('class_level')
     .eq('id', userId)
     .single();
 
-  const userClass = profile?.class;
+  const userClass = profile?.class_level;
 
   // Fetch notifications targeted to this user
   let query = sb

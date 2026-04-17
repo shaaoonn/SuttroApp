@@ -42,9 +42,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const execResult = await executePayment(bkashPaymentID);
-
-    // Get payment record
+    // Get payment record first — check idempotency
     const { data: payment } = await supabase
       .from('payments')
       .select('*, subscription_plans(*)')
@@ -54,6 +52,15 @@ export async function GET(req: NextRequest) {
     if (!payment) {
       return NextResponse.redirect(`${APP_URL}/payment/failed?reason=payment_not_found`);
     }
+
+    // Idempotency: if payment already completed, redirect to success
+    if (payment.status === 'completed') {
+      return NextResponse.redirect(
+        `${APP_URL}/payment/success?plan=${payment.plan_id}&trxId=${payment.gateway_trx_id || ''}`
+      );
+    }
+
+    const execResult = await executePayment(bkashPaymentID);
 
     if (execResult.statusCode === '0000' && execResult.transactionStatus === 'Completed') {
       // Payment successful

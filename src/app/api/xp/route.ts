@@ -39,6 +39,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'source required' }, { status: 400 });
   }
 
+  // Validate source is a legitimate XP action
+  const { XP_RULES } = await import('@/lib/xp');
+  if (!(source in XP_RULES)) {
+    return NextResponse.json({ error: 'invalid XP source' }, { status: 400 });
+  }
+
   const result = await awardXP(supabase, user.id, source as XPSource, undefined, metadata);
   return NextResponse.json(result);
 }

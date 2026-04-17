@@ -9,6 +9,8 @@ export function sm2(
   interval: number,
   repetitions: number
 ): { easeFactor: number; interval: number; repetitions: number } {
+  // Clamp quality to valid range 0-5
+  quality = Math.max(0, Math.min(5, Math.round(quality)));
   let newEF = easeFactor;
   let newInterval = interval;
   let newReps = repetitions;

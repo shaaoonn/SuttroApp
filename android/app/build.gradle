@@ -27,9 +27,9 @@ android {
     signingConfigs {
         release {
             storeFile file('suttro-release.keystore')
-            storePassword 'suttro2026'
+            storePassword project.hasProperty('SUTTRO_STORE_PASSWORD') ? SUTTRO_STORE_PASSWORD : System.getenv('SUTTRO_STORE_PASSWORD')
             keyAlias 'suttro'
-            keyPassword 'suttro2026'
+            keyPassword project.hasProperty('SUTTRO_KEY_PASSWORD') ? SUTTRO_KEY_PASSWORD : System.getenv('SUTTRO_KEY_PASSWORD')
         }
     }
 

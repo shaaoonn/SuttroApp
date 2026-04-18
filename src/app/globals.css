@@ -309,8 +309,12 @@ body {
   * { scrollbar-width: none; -ms-overflow-style: none; }
 }
 
-/* 3. Smooth momentum scroll on iOS WebView (also helps Android WebView) */
-html, body, .scroll-momentum {
+/* 3. Smooth momentum scroll — opt-in per element only.
+   Do NOT apply to <html>/<body>: Android WebView (Chromium) treats
+   `overscroll-behavior-y: contain` on the root scroll container as a hint
+   that can interfere with document scroll when combined with fixed/sticky
+   children and transformed ancestors. Was killing scroll app-wide. */
+.scroll-momentum {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
 }
@@ -362,13 +366,17 @@ a, button, [role="button"], .tappable {
   transition: 0s;
 }
 
-/* 8. Page enter animation — fade+slide for page-level routes */
+/* 8. Page enter animation — fade only (no transform).
+   Using transform here left translateY(0) on the wrapper permanently due to
+   `both` fill-mode. That created a new containing block around <main>, and
+   on Android WebView that broke the document's scroll surface app-wide.
+   Opacity-only keeps the polish without touching the layout/scroll model. */
 @keyframes pageEnter {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0);   }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 .page-enter {
-  animation: pageEnter 240ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation: pageEnter 240ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 9. Skeleton shimmer — for loading states */

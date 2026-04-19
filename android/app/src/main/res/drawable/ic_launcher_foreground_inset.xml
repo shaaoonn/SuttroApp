@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Adaptive icon foreground wrapper.
+  Insets the Suttro logo by 10% on each side so launcher masks
+  (circle, squircle, rounded-square) don't clip the edges.
+  Net effect: logo renders at ~80% of the 108dp canvas, safely
+  inside the 72dp safe zone.
+-->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@mipmap/ic_launcher_foreground"
+    android:inset="10%" />

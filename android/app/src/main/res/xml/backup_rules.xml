@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Legacy backup rules — Android 6.0–11 (API 23–30)
+  Older counterpart of data_extraction_rules.xml.
+  Auth tokens and WebView session data must stay on-device.
+-->
+<full-backup-content>
+    <exclude domain="sharedpref" path="suttro_session.xml" />
+    <exclude domain="file" path="cookies" />
+    <exclude domain="file" path="webview" />
+    <exclude domain="database" path="webview.db" />
+    <exclude domain="database" path="webviewCookiesChromium.db" />
+</full-backup-content>

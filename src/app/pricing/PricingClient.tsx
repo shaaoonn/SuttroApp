@@ -3,13 +3,19 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { SkeletonList } from '@/components/native/Skeleton';
+import { isNativeApp } from '@/lib/native-bridge';
 
 // ─────────────────────────────────────────────
 // Open bKash payment URL. Inside the Android app, the native WebView's
-// shouldOverrideUrlLoading() whitelists bkash.com / bka.sh hosts so the
-// redirect stays INSIDE the app (no external browser). On the public web
+// shouldOverrideUrlLoading() keeps all https:// redirects in-app so the
+// bKash flow stays INSIDE the app (no external browser). On the public web
 // this just navigates the current tab. Capacitor.Browser is intentionally
 // NOT used — the Android shell is pure Kotlin, not Capacitor.
+//
+// NOTE: On native Android, paid subscriptions are intentionally hidden to
+// comply with Google Play's billing policy (digital goods must use Play
+// Billing on Android; bKash is our web-only payment path). Native users
+// see a "upgrade on web" notice instead.
 // ─────────────────────────────────────────────
 async function openPaymentURL(url: string) {
   window.location.href = url;
@@ -41,6 +47,14 @@ export default function PricingClient() {
   const [donateAmount, setDonateAmount] = useState('');
   const [donateLoading, setDonateLoading] = useState(false);
   const [donateSuccess, setDonateSuccess] = useState(false);
+  const [isNative, setIsNative] = useState(false);
+
+  // Detect native Android app — we hide paid plan CTAs & donation in native
+  // per Google Play's digital-goods billing policy. Users are shown a notice
+  // to upgrade on suttro.app via a web browser.
+  useEffect(() => {
+    setIsNative(isNativeApp());
+  }, []);
 
   useEffect(() => {
     fetch('/api/plans')
@@ -257,46 +271,66 @@ export default function PricingClient() {
                   ))}
                 </div>
 
-                {/* CTA Button */}
-                <button
-                  onClick={() => handleSubscribe(plan.id)}
-                  disabled={loading === plan.id || plan.id === 'free'}
-                  className="w-full py-2.5 rounded-xl text-sm font-semibold suttro-transition hover:opacity-90 disabled:opacity-50"
-                  style={getButtonStyle(plan)}
-                >
-                  {loading === plan.id ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <svg
-                        className="animate-spin h-4 w-4"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                          fill="none"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                        />
-                      </svg>
-                      বিকাশে যাচ্ছে...
-                    </span>
-                  ) : (
-                    plan.cta
-                  )}
-                </button>
+                {/* CTA Button
+                   On native Android: paid plans show a plain notice instead
+                   of a payment CTA (Google Play billing policy compliance).
+                   Free plan still shows a disabled "current plan" button. */}
+                {isNative && plan.id !== 'free' ? (
+                  <div
+                    className="w-full py-2.5 rounded-xl text-xs text-center leading-snug"
+                    style={{
+                      background: '#F8FAFB',
+                      color: '#64748B',
+                      border: '1px dashed #E2E8F0',
+                    }}
+                  >
+                    আপগ্রেড করতে ব্রাউজারে <span style={{ fontWeight: 600 }}>suttro.app</span> ভিজিট করো
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => handleSubscribe(plan.id)}
+                    disabled={loading === plan.id || plan.id === 'free'}
+                    className="w-full py-2.5 rounded-xl text-sm font-semibold suttro-transition hover:opacity-90 disabled:opacity-50"
+                    style={getButtonStyle(plan)}
+                  >
+                    {loading === plan.id ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg
+                          className="animate-spin h-4 w-4"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                          />
+                        </svg>
+                        বিকাশে যাচ্ছে...
+                      </span>
+                    ) : (
+                      plan.cta
+                    )}
+                  </button>
+                )}
               </div>
             ))}
           </div>
         )}
 
-        {/* ═══ Donate Section ═══ */}
+        {/* ═══ Donate Section ═══
+            Hidden in native Android app — bKash donations on Android are
+            out of policy scope under Google Play's digital-goods rules.
+            Donations remain available on suttro.app in a web browser. */}
+        {!isNative && (
         <div
           className="mt-6 rounded-xl p-4"
           style={{
@@ -388,12 +422,47 @@ export default function PricingClient() {
             </button>
           )}
         </div>
+        )}
 
+        {/* Native-app notice — explain why upgrade/donate CTAs are not shown */}
+        {isNative ? (
+          <div
+            className="mt-6 rounded-xl p-4 text-center"
+            style={{
+              background: 'linear-gradient(135deg, #F0FDFA, #F5F3FF)',
+              border: '1px solid #E0F2F1',
+            }}
+          >
+            <div className="text-xl mb-1">🌐</div>
+            <p className="text-xs font-semibold mb-1" style={{ color: '#134E4A' }}>
+              প্রিমিয়াম আপগ্রেড ও ডোনেশন
+            </p>
+            <p className="text-[11px] leading-relaxed" style={{ color: '#5F9EA0' }}>
+              ব্রাউজারে <span style={{ fontWeight: 600 }}>suttro.app</span> ভিজিট করে
+              তুমি প্রিমিয়াম প্ল্যানে আপগ্রেড করতে পারবে বা ডোনেট করতে পারবে।
+            </p>
+          </div>
+        ) : (
+          <p
+            className="text-center text-[11px] mt-4"
+            style={{ color: '#94A3B8' }}
+          >
+            পেমেন্ট নিরাপদ — বিকাশ পেমেন্ট গেটওয়ে দ্বারা পরিচালিত
+          </p>
+        )}
+
+        {/* Refund policy link — always visible (Play Store compliance) */}
         <p
-          className="text-center text-[11px] mt-4"
+          className="text-center text-[11px] mt-2"
           style={{ color: '#94A3B8' }}
         >
-          পেমেন্ট নিরাপদ — বিকাশ পেমেন্ট গেটওয়ে দ্বারা পরিচালিত
+          <a
+            href="/refund"
+            className="underline"
+            style={{ color: '#0D9488' }}
+          >
+            রিফান্ড ও বাতিলকরণ নীতি
+          </a>
         </p>
       </div>
     </div>

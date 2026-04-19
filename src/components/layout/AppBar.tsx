@@ -32,6 +32,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/payment/failed': 'পেমেন্ট ব্যর্থ',
   '/privacy': 'গোপনীয়তা নীতি',
   '/terms': 'শর্তাবলী',
+  '/refund': 'রিফান্ড নীতি',
   '/onboarding': 'শুরু করো',
 };
 

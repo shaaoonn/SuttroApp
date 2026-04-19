@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<title>Suttro — Feature Graphic 1024×500</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #222; }
+  body { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; font-family: 'Hind Siliguri', sans-serif; }
+
+  .graphic {
+    width: 1024px;
+    height: 500px;
+    background: linear-gradient(135deg, #0B1D3A 0%, #1B6B4A 60%, #2A9D6E 100%);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    padding: 0 72px;
+    color: #fff;
+  }
+
+  /* dot grid texture */
+  .graphic::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.08) 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
+    pointer-events: none;
+  }
+
+  /* glowing accent */
+  .graphic::after {
+    content: '';
+    position: absolute; right: -120px; top: -120px;
+    width: 520px; height: 520px;
+    background: radial-gradient(circle, rgba(232,168,56,0.35), transparent 60%);
+    pointer-events: none;
+  }
+
+  .left { flex: 1; z-index: 2; }
+
+  .brand {
+    display: flex; align-items: baseline; gap: 14px;
+    margin-bottom: 22px;
+  }
+  .brand .bn {
+    font-size: 54px; font-weight: 700; letter-spacing: -0.5px;
+    color: #fff;
+  }
+  .brand .en {
+    font-family: 'DM Serif Display', serif;
+    font-size: 40px; font-style: italic;
+    color: #E8A838;
+  }
+
+  .headline {
+    font-size: 38px; font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: 18px;
+    color: #fff;
+    max-width: 540px;
+  }
+  .headline em {
+    color: #E8A838; font-style: normal;
+  }
+
+  .sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px; font-weight: 400;
+    color: rgba(255,255,255,0.85);
+    max-width: 520px;
+    line-height: 1.5;
+  }
+
+  .tagline {
+    margin-top: 22px;
+    display: inline-block;
+    padding: 8px 18px;
+    background: rgba(232,168,56,0.15);
+    border: 1.5px solid rgba(232,168,56,0.5);
+    border-radius: 999px;
+    font-size: 16px; font-weight: 500;
+    color: #E8A838;
+  }
+
+  /* right-side illustration: circuit/science mockup */
+  .right {
+    position: absolute; right: 60px; top: 50%;
+    transform: translateY(-50%);
+    width: 340px; height: 340px; z-index: 2;
+  }
+  .phone {
+    position: absolute; inset: 0;
+    background: #0B1D3A;
+    border: 6px solid #1a2d4a;
+    border-radius: 32px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.08);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .phone-screen {
+    flex: 1; background: #FAFBF9;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .phone-header {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 700;
+    color: #1B6B4A;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .phone-title {
+    font-size: 14px; font-weight: 600; color: #0B1D3A;
+    margin-top: 4px;
+  }
+  .canvas {
+    flex: 1;
+    background:
+      radial-gradient(#d5e0d0 1px, transparent 1px) 0 0 / 12px 12px,
+      #f4f7f0;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  /* circuit diagram */
+  .wire { position: absolute; background: #1B6B4A; }
+  .w-top    { top: 24px; left: 28px; right: 28px; height: 3px; }
+  .w-bottom { bottom: 24px; left: 28px; right: 28px; height: 3px; }
+  .w-left   { top: 24px; bottom: 24px; left: 28px; width: 3px; }
+  .w-right  { top: 24px; bottom: 24px; right: 28px; width: 3px; }
+  .battery {
+    position: absolute; left: 50%; top: 18px; transform: translateX(-50%);
+    width: 46px; height: 18px; background: #fff; border: 2px solid #0B1D3A;
+    border-radius: 3px; display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; color: #C4392D;
+  }
+  .resistor {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    width: 20px; height: 50px; background: #E8A838; border: 2px solid #0B1D3A;
+    border-radius: 4px;
+  }
+  .bulb {
+    position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);
+    width: 28px; height: 28px; background: radial-gradient(#FFE066, #E8A838);
+    border-radius: 50%; border: 2px solid #0B1D3A;
+    box-shadow: 0 0 20px rgba(255,224,102,0.8);
+  }
+  .readout {
+    background: #0B1D3A; color: #2A9D6E;
+    padding: 6px 10px; border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 500;
+    display: flex; justify-content: space-between;
+  }
+
+  /* bottom-left free tag */
+  .free-tag {
+    position: absolute; bottom: 28px; left: 72px; z-index: 2;
+    display: flex; align-items: center; gap: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600;
+    color: rgba(255,255,255,0.75);
+  }
+  .free-tag span {
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #2A9D6E; }
+
+  /* helper — hide when exporting */
+  .help {
+    position: fixed; bottom: 12px; left: 12px;
+    background: #fff; color: #000; padding: 10px 14px; border-radius: 8px;
+    font-family: -apple-system, sans-serif; font-size: 13px;
+    max-width: 420px; line-height: 1.45;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  @media print {
+    body { padding: 0; background: #fff; }
+    .help { display: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="graphic" id="graphic">
+    <div class="left">
+      <div class="brand">
+        <div class="bn">সূত্র</div>
+        <div class="en">Suttro</div>
+      </div>
+      <div class="headline">NCTB Class 9-10<br><em>Science Simulations</em> in বাংলা</div>
+      <div class="sub">Physics • Chemistry • Biology — interactive, not just video. নিজে চালিয়ে শেখো।</div>
+      <div class="tagline">বিজ্ঞান দেখো, বিজ্ঞান বোঝো।</div>
+    </div>
+
+    <div class="right">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-header">
+            <span>⚡ Ohm's Law</span>
+            <span>Class 9</span>
+          </div>
+          <div class="phone-title">V = I × R</div>
+          <div class="canvas">
+            <div class="wire w-top"></div>
+            <div class="wire w-bottom"></div>
+            <div class="wire w-left"></div>
+            <div class="wire w-right"></div>
+            <div class="battery">9V</div>
+            <div class="resistor"></div>
+            <div class="bulb"></div>
+          </div>
+          <div class="readout">
+            <span>I = 0.45 A</span>
+            <span>P = 4.05 W</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="free-tag">
+      <span><span class="dot"></span> Free to start</span>
+      <span><span class="dot"></span> NCTB aligned</span>
+      <span><span class="dot"></span> 100% বাংলা</span>
+    </div>
+  </div>
+
+  <div class="help">
+    <strong>কীভাবে PNG বানাবে:</strong><br>
+    ১. Chrome-এ এই ফাইল খোলো<br>
+    ২. F12 → DevTools → device toolbar (Ctrl+Shift+M)<br>
+    ৩. Responsive → width 1024, height 500 set<br>
+    ৪. DevTools মেনু (⋮) → Capture full-size screenshot<br>
+    অথবা: graphic element-এ right-click → "Capture node screenshot"
+  </div>
+</body>
+</html>

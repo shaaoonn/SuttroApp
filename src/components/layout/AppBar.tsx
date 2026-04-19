@@ -189,11 +189,11 @@ export default function AppBar() {
             )}
           </>
         ) : (
-          /* ── Sub-page: back button + centered title ── */
+          /* ── Sub-page: back button + left-aligned title (prevents overlap) ── */
           <>
             <button
               onClick={() => { vibrate(8); router.back(); }}
-              className="tappable flex items-center justify-center w-10 h-10 -ml-2 rounded-full"
+              className="tappable flex items-center justify-center w-10 h-10 -ml-2 rounded-full shrink-0"
               aria-label="পেছনে যাও"
             >
               <svg
@@ -210,27 +210,27 @@ export default function AppBar() {
               </svg>
             </button>
             <h1
-              className="flex-1 text-center text-lg font-semibold truncate px-2"
+              className="flex-1 text-lg font-semibold truncate pl-2 pr-2 min-w-0"
               style={{ color: '#134E4A' }}
             >
               {title}
             </h1>
-            {/* Avatar or spacer */}
+            {/* Avatar or spacer — always reserve space */}
             {user && avatarUrl ? (
               <Link
                 href="/dashboard"
-                className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0"
+                className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={avatarUrl}
                   alt=""
-                  className="w-7 h-7 rounded-full object-cover"
+                  className="w-8 h-8 rounded-full object-cover"
                   referrerPolicy="no-referrer"
                 />
               </Link>
             ) : (
-              <div className="w-10" />
+              <div className="w-8 shrink-0" />
             )}
           </>
         )}

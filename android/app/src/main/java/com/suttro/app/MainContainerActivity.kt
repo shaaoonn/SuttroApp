@@ -346,6 +346,25 @@ class MainContainerActivity : AppCompatActivity() {
         swipeRefresh.isEnabled = false
     }
 
+    // ─── Cache busting on app upgrade ───
+    //
+    // Wipes WebView's HTTP cache the first time a new app version runs.
+    // localStorage and cookies are PRESERVED (no session loss).
+    // Tracked in regular SharedPreferences (not encrypted — non-sensitive).
+    private fun clearCacheOnVersionBump() {
+        val prefs = getSharedPreferences("suttro_app_meta", MODE_PRIVATE)
+        val lastSeenVersion = prefs.getInt("last_webview_cache_version", -1)
+        val currentVersion = try {
+            packageManager.getPackageInfo(packageName, 0).longVersionCode.toInt()
+        } catch (_: Exception) { 0 }
+
+        if (lastSeenVersion != currentVersion) {
+            Log.i("Suttro", "App version bumped ($lastSeenVersion -> $currentVersion); clearing WebView cache")
+            webView.clearCache(true)
+            prefs.edit().putInt("last_webview_cache_version", currentVersion).apply()
+        }
+    }
+
     // ─── WebView Setup (all features integrated) ───
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -370,8 +389,20 @@ class MainContainerActivity : AppCompatActivity() {
         webView.isVerticalScrollBarEnabled = false
         webView.isHorizontalScrollBarEnabled = false
 
-        // Cache strategy (#10) — use cache when available
+        // ═══ Cache strategy ═══
+        // LOAD_DEFAULT honors HTTP cache headers. But suttro.app sends
+        // `Cache-Control: stale-while-revalidate=31535940` (1 year), which
+        // makes WebView serve stale HTML for up to a year. Stale HTML
+        // references stale CSS/JS bundle URLs (Next.js content-hash filenames),
+        // so even a fresh deploy is invisible to the WebView until the user
+        // manually clears app cache. That just bit us with the scroll bug:
+        // CSS fix was live on the server but old CSS kept loading from cache.
+        //
+        // Fix: clear WebView cache once per app version bump. The HTTP cache
+        // is rebuilt on next load (cheap) and CSS/JS bundles still cache
+        // normally inside that fresh session.
         settings.cacheMode = WebSettings.LOAD_DEFAULT
+        clearCacheOnVersionBump()
 
         // User agent
         val defaultUA = settings.userAgentString

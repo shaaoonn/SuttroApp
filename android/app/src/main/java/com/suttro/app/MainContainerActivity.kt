@@ -447,12 +447,13 @@ class MainContainerActivity : AppCompatActivity() {
                 val scheme = uri.scheme?.lowercase() ?: ""
                 val isRedirect = request.isRedirect
                 val mainFrame = request.isForMainFrame
+                val gesture = request.hasGesture()
 
-                Log.i("SuttroNav", "shouldOverride url=$url host=$host scheme=$scheme mainFrame=$mainFrame redirect=$isRedirect")
+                Log.i("SuttroNav", "shouldOverride url=$url host=$host scheme=$scheme mainFrame=$mainFrame redirect=$isRedirect gesture=$gesture")
 
-                // Logout redirect — must match ONLY the bare /login route (not
-                // /login-help, /payment/success?next=suttro.app/login, etc). This
-                // bug would route any URL containing "suttro.app/login" to logout.
+                // Logout redirect — match ONLY the bare /login route on suttro.app.
+                // Old code used `url.contains("suttro.app/login")` which would also fire
+                // on /login-help, on query params containing the substring, etc.
                 if ((scheme == "https" || scheme == "http") &&
                     host == "suttro.app" &&
                     (uri.path == "/login" || uri.path?.startsWith("/login/") == true)
@@ -462,28 +463,25 @@ class MainContainerActivity : AppCompatActivity() {
                     return true
                 }
 
-                // Telephone / email / SMS / market — let the system handle
-                if (scheme in setOf("tel", "mailto", "sms", "market", "intent")) {
-                    Log.i("SuttroNav", "→ system intent for scheme=$scheme")
-                    try { startActivity(Intent(Intent.ACTION_VIEW, uri)) } catch (_: Exception) {}
-                    return true
-                }
-
-                // Hosts allowed to load INSIDE WebView (bKash + Google Drive for PDFs + YouTube + OAuth)
-                if (isInAppHost(host)) {
-                    Log.i("SuttroNav", "→ STAY in-app (whitelisted host)")
+                // ═══ HTTP/HTTPS — ALWAYS stay inside the WebView. ═══
+                // Previously we external-punted any non-whitelisted host, but the
+                // bKash payment flow can route through subdomains and intermediate
+                // redirect hosts that weren't on the whitelist, which kicked the
+                // user out to Chrome right when the success page should have
+                // rendered. There is no real benefit to punting https URLs
+                // externally — the WebView can render anything the system browser
+                // can, and the user still has the back button.
+                //
+                // Only non-http schemes (tel/mailto/sms/market/intent/<custom app
+                // scheme>) need OS-level handling; everything below stays in-app.
+                if (scheme == "https" || scheme == "http") {
+                    Log.i("SuttroNav", "→ STAY in-app (http(s))")
                     return false
                 }
 
-                // Empty host with http(s) scheme → likely a relative URL or
-                // malformed — don't punt to external, let WebView handle it.
-                if ((scheme == "https" || scheme == "http") && host.isEmpty()) {
-                    Log.w("SuttroNav", "→ STAY in-app (http(s) with empty host — not punting)")
-                    return false
-                }
-
-                // Truly external — open in system browser
-                Log.w("SuttroNav", "→ EXTERNAL browser (host=$host not whitelisted)")
+                // Custom schemes (tel, mailto, sms, market, intent, bkash, whatsapp,
+                // tg, fb, etc.) → hand to the OS. WebView can't render these.
+                Log.i("SuttroNav", "→ system intent for scheme=$scheme")
                 try { startActivity(Intent(Intent.ACTION_VIEW, uri)) } catch (_: Exception) {}
                 return true
             }

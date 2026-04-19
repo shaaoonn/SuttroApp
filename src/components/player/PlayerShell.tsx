@@ -73,18 +73,36 @@ export default function PlayerShell({
   const { isFullscreen, toggleFullscreen } = useFullscreen(playerRef);
   const router = useRouter();
 
-  // Auto-center simulation when player resizes (fullscreen toggle, rotation, etc.)
-  // Uses ResizeObserver instead of a fragile setTimeout — fires once the browser
-  // has finished the layout pass so fitToScreen reads the final dimensions.
+  // Keep latest fitToScreen in a ref so the ResizeObserver effect can be
+  // mount-only (otherwise we'd recreate the observer on every panZoom render,
+  // and the observer fires immediately on observe(), which resets the user's
+  // pan position — that was the "snap-back-while-panning" bug).
+  const fitToScreenRef = useRef(panZoom?.fitToScreen);
   useEffect(() => {
-    if (!panZoom?.fitToScreen || !playerRef.current) return;
+    fitToScreenRef.current = panZoom?.fitToScreen;
+  });
+
+  // Auto-fit on actual size changes only (fullscreen toggle, orientation
+  // change, container resize). We compare dimensions and only re-fit when
+  // they actually change, so transient layout passes don't reset the pan.
+  useEffect(() => {
+    if (!playerRef.current) return;
     const el = playerRef.current;
-    let rafId: number;
-    const ro = new ResizeObserver(() => {
-      // Debounce to next paint so inner viewport has settled
+    let lastW = 0;
+    let lastH = 0;
+    let rafId = 0;
+    const ro = new ResizeObserver((entries) => {
+      const cr = entries[0]?.contentRect;
+      if (!cr) return;
+      const w = Math.round(cr.width);
+      const h = Math.round(cr.height);
+      // Significant change only (>2px) — ignore subpixel jitter
+      if (Math.abs(w - lastW) < 3 && Math.abs(h - lastH) < 3) return;
+      lastW = w;
+      lastH = h;
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
-        panZoom.fitToScreen?.();
+        fitToScreenRef.current?.();
       });
     });
     ro.observe(el);
@@ -92,16 +110,14 @@ export default function PlayerShell({
       ro.disconnect();
       cancelAnimationFrame(rafId);
     };
-  }, [panZoom]);
+  }, []); // mount-only
 
-  // Belt-and-suspenders: also re-fit explicitly on fullscreen change with a
-  // delay, to catch WebView implementations where ResizeObserver fires late.
+  // Explicit re-fit on fullscreen change — WebView sometimes lags ResizeObserver
   useEffect(() => {
-    if (!panZoom?.fitToScreen) return;
-    const t1 = setTimeout(() => panZoom.fitToScreen?.(), 180);
-    const t2 = setTimeout(() => panZoom.fitToScreen?.(), 450);
+    const t1 = setTimeout(() => fitToScreenRef.current?.(), 180);
+    const t2 = setTimeout(() => fitToScreenRef.current?.(), 450);
     return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, [isFullscreen]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isFullscreen]);
 
   const handleBack = () => {
     if (typeof window !== 'undefined' && window.history.length > 1) {

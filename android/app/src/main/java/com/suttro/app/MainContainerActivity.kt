@@ -71,6 +71,12 @@ class MainContainerActivity : AppCompatActivity() {
     private var currentPath = "/"
     private var isFirstLoad = true
 
+    // ═══ HTML5 Fullscreen support (for simulations / video player) ═══
+    private var fullscreenView: View? = null
+    private var fullscreenCallback: WebChromeClient.CustomViewCallback? = null
+    private var savedSystemUiVisibility = 0
+    private var savedOrientation = 0
+
     // ═══ File chooser state (for <input type="file">) ═══
     private var filePathCallback: ValueCallback<Array<Uri>>? = null
     private var cameraPhotoUri: Uri? = null
@@ -612,6 +618,53 @@ class MainContainerActivity : AppCompatActivity() {
                 return true
             }
 
+            // ═══ HTML5 Fullscreen API — for simulation/video player fullscreen toggle
+            // Without this, element.requestFullscreen() in WebView is a no-op.
+            override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
+                if (fullscreenView != null) {
+                    callback?.onCustomViewHidden()
+                    return
+                }
+                fullscreenView = view
+                fullscreenCallback = callback
+                savedOrientation = requestedOrientation
+                savedSystemUiVisibility = window.decorView.systemUiVisibility
+
+                // Add the custom (fullscreen) view as the topmost view in the window
+                val decor = window.decorView as ViewGroup
+                decor.addView(
+                    view,
+                    ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                )
+                // Hide system UI (immersive)
+                @Suppress("DEPRECATION")
+                window.decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_FULLSCREEN
+                            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    )
+                // Lock to landscape for a better fullscreen sim/video experience
+                requestedOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+            }
+
+            override fun onHideCustomView() {
+                val view = fullscreenView ?: return
+                val decor = window.decorView as ViewGroup
+                decor.removeView(view)
+                fullscreenView = null
+                fullscreenCallback?.onCustomViewHidden()
+                fullscreenCallback = null
+                @Suppress("DEPRECATION")
+                window.decorView.systemUiVisibility = savedSystemUiVisibility
+                requestedOrientation = savedOrientation
+            }
+
             // ═══ Permission request (camera/mic for WebRTC) ═══
             override fun onPermissionRequest(request: PermissionRequest?) {
                 request ?: return
@@ -832,6 +885,14 @@ class MainContainerActivity : AppCompatActivity() {
     private fun setupBackNavigation() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                // Exit HTML5 fullscreen first if active (sim/video player)
+                if (fullscreenView != null) {
+                    webView.evaluateJavascript(
+                        "document.fullscreenElement && document.exitFullscreen();",
+                        null
+                    )
+                    return
+                }
                 if (webView.canGoBack()) {
                     webView.goBack()
                 } else {

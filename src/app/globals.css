@@ -214,10 +214,9 @@ body {
   }
 }
 
-/* Mobile: player spans full viewport width, fills available vertical space
- * so the simulation is actually usable without fullscreen.
- * AppBar is hidden on /sim/ pages, so only subtract BottomNav (60px) + safe areas.
- * This gives the simulation near-full-screen inline — YouTube-shorts-like. */
+/* Mobile: player spans full viewport width edge-to-edge (no side gutters).
+ * Height = comfortable 4:3 aspect (taller than 16:9 → more sim breathing room)
+ * with sensible min/max so it's never absurdly tall on tablets in portrait. */
 @media (max-width: 1023px) {
   .sim-player-wrap {
     margin: 0;
@@ -225,10 +224,10 @@ body {
   }
   .sim-player-wrap .suttro-player {
     border-radius: 0;
-    aspect-ratio: auto;
+    aspect-ratio: 4 / 3;
     width: 100vw;
-    height: calc(100svh - 60px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
-    min-height: 440px;
+    min-height: 320px;
+    max-height: 70svh;
   }
 }
 
@@ -303,7 +302,20 @@ body {
   color: var(--player-text);
 }
 
-/* Compact simulation panels on mobile — keep simulation area breathable */
+/* Compact simulation panels on mobile — keep simulation area breathable
+ * and ensure the three overlay panels don't collide.
+ *
+ * Layout grid (mobile):
+ *   ┌─────────────────────────┐
+ *   │ FORMULA          CONTROL│   ← top
+ *   │ (top-left)       (top-r)│
+ *   │                         │
+ *   │       [SIMULATION]      │
+ *   │                         │
+ *   │ READOUT                 │   ← bottom
+ *   │ (bottom-left)           │
+ *   └─────────────────────────┘
+ */
 @media (max-width: 1023px) {
   .control-panel,
   .readout-panel {
@@ -314,21 +326,42 @@ body {
     -webkit-backdrop-filter: blur(10px);
     background: rgba(15, 20, 30, 0.82) !important;
   }
+
+  /* Control panel: top-right (sliders) */
   .control-panel {
-    width: 150px !important;
+    width: 144px !important;
     top: 8px !important;
     right: 8px !important;
-    max-height: calc(100% - 16px);
+    left: auto !important;
+    bottom: auto !important;
+    max-height: 50% !important;
     overflow-y: auto;
   }
   .control-panel input[type="range"] {
     height: 4px !important;
   }
+
+  /* Default .readout-panel: top-left (FormulaDisplay uses this position) */
   .readout-panel {
-    min-width: 100px !important;
-    left: 8px !important;
+    min-width: 0 !important;
+    max-width: 42% !important;
     top: 8px !important;
+    left: 8px !important;
+    right: auto !important;
+    bottom: auto !important;
   }
+
+  /* But ReadoutPanel (measurements) is positioned bottom-left via its own
+   * Tailwind classes. Override our generic rule above for that specific case
+   * by targeting the bottom-positioned variant. We use the bottom-14 class
+   * the component already has — keep it but tighten the spacing. */
+  .readout-panel.bottom-14,
+  .readout-panel[class*="bottom-"] {
+    top: auto !important;
+    bottom: 56px !important;  /* clear the bottom toolbar */
+    left: 8px !important;
+  }
+
   /* Compact player buttons */
   .suttro-player button,
   .suttro-player a {
@@ -341,14 +374,14 @@ body {
 /* Very small screens (<400px) — further compact */
 @media (max-width: 400px) {
   .control-panel {
-    width: 130px !important;
+    width: 128px !important;
     font-size: 10px !important;
     padding: 6px 8px !important;
   }
   .readout-panel {
-    min-width: 88px !important;
     font-size: 10px !important;
     padding: 6px 8px !important;
+    max-width: 38% !important;
   }
 }
 

@@ -1,7 +1,7 @@
 {
-  "name": "সূত্র — ইন্টারেক্টিভ সায়েন্স সিমুলেশন",
-  "short_name": "সূত্র",
-  "description": "বিজ্ঞান দেখো, বিজ্ঞান বোঝো। NCTB ক্লাস ৯-১০ ইন্টারেক্টিভ সায়েন্স সিমুলেশন।",
+  "name": "Suttro — Science Simulations for NCTB Class 9-10",
+  "short_name": "Suttro",
+  "description": "Interactive science simulations for NCTB Class 9-10 Bangladesh. Physics, Chemistry, Biology in Bangla. সূত্র — বিজ্ঞান দেখো, বিজ্ঞান বোঝো।",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FFFFFF",
@@ -25,14 +25,14 @@
   "screenshots": [],
   "shortcuts": [
     {
-      "name": "সিমুলেশন",
-      "short_name": "সিমুলেশন",
+      "name": "Simulations",
+      "short_name": "Sims",
       "url": "/simulations",
       "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
     },
     {
-      "name": "ক্লাস আর্কাইভ",
-      "short_name": "ক্লাস",
+      "name": "Class Archive",
+      "short_name": "Classes",
       "url": "/classes",
       "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
     }

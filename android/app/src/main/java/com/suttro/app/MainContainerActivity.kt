@@ -559,7 +559,17 @@ class MainContainerActivity : AppCompatActivity() {
                 }
             }
 
-            // ═══ target="_blank" → load inside the SAME WebView ═══
+            // ═══ target="_blank" / window.open() → keep navigation in the MAIN WebView ═══
+            // Why this approach: `shouldOverrideUrlLoading` does NOT fire for the initial
+            // load on a freshly-created popup WebView, so routing through a throwaway WebView
+            // loses the URL (the page loads silently in an invisible WebView, and on some
+            // Android builds the system then falls back to launching the external browser —
+            // this is exactly what broke the bKash success redirect).
+            //
+            // Safer pattern: hand the popup request to the main WebView. Its own
+            // `shouldOverrideUrlLoading` (above) already handles external-host punting and
+            // in-app navigation identically, so the user stays inside the app for all
+            // whitelisted hosts (suttro.app, bKash, Google Drive, YouTube, OAuth).
             override fun onCreateWindow(
                 view: WebView?,
                 isDialog: Boolean,
@@ -567,21 +577,7 @@ class MainContainerActivity : AppCompatActivity() {
                 resultMsg: Message?
             ): Boolean {
                 val transport = resultMsg?.obj as? WebView.WebViewTransport ?: return false
-                // Create a throwaway WebView that captures the popup URL and redirects to our main WebView
-                val tempWebView = WebView(this@MainContainerActivity)
-                tempWebView.webViewClient = object : WebViewClient() {
-                    override fun shouldOverrideUrlLoading(v: WebView, request: WebResourceRequest): Boolean {
-                        val target = request.url.toString()
-                        val host = request.url.host?.lowercase() ?: ""
-                        if (isInAppHost(host)) {
-                            webView.loadUrl(target)
-                        } else {
-                            try { startActivity(Intent(Intent.ACTION_VIEW, request.url)) } catch (_: Exception) {}
-                        }
-                        return true
-                    }
-                }
-                transport.webView = tempWebView
+                transport.webView = webView
                 resultMsg.sendToTarget()
                 return true
             }

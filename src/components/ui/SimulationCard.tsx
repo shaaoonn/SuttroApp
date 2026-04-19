@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { SimulationConfig } from '@/simulations/_template/config';
 
 // ─────────────────────────────────────────────
-// SimulationCard — Gallery card for simulations
+// SimulationCard - Gallery card for simulations
 // ─────────────────────────────────────────────
 
 const SUBJECT_COLORS: Record<string, string> = {

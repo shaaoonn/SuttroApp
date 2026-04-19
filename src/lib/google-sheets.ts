@@ -2,7 +2,7 @@ import { google, sheets_v4 } from 'googleapis';
 import { createClient } from '@supabase/supabase-js';
 
 // ─────────────────────────────────────────────
-// Google Sheets — User Profile Auto-Sync
+// Google Sheets - User Profile Auto-Sync
 //
 // Automatically syncs all user profiles to a Google Sheet
 // whenever profiles are created/updated. Uses OAuth2 refresh
@@ -45,7 +45,7 @@ function getDrive() {
   return google.drive({ version: 'v3', auth });
 }
 
-const SHEET_TITLE = 'Suttro — ইউজার প্রোফাইল';
+const SHEET_TITLE = 'Suttro - ইউজার প্রোফাইল';
 const HEADERS = [
   'ID',
   'নাম (Name)',
@@ -168,7 +168,7 @@ async function getOrCreateSpreadsheet(): Promise<string> {
  * Format a date for display in Bengali-friendly format
  */
 function formatDate(dateStr: string | null): string {
-  if (!dateStr) return '—';
+  if (!dateStr) return '-';
   try {
     const d = new Date(dateStr);
     return d.toLocaleDateString('bn-BD', {
@@ -223,10 +223,10 @@ export async function syncAllProfiles(): Promise<{ synced: number; spreadsheetId
     const authUser = userMap.get(p.id);
     return [
       p.id,
-      p.name || '—',
-      p.phone || '—',
-      authUser?.email || '—',
-      p.class_level?.toString() || '—',
+      p.name || '-',
+      p.phone || '-',
+      authUser?.email || '-',
+      p.class_level?.toString() || '-',
       PLAN_LABELS[p.subscription_plan] || p.subscription_plan || 'ফ্রি',
       formatDate(p.subscription_expires_at),
       formatDate(p.created_at),

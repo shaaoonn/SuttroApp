@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SupabaseClient = any;
 
-export type PlanId = string; // Dynamic — no longer restricted to 'free' | 'premium' | 'pro'
+export type PlanId = string; // Dynamic - no longer restricted to 'free' | 'premium' | 'pro'
 
 export interface SubscriptionStatus {
   plan: PlanId;
@@ -84,7 +84,7 @@ export async function getSubscriptionStatus(
     const now = new Date();
     const expiry = new Date(expiresAt);
     if (now > expiry) {
-      // Subscription expired — revert to free
+      // Subscription expired - revert to free
       await supabase
         .from('profiles')
         .update({ subscription_plan: 'free', subscription_expires_at: null })

@@ -1,14 +1,14 @@
 import type { SimulationConfig } from '../../_template/config';
 
 // ─────────────────────────────────────────────
-// Circle — Area & Circumference
+// Circle - Area & Circumference
 // NCTB Class 9, Chapter 7: পরিমিতি
 // ─────────────────────────────────────────────
 
 export const circleGeometryConfig: SimulationConfig = {
   id: 'circle-geometry',
   slug: 'circle-geometry',
-  title: { bn: 'বৃত্তের ক্ষেত্রফল ও পরিধি', en: 'Circle — Area & Circumference' },
+  title: { bn: 'বৃত্তের ক্ষেত্রফল ও পরিধি', en: 'Circle - Area & Circumference' },
   subject: 'math',
   nctb: { class: 9, chapter: 7, section: '7.4' },
   variables: [
@@ -33,7 +33,7 @@ export const circleGeometryConfig: SimulationConfig = {
     },
     {
       expression: 'π ≈ 3.14159',
-      description: { bn: 'পাই-এর মান (পরিধি ÷ ব্যাস)', en: 'Pi — ratio of circumference to diameter' },
+      description: { bn: 'পাই-এর মান (পরিধি ÷ ব্যাস)', en: 'Pi - ratio of circumference to diameter' },
     },
   ],
   defaultZoom: 1.0,

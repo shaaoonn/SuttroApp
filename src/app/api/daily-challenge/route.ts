@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     .single();
 
   if (!challenge) {
-    // Generate today's challenge — pick 5 questions distributed across subjects
+    // Generate today's challenge - pick 5 questions distributed across subjects
     const { data: questions } = await supabase
       .from('mcq_questions')
       .select('id, exam_papers(subject_id)')

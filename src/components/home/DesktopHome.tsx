@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 
 // ─────────────────────────────────────────────
-// DesktopHome — Dashboard for logged-in desktop users
+// DesktopHome - Dashboard for logged-in desktop users
 // Shows subjects, daily study, recent classes, exams
 // ─────────────────────────────────────────────
 
@@ -128,7 +128,7 @@ export default function DesktopHome({
           <p className="text-base mt-1" style={{ color: '#5F9EA0' }}>
             {user
               ? (content.welcome_logged_in || 'আজ কী শিখবে? তোমার পড়াশোনা শুরু করো।')
-              : (content.welcome_guest_subtitle || 'ক্লাস ৯-১০ ইন্টারেক্টিভ সায়েন্স — NCTB পাঠ্যবইয়ের প্রতিটি অধ্যায়।')}
+              : (content.welcome_guest_subtitle || 'ক্লাস ৯-১০ ইন্টারেক্টিভ সায়েন্স - NCTB পাঠ্যবইয়ের প্রতিটি অধ্যায়।')}
           </p>
         </div>
 
@@ -207,7 +207,7 @@ export default function DesktopHome({
                   {content.new_class_label || 'নতুন ক্লাস!'}
                 </div>
                 <div className="text-sm truncate" style={{ color: '#B45309' }}>
-                  {classes[0].title} — {classes[0].duration}
+                  {classes[0].title} - {classes[0].duration}
                 </div>
               </div>
             </Link>

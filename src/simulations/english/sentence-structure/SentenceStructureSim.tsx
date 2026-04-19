@@ -13,7 +13,7 @@ import FormulaDisplay from '@/components/player/FormulaDisplay';
 import type { VariableConfig } from '@/simulations/_template/config';
 
 // ─────────────────────────────────────────────
-// বাক্য গঠন (Sentence Structure — SVO)
+// বাক্য গঠন (Sentence Structure - SVO)
 // Interactive sentence parsing visualization
 // ─────────────────────────────────────────────
 
@@ -170,7 +170,7 @@ export default function SentenceStructureSim() {
                     fill={isActive ? 'rgba(8,145,178,0.8)' : 'rgba(255,255,255,0.15)'} />
                   <text x={tx + 16} y={ty + 4} fill={isActive ? 'rgba(8,145,178,0.8)' : 'rgba(255,255,255,0.35)'}
                     fontSize={11} fontFamily="var(--font-hind-siliguri)">
-                    {s.typeBn} — {s.type}
+                    {s.typeBn} - {s.type}
                   </text>
                 </g>
               );

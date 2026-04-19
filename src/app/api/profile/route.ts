@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { syncAllProfiles, isSheetsConfigured } from '@/lib/google-sheets';
 
 // ─────────────────────────────────────────────
-// Profile API — GET & PATCH user profile
+// Profile API - GET & PATCH user profile
 // Requires Authorization header
 // Uses service-role key to bypass RLS for profile ops
 // ─────────────────────────────────────────────
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
         console.error('[profile GET] Sheets sync failed:', err instanceof Error ? err.message : err);
       });
     } else {
-      console.warn('[profile GET] Sheets sync skipped — GOOGLE_OAUTH_* env vars not configured');
+      console.warn('[profile GET] Sheets sync skipped - GOOGLE_OAUTH_* env vars not configured');
     }
 
     return NextResponse.json({
@@ -119,14 +119,14 @@ export async function PATCH(request: NextRequest) {
       console.error('[profile PATCH] Sheets sync failed:', err instanceof Error ? err.message : err);
     });
   } else {
-    console.warn('[profile PATCH] Sheets sync skipped — GOOGLE_OAUTH_* env vars not configured');
+    console.warn('[profile PATCH] Sheets sync skipped - GOOGLE_OAUTH_* env vars not configured');
   }
 
   return NextResponse.json(data);
 }
 
 // ─────────────────────────────────────────────
-// DELETE /api/profile — Permanent account deletion
+// DELETE /api/profile - Permanent account deletion
 // Google Play Policy 2024 requires in-app account deletion
 // Deletes: profile row, all user data (cascades via FK), auth user
 // ─────────────────────────────────────────────
@@ -153,7 +153,7 @@ export async function DELETE(request: NextRequest) {
       console.error('[DELETE /profile] profile delete error:', profileError);
     }
 
-    // 2. Delete the auth user itself (this fully removes them — they can't log back in)
+    // 2. Delete the auth user itself (this fully removes them - they can't log back in)
     const { error: authError } = await sb.auth.admin.deleteUser(userId);
 
     if (authError) {

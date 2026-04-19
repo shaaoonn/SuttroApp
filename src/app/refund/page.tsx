@@ -41,7 +41,7 @@ export default function RefundPage() {
           <Section title="৩. অটো-রিনিউ ও বাতিলকরণ">
             <ul className="list-disc list-inside space-y-1 ml-2">
               <li>
-                প্রিমিয়াম প্ল্যান <strong>এককালীন (one-time)</strong> — মেয়াদ
+                প্রিমিয়াম প্ল্যান <strong>এককালীন (one-time)</strong> - মেয়াদ
                 শেষ হলে স্বয়ংক্রিয়ভাবে নতুন করে কেটে নেওয়া হবে না।
               </li>
               <li>
@@ -50,7 +50,7 @@ export default function RefundPage() {
               </li>
               <li>
                 মেয়াদ চলাকালীন তুমি অ্যাপের ভেতর যেকোনো সময় পরবর্তী রিনিউ বন্ধ
-                করে রাখতে পারো — কোনো অতিরিক্ত চার্জ হবে না।
+                করে রাখতে পারো - কোনো অতিরিক্ত চার্জ হবে না।
               </li>
             </ul>
           </Section>
@@ -63,12 +63,12 @@ export default function RefundPage() {
             <ul className="list-disc list-inside space-y-1 ml-2">
               <li>
                 <strong>ভুল পেমেন্ট:</strong> একই প্ল্যানের জন্য দুইবার বা তার
-                বেশি পেমেন্ট কাটা হলে — অতিরিক্ত পেমেন্ট ৭ কার্যদিবসের মধ্যে
+                বেশি পেমেন্ট কাটা হলে - অতিরিক্ত পেমেন্ট ৭ কার্যদিবসের মধ্যে
                 ফেরত দেওয়া হবে।
               </li>
               <li>
                 <strong>প্রযুক্তিগত ত্রুটি:</strong> পেমেন্ট সফল হলেও তোমার
-                অ্যাকাউন্টে প্রিমিয়াম ফিচার সক্রিয় না হলে — ৪৮ ঘণ্টার মধ্যে
+                অ্যাকাউন্টে প্রিমিয়াম ফিচার সক্রিয় না হলে - ৪৮ ঘণ্টার মধ্যে
                 রিফান্ড বা সংশোধন।
               </li>
               <li>
@@ -101,7 +101,7 @@ export default function RefundPage() {
                 জানিয়ে দেব।
               </li>
               <li>
-                রিফান্ড অনুমোদিত হলে বিকাশ চ্যানেলে ৩–৭ কার্যদিবসের মধ্যে
+                রিফান্ড অনুমোদিত হলে বিকাশ চ্যানেলে ৩-৭ কার্যদিবসের মধ্যে
                 একই নম্বরে ফেরত পাঠানো হবে।
               </li>
             </ol>
@@ -119,7 +119,7 @@ export default function RefundPage() {
               >
                 refund@suttro.app
               </a>
-              -এ যোগাযোগ করো — আমরা পরিস্থিতি বিবেচনা করে সিদ্ধান্ত নেব।
+              -এ যোগাযোগ করো - আমরা পরিস্থিতি বিবেচনা করে সিদ্ধান্ত নেব।
             </p>
           </Section>
 
@@ -158,7 +158,7 @@ export default function RefundPage() {
               style={{ background: '#F0FDFA', border: '1px solid #CCFBF1' }}
             >
               <p className="font-medium" style={{ color: '#134E4A' }}>
-                সূত্র (Suttro) — Billing & Refunds
+                সূত্র (Suttro) - Billing & Refunds
               </p>
               <p className="mt-1">
                 ইমেইল:{' '}

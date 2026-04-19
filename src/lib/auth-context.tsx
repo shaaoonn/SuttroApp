@@ -12,7 +12,7 @@ import { isSupabaseConfigured, SUPABASE_URL, SUPABASE_ANON_KEY } from '@/lib/sup
 import type { User, Session, SupabaseClient } from '@supabase/supabase-js';
 
 // ─────────────────────────────────────────────
-// Auth Context — Firebase Phone OTP + Supabase Session
+// Auth Context - Firebase Phone OTP + Supabase Session
 // Phone auth: Firebase sends OTP → verify → exchange for Supabase session
 // Google auth: Supabase OAuth (web only)
 // ─────────────────────────────────────────────
@@ -84,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  // ── Firebase Phone OTP — Send ──
+  // ── Firebase Phone OTP - Send ──
   const sendOTP = async (phone: string): Promise<{ error: string | null }> => {
     try {
       const { firebaseSendOTP, setupRecaptcha } = await import('@/lib/firebase-client');
@@ -107,11 +107,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return result;
     } catch (err) {
       console.error('sendOTP error:', err);
-      return { error: 'OTP পাঠাতে সমস্যা হয়েছে — আবার চেষ্টা করো' };
+      return { error: 'OTP পাঠাতে সমস্যা হয়েছে - আবার চেষ্টা করো' };
     }
   };
 
-  // ── Firebase Phone OTP — Verify & Exchange for Supabase Session ──
+  // ── Firebase Phone OTP - Verify & Exchange for Supabase Session ──
   const verifyOTP = async (_phone: string, code: string): Promise<{ error: string | null }> => {
     try {
       const { firebaseVerifyOTP } = await import('@/lib/firebase-client');
@@ -145,13 +145,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { error: null };
     } catch (err) {
       console.error('verifyOTP error:', err);
-      return { error: 'লগইন করতে সমস্যা হয়েছে — আবার চেষ্টা করো' };
+      return { error: 'লগইন করতে সমস্যা হয়েছে - আবার চেষ্টা করো' };
     }
   };
 
   // ── Google OAuth via Supabase ──
   const signInWithGoogle = async (): Promise<{ error: string | null }> => {
-    if (!clientRef.current) return { error: 'Auth সেটআপ হয়নি — Supabase credentials দাও' };
+    if (!clientRef.current) return { error: 'Auth সেটআপ হয়নি - Supabase credentials দাও' };
 
     const { data, error } = await clientRef.current.auth.signInWithOAuth({
       provider: 'google',

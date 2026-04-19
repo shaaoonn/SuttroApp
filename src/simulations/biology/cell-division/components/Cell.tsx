@@ -3,7 +3,7 @@
 import type { CellState } from '../useSimulation';
 
 // ─────────────────────────────────────────────
-// Cell — SVG cell body with membrane, nucleus,
+// Cell - SVG cell body with membrane, nucleus,
 // chromosomes, spindle fibers, cleavage furrow
 // ─────────────────────────────────────────────
 

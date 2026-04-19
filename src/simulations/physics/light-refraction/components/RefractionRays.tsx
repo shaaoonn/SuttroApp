@@ -1,7 +1,7 @@
 'use client';
 
 // ─────────────────────────────────────────────
-// Refraction Rays — Incident, Refracted, Reflected
+// Refraction Rays - Incident, Refracted, Reflected
 // Shows all three rays with proper intensity
 // During TIR: reflected ray at full, no refracted ray
 // ─────────────────────────────────────────────

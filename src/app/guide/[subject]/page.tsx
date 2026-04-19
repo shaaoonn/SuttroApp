@@ -5,7 +5,7 @@ import ChapterMasteryLoader from '@/components/guide/ChapterMasteryLoader';
 import PracticeButton from '@/components/guide/PracticeButton';
 
 // ─────────────────────────────────────────────
-// Subject Guide — Chapter List
+// Subject Guide - Chapter List
 // Design reference Page 4
 // ─────────────────────────────────────────────
 
@@ -14,10 +14,10 @@ export const revalidate = 300;
 export async function generateMetadata({ params }: { params: Promise<{ subject: string }> }) {
   const { subject } = await params;
   const guide = await getSubjectGuide(subject);
-  if (!guide) return { title: 'পাওয়া যায়নি — সূত্র' };
+  if (!guide) return { title: 'পাওয়া যায়নি - সূত্র' };
   return {
-    title: `${guide.subjectBn} গাইড — সূত্র | suttro.app`,
-    description: `${guide.subjectBn} — ${guide.chapters.length} অধ্যায়ের সব কন্টেন্ট এক জায়গায়।`,
+    title: `${guide.subjectBn} গাইড - সূত্র | suttro.app`,
+    description: `${guide.subjectBn} - ${guide.chapters.length} অধ্যায়ের সব কন্টেন্ট এক জায়গায়।`,
   };
 }
 
@@ -77,7 +77,7 @@ export default async function SubjectGuidePage({ params }: { params: Promise<{ s
               {guide.subjectBn}
             </h1>
             <p className="text-xs" style={{ color: styles.light }}>
-              ক্লাস ৯-১০ — {guide.chapters.length} অধ্যায়
+              ক্লাস ৯-১০ - {guide.chapters.length} অধ্যায়
             </p>
           </div>
         </div>

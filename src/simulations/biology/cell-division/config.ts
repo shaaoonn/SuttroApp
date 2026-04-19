@@ -1,7 +1,7 @@
 import type { SimulationConfig } from '../../_template/config';
 
 // ─────────────────────────────────────────────
-// Cell Division — Mitosis (মাইটোসিস)
+// Cell Division - Mitosis (মাইটোসিস)
 // NCTB Class 9, Chapter 2: জীবকোষ ও টিস্যু
 // Shows phases: Interphase → Prophase → Metaphase
 //   → Anaphase → Telophase → Cytokinesis
@@ -10,7 +10,7 @@ import type { SimulationConfig } from '../../_template/config';
 export const cellDivisionConfig: SimulationConfig = {
   id: 'cell-division',
   slug: 'cell-division',
-  title: { bn: 'কোষ বিভাজন — মাইটোসিস', en: 'Cell Division — Mitosis' },
+  title: { bn: 'কোষ বিভাজন - মাইটোসিস', en: 'Cell Division - Mitosis' },
   subject: 'biology',
   nctb: { class: 9, chapter: 2, section: '2.3' },
   variables: [

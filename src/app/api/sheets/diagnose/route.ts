@@ -3,7 +3,7 @@ import { google } from 'googleapis';
 import { createClient } from '@supabase/supabase-js';
 
 // ─────────────────────────────────────────────
-// Diagnostic endpoint — actually attempts the Google Sheets
+// Diagnostic endpoint - actually attempts the Google Sheets
 // sync and reports the FULL error (not swallowed). Protected
 // by a shared secret so it's safe to publish the URL.
 //
@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!serviceKey || key !== serviceKey) {
-    return NextResponse.json({ error: 'unauthorized — pass ?key=<service_role_key>' }, { status: 401 });
+    return NextResponse.json({ error: 'unauthorized - pass ?key=<service_role_key>' }, { status: 401 });
   }
 
   const report: Record<string, unknown> = {
@@ -94,7 +94,7 @@ export async function GET(req: NextRequest) {
   try {
     const drive = google.drive({ version: 'v3', auth: oauth2 });
     const existing = await drive.files.list({
-      q: `name='Suttro — ইউজার প্রোফাইল' and '${process.env.GOOGLE_DRIVE_ROOT_FOLDER_ID}' in parents and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false`,
+      q: `name='Suttro - ইউজার প্রোফাইল' and '${process.env.GOOGLE_DRIVE_ROOT_FOLDER_ID}' in parents and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false`,
       fields: 'files(id, name, modifiedTime)',
       spaces: 'drive',
     });
@@ -138,6 +138,6 @@ export async function GET(req: NextRequest) {
     };
   }
 
-  report.conclusion = 'all checks passed — env + OAuth + Drive access + DB all healthy';
+  report.conclusion = 'all checks passed - env + OAuth + Drive access + DB all healthy';
   return NextResponse.json(report);
 }

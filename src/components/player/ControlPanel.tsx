@@ -3,8 +3,8 @@
 import type { VariableConfig } from '@/simulations/_template/config';
 
 // ─────────────────────────────────────────────
-// ControlPanel — Floating variable sliders (top-right)
-// Fixed overlay (Layer 3) — stays in place during pan/zoom
+// ControlPanel - Floating variable sliders (top-right)
+// Fixed overlay (Layer 3) - stays in place during pan/zoom
 // Slot-based: fill with any variables from config
 // ─────────────────────────────────────────────
 

@@ -4,7 +4,7 @@ import { getSiteContent } from '@/lib/site-content';
 import SimulationsFilter from '@/components/simulations/SimulationsFilter';
 
 export const metadata: Metadata = {
-  title: 'সিমুলেশন — Suttro | suttro.app',
+  title: 'সিমুলেশন - Suttro | suttro.app',
   description: 'NCTB ক্লাস ৯-১০ ইন্টারেক্টিভ সিমুলেশন। পদার্থবিজ্ঞান, রসায়ন, জীববিজ্ঞান, সাধারণ গণিত, উচ্চতর গণিত, ইংরেজি।',
 };
 
@@ -28,7 +28,7 @@ export default async function SimulationsPage() {
 
   return (
     <div style={{ background: 'var(--suttro-surface)' }}>
-      {/* ── Hero banner — teal gradient, suttro branding ── */}
+      {/* ── Hero banner - teal gradient, suttro branding ── */}
       <div
         className="relative overflow-hidden"
         style={{
@@ -72,7 +72,7 @@ export default async function SimulationsPage() {
             {cms.page_title || 'সিমুলেশন লাইব্রেরি'}
           </h1>
           <p className="text-sm lg:text-lg max-w-2xl" style={{ color: 'rgba(255,255,255,0.85)' }}>
-            {cms.page_subtitle || 'বিজ্ঞান দেখো, বিজ্ঞান বোঝো। ইন্টারেক্টিভ সিমুলেশনে নিজে চালিয়ে শেখো — বই পড়ার মতো নয়, বরং পরীক্ষাগারে থাকার মতো।'}
+            {cms.page_subtitle || 'বিজ্ঞান দেখো, বিজ্ঞান বোঝো। ইন্টারেক্টিভ সিমুলেশনে নিজে চালিয়ে শেখো - বই পড়ার মতো নয়, বরং পরীক্ষাগারে থাকার মতো।'}
           </p>
 
           {/* Stats pills */}

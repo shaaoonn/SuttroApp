@@ -64,7 +64,7 @@ export async function awardXP(
         .lte('created_at', `${today}T23:59:59`)
         .limit(1);
       if (existing && existing.length > 0) {
-        // Already awarded today for this source — skip
+        // Already awarded today for this source - skip
         const stats = await getUserStats(supabase, userId);
         return { totalXP: stats.total_xp, level: stats.level, streak: stats.current_streak, xpAwarded: 0 };
       }
@@ -122,7 +122,7 @@ export async function awardXP(
 
     return { totalXP: newTotalXP, level: newLevel, streak: newStreak, xpAwarded: xp };
   } else {
-    // First time — create stats
+    // First time - create stats
     const newLevel = calculateLevel(xp);
     await supabase.from('user_stats').insert({
       user_id: userId,

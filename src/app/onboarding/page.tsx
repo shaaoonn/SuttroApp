@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
 
 // ─────────────────────────────────────────────
-// Onboarding — Collect name, phone, class, department
+// Onboarding - Collect name, phone, class, department
 // Shown after first Google login
 // ─────────────────────────────────────────────
 
@@ -33,7 +33,7 @@ export default function OnboardingPage() {
   useEffect(() => {
     if (authLoading) return;
 
-    // Not logged in — redirect to login
+    // Not logged in - redirect to login
     if (!user) {
       router.replace('/login');
       return;
@@ -186,7 +186,7 @@ export default function OnboardingPage() {
             />
             {user?.user_metadata?.full_name && (
               <p className="text-xs mt-1" style={{ color: '#94A3B8' }}>
-                Google থেকে নেওয়া — চাইলে পরিবর্তন করো
+                Google থেকে নেওয়া - চাইলে পরিবর্তন করো
               </p>
             )}
           </div>

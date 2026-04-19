@@ -1,7 +1,7 @@
 import type { SimulationConfig } from '../../_template/config';
 
 // ─────────────────────────────────────────────
-// Atomic Structure — Bohr Model
+// Atomic Structure - Bohr Model
 // NCTB Class 9, Chapter 3: পদার্থের গঠন
 // Electron shells, protons, neutrons
 // ─────────────────────────────────────────────
@@ -9,7 +9,7 @@ import type { SimulationConfig } from '../../_template/config';
 export const atomicStructureConfig: SimulationConfig = {
   id: 'atomic-structure',
   slug: 'atomic-structure',
-  title: { bn: 'পরমাণুর গঠন — বোর মডেল', en: 'Atomic Structure — Bohr Model' },
+  title: { bn: 'পরমাণুর গঠন - বোর মডেল', en: 'Atomic Structure - Bohr Model' },
   subject: 'chemistry',
   nctb: { class: 9, chapter: 3, section: '3.2' },
   variables: [
@@ -37,7 +37,7 @@ export const atomicStructureConfig: SimulationConfig = {
   canvasSize: { width: 800, height: 600 },
 };
 
-/** First 20 elements — covers NCTB Class 9-10 */
+/** First 20 elements - covers NCTB Class 9-10 */
 export interface ElementData {
   z: number;             // atomic number
   symbol: string;

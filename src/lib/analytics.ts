@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-// Client-side analytics — track user activity
+// Client-side analytics - track user activity
 // Passes auth token via Authorization header
 // since main app uses localStorage (not cookies)
 // ─────────────────────────────────────────────
@@ -33,7 +33,7 @@ export async function trackEvent(
       body: JSON.stringify(payload),
     });
   } catch {
-    // Silent fail — analytics should never break the app
+    // Silent fail - analytics should never break the app
   }
 }
 

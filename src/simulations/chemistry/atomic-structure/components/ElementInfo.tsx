@@ -3,7 +3,7 @@
 import type { AtomicState } from '../useSimulation';
 
 // ─────────────────────────────────────────────
-// ElementInfo — Element details panel (SVG)
+// ElementInfo - Element details panel (SVG)
 // Shows name, symbol, mass, electron config
 // ─────────────────────────────────────────────
 

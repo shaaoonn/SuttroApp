@@ -16,7 +16,7 @@ import ElectronShells from './components/ElectronShells';
 import ElementInfo from './components/ElementInfo';
 
 // ─────────────────────────────────────────────
-// পরমাণুর গঠন — বোর মডেল (Atomic Structure)
+// পরমাণুর গঠন - বোর মডেল (Atomic Structure)
 // NCTB Class 9, Chapter 3
 // Interactive Bohr model with animated electrons
 // ─────────────────────────────────────────────
@@ -256,7 +256,7 @@ export default function AtomicStructureSim() {
             textAnchor="middle"
             fontFamily="var(--font-hind-siliguri)"
           >
-            পরমাণুর গঠন — বোর মডেল
+            পরমাণুর গঠন - বোর মডেল
           </text>
         </svg>
       </PanZoomContainer>

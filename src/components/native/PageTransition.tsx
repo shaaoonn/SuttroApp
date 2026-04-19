@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef, type ReactNode } from 'react';
 
 // ─────────────────────────────────────────────
-// PageTransition — fade+slide animation on route change
+// PageTransition - fade+slide animation on route change
 // Wraps children, replays page-enter animation when pathname changes.
 // ─────────────────────────────────────────────
 

@@ -5,7 +5,7 @@ import { atomicStructureConfig, ELEMENTS, type ElementData } from './config';
 import type { VariableConfig } from '../../_template/config';
 
 // ─────────────────────────────────────────────
-// Atomic Structure — Bohr Model Simulation Logic
+// Atomic Structure - Bohr Model Simulation Logic
 // Electron shells, nucleus composition
 // ─────────────────────────────────────────────
 

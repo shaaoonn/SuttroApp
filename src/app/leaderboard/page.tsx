@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { SkeletonList } from '@/components/native/Skeleton';
 
 // ─────────────────────────────────────────────
-// Leaderboard — Top-3 podium + list
+// Leaderboard - Top-3 podium + list
 // Design reference Page 9
 // ─────────────────────────────────────────────
 

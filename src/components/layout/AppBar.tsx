@@ -9,7 +9,7 @@ import { isNativeApp } from '@/lib/native-bridge';
 import { useHaptic } from '@/components/native/Toast';
 
 // ─────────────────────────────────────────────
-// AppBar — Native-style top bar (mobile only)
+// AppBar - Native-style top bar (mobile only)
 // Hidden when running inside native Android shell
 // ─────────────────────────────────────────────
 
@@ -49,7 +49,7 @@ function getTitle(pathname: string): string {
 // Pages where AppBar should be hidden (immersive content + auth screens)
 const HIDDEN_PATHS = ['/sim/', '/login', '/onboarding'];
 
-// Main tab routes — no back button needed
+// Main tab routes - no back button needed
 const TAB_ROUTES = ['/', '/guide', '/exams', '/dashboard'];
 
 export default function AppBar() {
@@ -215,7 +215,7 @@ export default function AppBar() {
             >
               {title}
             </h1>
-            {/* Avatar or spacer — always reserve space */}
+            {/* Avatar or spacer - always reserve space */}
             {user && avatarUrl ? (
               <Link
                 href="/dashboard"

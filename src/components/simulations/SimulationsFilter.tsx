@@ -12,7 +12,7 @@ import {
 import { SIM_THUMBNAILS } from './simThumbnails';
 
 // ─────────────────────────────────────────────
-// Interactive Simulation Filter — সূত্র
+// Interactive Simulation Filter - সূত্র
 // Subject tabs + chapter dropdown + thumbnail cards
 // ─────────────────────────────────────────────
 

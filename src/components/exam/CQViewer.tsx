@@ -6,7 +6,7 @@ import { EXAM_SUBJECT_COLORS, EXAM_SUBJECT_LABELS, EXAM_SUBJECT_ICONS } from '@/
 import { getChapterName } from '@/data/cq';
 
 // ─────────────────────────────────────────────
-// CQViewer — সৃজনশীল প্রশ্ন Viewer
+// CQViewer - সৃজনশীল প্রশ্ন Viewer
 // Stem + Parts with answer reveal
 // ─────────────────────────────────────────────
 

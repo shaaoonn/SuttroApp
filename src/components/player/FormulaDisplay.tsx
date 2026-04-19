@@ -3,7 +3,7 @@
 import type { FormulaConfig } from '@/simulations/_template/config';
 
 // ─────────────────────────────────────────────
-// FormulaDisplay — Shows active formulas (top-left)
+// FormulaDisplay - Shows active formulas (top-left)
 // Fixed overlay (Layer 3)
 // ─────────────────────────────────────────────
 

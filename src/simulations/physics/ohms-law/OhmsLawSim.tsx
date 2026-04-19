@@ -18,7 +18,7 @@ import Ammeter from './components/Ammeter';
 import ElectronFlow from './components/ElectronFlow';
 
 // ─────────────────────────────────────────────
-// Ohm's Law Simulation — সূত্র Flagship
+// Ohm's Law Simulation - সূত্র Flagship
 // NCTB Class 9, Chapter 11 (চল তড়িৎ)
 //
 // Circuit: Battery → Wire → Resistor → Bulb → Ammeter → Wire → Battery
@@ -165,7 +165,7 @@ export default function OhmsLawSim() {
           style={{ left: config.canvasSize.width / 2 - 140, top: config.canvasSize.height / 2 - 15, width: 280 }}
         >
           <p className="text-xs" style={{ color: 'var(--player-muted)' }}>
-            ভোল্টেজ ও রোধ পরিবর্তন করো — দেখো কারেন্ট কীভাবে বদলায়!
+            ভোল্টেজ ও রোধ পরিবর্তন করো - দেখো কারেন্ট কীভাবে বদলায়!
           </p>
         </div>
       </PanZoomContainer>

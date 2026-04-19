@@ -8,7 +8,7 @@ import type { MCQQuestion } from '@/data/exams';
 import CQViewer from '@/components/exam/CQViewer';
 
 // ─────────────────────────────────────────────
-// ChapterContentView — Tabbed content display
+// ChapterContentView - Tabbed content display
 // Shows Simulations, Classes, MCQ, CQ for a chapter
 // ─────────────────────────────────────────────
 

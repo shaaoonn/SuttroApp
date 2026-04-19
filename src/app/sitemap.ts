@@ -5,12 +5,12 @@ import { getClasses, getExams } from '@/lib/data';
 const SITE_URL = 'https://suttro.app';
 
 // ─────────────────────────────────────────────
-// sitemap.xml — served at /sitemap.xml
+// sitemap.xml - served at /sitemap.xml
 //
 // Includes:
 //   • Static public pages (home, simulations, classes, guide, exams, about,
 //     pricing, privacy, terms, refund)
-//   • All individual simulation pages (/sim/<slug>) — long-tail SEO
+//   • All individual simulation pages (/sim/<slug>) - long-tail SEO
 //   • All class recording pages (/class/<slug>)
 //   • All exam pages (/exam/<id>)
 //
@@ -36,7 +36,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/refund`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
   ];
 
-  // Individual simulation pages — these are our SEO long-tail goldmine
+  // Individual simulation pages - these are our SEO long-tail goldmine
   // (each targets queries like "ohm's law simulation bangla")
   const simPages: MetadataRoute.Sitemap = simulations.map((sim) => ({
     url: `${SITE_URL}/sim/${sim.slug}`,
@@ -45,7 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  // Dynamic pages — best-effort; ignore errors so build never breaks.
+  // Dynamic pages - best-effort; ignore errors so build never breaks.
   let classPages: MetadataRoute.Sitemap = [];
   let examPages: MetadataRoute.Sitemap = [];
   try {
@@ -63,7 +63,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     }));
   } catch {
-    // Sheet / DB unavailable at build time — static pages are still emitted.
+    // Sheet / DB unavailable at build time - static pages are still emitted.
   }
 
   return [...staticPages, ...simPages, ...classPages, ...examPages];

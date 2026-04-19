@@ -1,4 +1,4 @@
-// ── সূত্র | suttro.app — Service Worker v2 ──
+// ── সূত্র | suttro.app - Service Worker v2 ──
 // Aggressive caching for native-like offline experience
 
 const CACHE_NAME = 'suttro-v2';
@@ -47,7 +47,7 @@ self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (request.method !== 'GET') return;
 
-  // Skip API routes — always go to network
+  // Skip API routes - always go to network
   if (url.pathname.startsWith('/api/')) return;
 
   // Skip payment callback URLs

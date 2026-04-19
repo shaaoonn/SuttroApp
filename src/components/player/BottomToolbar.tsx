@@ -3,7 +3,7 @@
 import type { InteractionMode } from '@/hooks/useInteractionMode';
 
 // ─────────────────────────────────────────────
-// BottomToolbar — Zoom, fit, mode toggle, fullscreen
+// BottomToolbar - Zoom, fit, mode toggle, fullscreen
 // Layout: [সূত্র | suttro.app] ··· [100%] [-] [+] | [⤢ Fit] | [✋] [🖱️] | [⛶]
 // ─────────────────────────────────────────────
 
@@ -124,14 +124,14 @@ export default function BottomToolbar({
             <ToolbarButton
               onClick={interactionMode.setHandMode}
               active={interactionMode.effectiveMode === 'hand'}
-              title="হ্যান্ড মোড — ক্যানভাস প্যান/জুম (Spacebar)"
+              title="হ্যান্ড মোড - ক্যানভাস প্যান/জুম (Spacebar)"
             >
               ✋
             </ToolbarButton>
             <ToolbarButton
               onClick={interactionMode.setMouseMode}
               active={interactionMode.effectiveMode === 'mouse'}
-              title="মাউস মোড — অবজেক্ট ইন্টারেকশন (Esc)"
+              title="মাউস মোড - অবজেক্ট ইন্টারেকশন (Esc)"
             >
               🖱️
             </ToolbarButton>

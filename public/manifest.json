@@ -1,7 +1,7 @@
 {
-  "name": "Suttro — Science Simulations for NCTB Class 9-10",
+  "name": "Suttro - Science Simulations for NCTB Class 9-10",
   "short_name": "Suttro",
-  "description": "Interactive science simulations for NCTB Class 9-10 Bangladesh. Physics, Chemistry, Biology in Bangla. সূত্র — বিজ্ঞান দেখো, বিজ্ঞান বোঝো।",
+  "description": "Interactive science simulations for NCTB Class 9-10 Bangladesh. Physics, Chemistry, Biology in Bangla. সূত্র - বিজ্ঞান দেখো, বিজ্ঞান বোঝো।",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FFFFFF",

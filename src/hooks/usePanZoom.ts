@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef, useEffect, type RefObject } from 'react';
 
 // ─────────────────────────────────────────────
-// usePanZoom — Google Maps / Figma style pan & zoom
+// usePanZoom - Google Maps / Figma style pan & zoom
 //
 // Key behavior:
 // • Wheel zoom: zooms toward mouse cursor position
@@ -177,7 +177,7 @@ export function usePanZoom(
     }
   }, []);
 
-  // ── Wheel zoom (desktop) — zooms toward cursor ──
+  // ── Wheel zoom (desktop) - zooms toward cursor ──
   const onWheel = useCallback(
     (e: React.WheelEvent) => {
       e.preventDefault();

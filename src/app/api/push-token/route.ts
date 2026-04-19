@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 // ─────────────────────────────────────────────
-// Push Token API — Save/update FCM token for push notifications
+// Push Token API - Save/update FCM token for push notifications
 // POST: { fcm_token: string }
 // ─────────────────────────────────────────────
 

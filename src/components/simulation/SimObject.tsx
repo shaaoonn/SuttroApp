@@ -3,7 +3,7 @@
 import { useRef, useState, type PointerEvent, type ReactNode } from 'react';
 
 // ─────────────────────────────────────────────
-// SimObject — Draggable simulation object
+// SimObject - Draggable simulation object
 // Only draggable in Mouse mode.
 // In Hand mode, clicks pass through to pan/zoom.
 // ─────────────────────────────────────────────

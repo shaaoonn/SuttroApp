@@ -15,7 +15,7 @@ import Cell from './components/Cell';
 import PhaseTimeline from './components/PhaseTimeline';
 
 // ─────────────────────────────────────────────
-// কোষ বিভাজন — মাইটোসিস (Cell Division — Mitosis)
+// কোষ বিভাজন - মাইটোসিস (Cell Division - Mitosis)
 // NCTB Class 9, Chapter 2
 // Interactive mitosis phases visualization
 // ─────────────────────────────────────────────
@@ -245,7 +245,7 @@ export default function CellDivisionSim() {
             textAnchor="middle"
             fontFamily="var(--font-hind-siliguri)"
           >
-            কোষ বিভাজন — মাইটোসিস
+            কোষ বিভাজন - মাইটোসিস
           </text>
         </svg>
       </PanZoomContainer>

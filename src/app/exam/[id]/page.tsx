@@ -4,7 +4,7 @@ import { getExamById } from '@/lib/data';
 import ExamPlayer from '@/components/exam/ExamPlayer';
 
 // ─────────────────────────────────────────────
-// Exam Player Page — Dynamic [id]
+// Exam Player Page - Dynamic [id]
 // ─────────────────────────────────────────────
 
 export const revalidate = 300;
@@ -16,10 +16,10 @@ interface ExamPageProps {
 export async function generateMetadata({ params }: ExamPageProps) {
   const { id } = await params;
   const exam = await getExamById(id);
-  if (!exam) return { title: 'পরীক্ষা পাওয়া যায়নি — সূত্র' };
+  if (!exam) return { title: 'পরীক্ষা পাওয়া যায়নি - সূত্র' };
 
   return {
-    title: `${exam.title} — সূত্র | suttro.app`,
+    title: `${exam.title} - সূত্র | suttro.app`,
     description: `${exam.subjectBn} MCQ পরীক্ষা। ${exam.questions.length}টি প্রশ্ন, ${exam.duration} মিনিট।`,
   };
 }

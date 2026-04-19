@@ -26,10 +26,10 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: SimPageProps) {
   const { slug } = await params;
   const sim = getSimulation(slug);
-  if (!sim) return { title: 'সিমুলেশন পাওয়া যায়নি — Suttro' };
+  if (!sim) return { title: 'সিমুলেশন পাওয়া যায়নি - Suttro' };
 
   return {
-    title: `${sim.config.title.bn} — Suttro | suttro.app`,
+    title: `${sim.config.title.bn} - Suttro | suttro.app`,
     description: `${sim.config.title.bn} ইন্টারেক্টিভ সিমুলেশন। NCTB ক্লাস ${sim.config.nctb.class}, অধ্যায় ${sim.config.nctb.chapter}।`,
   };
 }
@@ -76,7 +76,7 @@ export default async function SimPage({ params }: SimPageProps) {
 
       {/* ── Content below player: padded ── */}
       <div className="mx-auto max-w-6xl px-4 lg:px-6 py-5 lg:py-8">
-        {/* Breadcrumb (desktop only — mobile uses native AppBar back button) */}
+        {/* Breadcrumb (desktop only - mobile uses native AppBar back button) */}
         <nav
           className="hidden lg:flex items-center gap-2 text-base mb-5"
           style={{ color: 'var(--suttro-muted)' }}
@@ -140,7 +140,7 @@ export default async function SimPage({ params }: SimPageProps) {
                   <div key={v.id} className="flex justify-between text-sm lg:text-base">
                     <span style={{ color: 'var(--suttro-text)' }}>{v.label.bn}</span>
                     <span className="font-mono" style={{ color: 'var(--suttro-muted)' }}>
-                      {v.min}–{v.max} {v.unit}
+                      {v.min}-{v.max} {v.unit}
                     </span>
                   </div>
                 ))}

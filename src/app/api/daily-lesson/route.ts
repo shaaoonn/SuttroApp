@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { awardXP } from '@/lib/xp';
 
 // ─────────────────────────────────────────────
-// আজকের পড়া API — Daily Lesson System
+// আজকের পড়া API - Daily Lesson System
 // GET: Fetch today's lesson with items + user progress
 // POST: Submit answer for an item
 // ─────────────────────────────────────────────

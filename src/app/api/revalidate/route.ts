@@ -21,7 +21,7 @@ const PAGE_MAP: Record<string, string[]> = {
 };
 
 export async function POST(req: NextRequest) {
-  // Secret check — requires REVALIDATE_SECRET env var
+  // Secret check - requires REVALIDATE_SECRET env var
   const secret = req.headers.get('x-revalidate-secret');
   const expectedSecret = process.env.REVALIDATE_SECRET;
 

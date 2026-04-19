@@ -6,7 +6,7 @@ import ClassesFilter from '@/components/classes/ClassesFilter';
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'ক্লাস আর্কাইভ — সূত্র | suttro.app',
+  title: 'ক্লাস আর্কাইভ - সূত্র | suttro.app',
 };
 
 export default async function ClassesPage() {
@@ -46,7 +46,7 @@ export default async function ClassesPage() {
             {cms.page_title || 'ক্লাস আর্কাইভ'}
           </h1>
           <p className="text-base mb-8" style={{ color: '#94A3B8' }}>
-            {cms.page_description || 'প্রতিদিনের ক্লাস রেকর্ডিং'} — {cms.page_subtitle || 'বিষয় ও অধ্যায় ধরে ফিল্টার করো, যখন খুশি দেখো।'}
+            {cms.page_description || 'প্রতিদিনের ক্লাস রেকর্ডিং'} - {cms.page_subtitle || 'বিষয় ও অধ্যায় ধরে ফিল্টার করো, যখন খুশি দেখো।'}
           </p>
 
           <ClassesFilter classes={classes} chapterNames={chapterNames} />

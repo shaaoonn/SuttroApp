@@ -1,7 +1,7 @@
 'use client';
 
 // ─────────────────────────────────────────────
-// Normal Line — Perpendicular to mirror surface
+// Normal Line - Perpendicular to mirror surface
 // Dashed line with label "অভিলম্ব"
 // ─────────────────────────────────────────────
 
@@ -18,7 +18,7 @@ export default function NormalLine({ centerX, topY, bottomY, mirrorY }: NormalLi
       className="absolute pointer-events-none"
       style={{ left: 0, top: 0, width: '100%', height: '100%' }}
     >
-      {/* Normal line — dashed */}
+      {/* Normal line - dashed */}
       <line
         x1={centerX} y1={topY}
         x2={centerX} y2={bottomY}

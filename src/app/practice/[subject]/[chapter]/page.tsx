@@ -148,7 +148,7 @@ export default function PracticePage() {
               ← {subjectLabel}
             </Link>
             <h1 className="text-lg font-bold" style={{ color: 'var(--suttro-deep)' }}>
-              অনুশীলন — অধ্যায় {chapter}
+              অনুশীলন - অধ্যায় {chapter}
             </h1>
           </div>
           <div className="flex items-center gap-3 text-sm font-medium">

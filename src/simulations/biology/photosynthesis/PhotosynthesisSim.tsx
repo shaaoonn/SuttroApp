@@ -375,7 +375,7 @@ export default function PhotosynthesisSim() {
               <text x={leafCX} y={leafCY + 5}
                 fill="rgba(239,68,68,0.7)" fontSize={11}
                 textAnchor="middle" fontFamily="var(--font-hind-siliguri)">
-                আলো নেই — সংশ্লেষণ বন্ধ
+                আলো নেই - সংশ্লেষণ বন্ধ
               </text>
             </g>
           )}

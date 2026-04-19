@@ -3,7 +3,7 @@ import type { MetadataRoute } from 'next';
 const SITE_URL = 'https://suttro.app';
 
 // ─────────────────────────────────────────────
-// robots.txt — served at /robots.txt
+// robots.txt - served at /robots.txt
 //
 // Strategy:
 //   • Allow public content to everyone (homepage, simulations, guide, exams,

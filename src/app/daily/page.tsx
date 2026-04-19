@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/auth-context';
 import { Skeleton, SkeletonList } from '@/components/native/Skeleton';
 
 // ─────────────────────────────────────────────
-// আজকের পড়া — Daily Lesson Page
+// আজকের পড়া - Daily Lesson Page
 // Content sections: study, memorize, homework, challenge
 // Supports: video, sim, PDF, image, note, MCQ, written Q
 // ─────────────────────────────────────────────
@@ -336,7 +336,7 @@ export default function DailyLessonPage() {
 }
 
 // ─────────────────────────────────────────────
-// ItemCard — Individual lesson item
+// ItemCard - Individual lesson item
 // ─────────────────────────────────────────────
 
 function ItemCard({
@@ -442,12 +442,12 @@ function ItemCard({
             <WrittenQuestionBody item={item} session={session} onSubmit={onSubmit} />
           )}
 
-          {/* Model Exam — link to full exam paper */}
+          {/* Model Exam - link to full exam paper */}
           {item.item_type === 'model_exam' && (
             <ModelExamBody item={item} session={session} onSubmit={onSubmit} />
           )}
 
-          {/* CQ Set — link to creative-question collection */}
+          {/* CQ Set - link to creative-question collection */}
           {item.item_type === 'cq_set' && (
             <CqSetBody item={item} session={session} onSubmit={onSubmit} />
           )}
@@ -458,7 +458,7 @@ function ItemCard({
 }
 
 // ─────────────────────────────────────────────
-// useViewedGate — track whether student has actually clicked
+// useViewedGate - track whether student has actually clicked
 // the content link (i.e., engaged with the material) before
 // allowing homework submission. State persists in localStorage.
 // ─────────────────────────────────────────────
@@ -490,7 +490,7 @@ function useViewedGate(itemId: number, autoMarkViewed: boolean = false) {
 }
 
 // ─────────────────────────────────────────────
-// HomeworkSubmission — unified mandatory homework form
+// HomeworkSubmission - unified mandatory homework form
 // (text answer + image upload + PDF upload). Used by ALL
 // content-style items (video, sim, pdf, image, note,
 // model_exam, cq_set). Replaces the old one-click button.
@@ -588,7 +588,7 @@ function HomeworkSubmission({
       <div className="mt-3 pt-3 border-t" style={{ borderColor: '#F1F5F9' }}>
         <div className="text-[12px] text-center py-3 px-3 rounded-lg flex items-center justify-center gap-1.5"
           style={{ background: '#FFFBEB', color: '#92400E', border: '1px solid #FDE68A' }}>
-          🔒 <span>আগে উপরের কনটেন্ট দেখো — তারপর হোমওয়ার্ক জমা দিতে পারবে</span>
+          🔒 <span>আগে উপরের কনটেন্ট দেখো - তারপর হোমওয়ার্ক জমা দিতে পারবে</span>
         </div>
       </div>
     );
@@ -715,7 +715,7 @@ function HomeworkSubmission({
       <div className="text-[11px] font-semibold flex items-center gap-1" style={{ color: '#64748B' }}>
         ✏️ <span>হোমওয়ার্ক জমা দাও</span>
         <span className="font-normal" style={{ color: '#94A3B8' }}>
-          — লিখিত উত্তর, ছবি বা PDF (যেকোনোটা বা সব)
+          - লিখিত উত্তর, ছবি বা PDF (যেকোনোটা বা সব)
         </span>
       </div>
 
@@ -830,7 +830,7 @@ function ContentItemBody({
   session: { access_token: string } | null;
   onSubmit: () => void;
 }) {
-  // Notes have no link to click — auto-mark viewed after brief reading delay.
+  // Notes have no link to click - auto-mark viewed after brief reading delay.
   const autoMark = item.item_type === 'note' && !item.content_ref && !item.media_url;
   const { viewed, markViewed } = useViewedGate(item.id, autoMark);
 
@@ -872,10 +872,10 @@ function ContentItemBody({
         </a>
       )}
 
-      {/* Engagement marker — small green badge once viewed */}
+      {/* Engagement marker - small green badge once viewed */}
       {viewed && !item.submission?.is_completed && (
         <div className="text-[11px] flex items-center gap-1" style={{ color: '#16A34A' }}>
-          ✓ দেখা হয়েছে — এখন হোমওয়ার্ক জমা দাও
+          ✓ দেখা হয়েছে - এখন হোমওয়ার্ক জমা দাও
         </div>
       )}
 
@@ -997,7 +997,7 @@ function McqSetBody({
 }
 
 // ─────────────────────────────────────────────
-// Attachment Preview — shows image or PDF link
+// Attachment Preview - shows image or PDF link
 // for any item with attachment_url set
 // ─────────────────────────────────────────────
 
@@ -1034,7 +1034,7 @@ function AttachmentPreview({ url, type }: { url: string; type?: 'image' | 'pdf' 
 }
 
 // ─────────────────────────────────────────────
-// Model Exam Body — link to full /exam/{id} flow
+// Model Exam Body - link to full /exam/{id} flow
 // ─────────────────────────────────────────────
 
 function ModelExamBody({
@@ -1071,7 +1071,7 @@ function ModelExamBody({
       )}
       {viewed && !item.submission?.is_completed && (
         <div className="text-[11px] flex items-center gap-1" style={{ color: '#16A34A' }}>
-          ✓ পরীক্ষা শুরু হয়েছে — এখন উত্তরপত্র / সমাধান জমা দাও
+          ✓ পরীক্ষা শুরু হয়েছে - এখন উত্তরপত্র / সমাধান জমা দাও
         </div>
       )}
       <HomeworkSubmission item={item} session={session} onSubmit={onSubmit} viewed={viewed} />
@@ -1080,7 +1080,7 @@ function ModelExamBody({
 }
 
 // ─────────────────────────────────────────────
-// CQ Set Body — link to creative question collection
+// CQ Set Body - link to creative question collection
 // ─────────────────────────────────────────────
 
 function CqSetBody({
@@ -1117,7 +1117,7 @@ function CqSetBody({
       )}
       {viewed && !item.submission?.is_completed && (
         <div className="text-[11px] flex items-center gap-1" style={{ color: '#16A34A' }}>
-          ✓ প্রশ্ন দেখা হয়েছে — এখন তোমার উত্তর জমা দাও
+          ✓ প্রশ্ন দেখা হয়েছে - এখন তোমার উত্তর জমা দাও
         </div>
       )}
       <HomeworkSubmission item={item} session={session} onSubmit={onSubmit} viewed={viewed} />
@@ -1371,7 +1371,7 @@ function WrittenQuestionBody({
         </div>
       )}
 
-      {/* Mode toggle — text / photo / PDF */}
+      {/* Mode toggle - text / photo / PDF */}
       <div className="flex gap-1.5">
         <button
           onClick={() => setMode('text')}

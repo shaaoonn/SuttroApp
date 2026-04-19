@@ -2,7 +2,7 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 // ─────────────────────────────────────────────
 // Supabase server client for Server Components & API routes
-// Uses anon key — RLS handles access control
+// Uses anon key - RLS handles access control
 //
 // Note: We use a generic Database type to avoid
 // `never` types on query results. When generated

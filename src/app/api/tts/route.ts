@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // ─────────────────────────────────────────────
-// TTS API Route — Google Translate TTS proxy
+// TTS API Route - Google Translate TTS proxy
 // Natural Bangla pronunciation via Google's neural TTS
 // GET /api/tts?text=...&lang=bn
 // Returns audio/mpeg
@@ -106,7 +106,7 @@ export async function GET(req: NextRequest) {
     const chunks = splitText(text);
 
     if (chunks.length === 1) {
-      // Single chunk — stream directly
+      // Single chunk - stream directly
       const audio = await fetchTTSChunk(chunks[0], lang, 0, 1);
       return new NextResponse(audio, {
         headers: {
@@ -116,7 +116,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Multiple chunks — concatenate audio buffers
+    // Multiple chunks - concatenate audio buffers
     const audioBuffers = await Promise.all(
       chunks.map((chunk, i) => fetchTTSChunk(chunk, lang, i, chunks.length))
     );

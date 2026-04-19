@@ -1,7 +1,7 @@
 'use client';
 
 // ─────────────────────────────────────────────
-// Mirror — Horizontal reflective surface
+// Mirror - Horizontal reflective surface
 // Thick silver line with hash marks on back
 // ─────────────────────────────────────────────
 
@@ -21,7 +21,7 @@ export default function Mirror({ startX, startY, endX, endY }: MirrorProps) {
       className="absolute pointer-events-none"
       style={{ left: 0, top: 0, width: '100%', height: '100%' }}
     >
-      {/* Mirror surface — shiny silver */}
+      {/* Mirror surface - shiny silver */}
       <line
         x1={startX} y1={startY}
         x2={endX} y2={endY}

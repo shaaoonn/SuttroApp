@@ -3,16 +3,16 @@
 import { useEffect, useState } from 'react';
 
 // ─────────────────────────────────────────────
-// ElectronShells — Animated orbiting electrons
+// ElectronShells - Animated orbiting electrons
 // Each shell is a dashed circle with electrons
 // ─────────────────────────────────────────────
 
 const SHELL_NAMES = ['K', 'L', 'M', 'N'];
 const SHELL_COLORS = [
-  'rgba(96,165,250,0.5)',   // K — blue
-  'rgba(52,211,153,0.5)',   // L — green
-  'rgba(251,191,36,0.5)',   // M — amber
-  'rgba(244,114,182,0.5)',  // N — pink
+  'rgba(96,165,250,0.5)',   // K - blue
+  'rgba(52,211,153,0.5)',   // L - green
+  'rgba(251,191,36,0.5)',   // M - amber
+  'rgba(244,114,182,0.5)',  // N - pink
 ];
 const ELECTRON_COLORS = [
   '#60A5FA',  // K
@@ -87,7 +87,7 @@ export default function ElectronShells({
               {shellName}
             </text>
 
-            {/* Electrons — evenly spaced around the orbit */}
+            {/* Electrons - evenly spaced around the orbit */}
             {Array.from({ length: electronCount }, (_, eIdx) => {
               const angle = baseAngle + (eIdx / electronCount) * Math.PI * 2;
               const ex = cx + radius * Math.cos(angle);

@@ -5,7 +5,7 @@ import { type ComponentProps, type ReactNode } from 'react';
 import { useHaptic } from './Toast';
 
 // ─────────────────────────────────────────────
-// PressableLink — Link with built-in tap feedback + haptic
+// PressableLink - Link with built-in tap feedback + haptic
 // Drop-in replacement for next/link that adds:
 //  • active:scale-[0.96] press feedback
 //  • light haptic vibration on tap

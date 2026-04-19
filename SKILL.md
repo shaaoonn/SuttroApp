@@ -1,20 +1,20 @@
 ---
 name: suttro-platform
 description: >
-  Build সূত্র (Suttro) — Bangladesh's first interactive science simulation platform.
+  Build সূত্র (Suttro) - Bangladesh's first interactive science simulation platform.
   suttro.app is a responsive Next.js PWA with Canvas-based simulations, video class recordings,
   Google Maps-style pan/zoom canvas, YouTube-like player (inline + fullscreen), encrypted offline downloads,
   deep linking, and hybrid WebView mobile app. Target: NCTB Class 9-10 Physics, Chemistry, Biology.
   Use this skill whenever the user mentions: সূত্র, Suttro, suttro.app, science simulation,
   বিজ্ঞান সিমুলেশন, interactive lab, virtual lab, simulation player, simulation canvas,
   NCTB simulation, or any related development task.
-  ALL branding, architecture, and UX decisions are documented — build without asking questions.
+  ALL branding, architecture, and UX decisions are documented - build without asking questions.
   For detailed specs, read the relevant file from references/ folder.
 ---
 
-# সূত্র | suttro.app — Complete Platform Skill
+# সূত্র | suttro.app - Complete Platform Skill
 
-## ⚠️ CRITICAL INSTRUCTIONS — ALWAYS FOLLOW
+## ⚠️ CRITICAL INSTRUCTIONS - ALWAYS FOLLOW
 
 ### 1. Repository & Local Paths
 ```
@@ -23,25 +23,25 @@ Local:   D:\APPS AND WEB\Suttro App\
 Skill:   D:\APPS AND WEB\Suttro App\SKILL.md
 Refs:    D:\APPS AND WEB\Suttro App\references\
 ```
-**SKILL.md ও references/ ফাইলগুলো প্রজেক্টের রুটেই থাকে — GitHub repo-তেও push হবে।**
+**SKILL.md ও references/ ফাইলগুলো প্রজেক্টের রুটেই থাকে - GitHub repo-তেও push হবে।**
 **ALWAYS push after every work session.** Never leave uncommitted work.
 
 ### 2. Every Session Workflow (MANDATORY)
 ```
-প্রতিবার কাজ শুরু করার আগে — এই ৬টি ধাপ অবশ্যই অনুসরণ করো:
+প্রতিবার কাজ শুরু করার আগে - এই ৬টি ধাপ অবশ্যই অনুসরণ করো:
 
-① PULL — git pull origin main (latest code নাও)
-② READ SKILL — SKILL.md পড়ো, PROGRESS TRACKER চেক করো কোথায় আছি
-③ RESEARCH — ইন্টারনেট থেকে latest tech/best practices চেক করো
+① PULL - git pull origin main (latest code নাও)
+② READ SKILL - SKILL.md পড়ো, PROGRESS TRACKER চেক করো কোথায় আছি
+③ RESEARCH - ইন্টারনেট থেকে latest tech/best practices চেক করো
    (যেমন: "Next.js 15 new features", "Canvas API latest", "best HLS player 2026")
-④ READ REFS — যে ফিচার বানাবে সেই references/ ফাইল পড়ো
-⑤ BUILD — কাজ করো (simulation/feature/fix)
-⑥ UPDATE & PUSH —
+④ READ REFS - যে ফিচার বানাবে সেই references/ ফাইল পড়ো
+⑤ BUILD - কাজ করো (simulation/feature/fix)
+⑥ UPDATE & PUSH -
    • SKILL.md-র PROGRESS TRACKER আপডেট করো ✅/🔄/⬜
    • references/ ফাইলে নতুন decision হলে যোগ করো
    • git add . && git commit -m "descriptive message" && git push
 ```
-**নোট: SKILL.md ও references/ ফাইলগুলো repo-র অংশ — push করলে GitHub-এও আপডেট হবে।**
+**নোট: SKILL.md ও references/ ফাইলগুলো repo-র অংশ - push করলে GitHub-এও আপডেট হবে।**
 
 ### 3. Simulation Creation Protocol
 ```
@@ -51,7 +51,7 @@ Refs:    D:\APPS AND WEB\Suttro App\references\
    cp -r src/simulations/_template/ src/simulations/physics/[new-sim]/
 
 ② Template location: src/simulations/_template/
-   (এটা একটা ফাঁকা সিমুলেশন player — সব branding, canvas, toolbar, pan/zoom সেটআপ করা)
+   (এটা একটা ফাঁকা সিমুলেশন player - সব branding, canvas, toolbar, pan/zoom সেটআপ করা)
 
 ③ Copy-তে শুধু simulation logic, variables, এবং visual elements যোগ করো
 ④ এতে সব সিমুলেশনে consistent branding, player behavior, এবং UX বজায় থাকবে
@@ -72,7 +72,7 @@ Refs:    D:\APPS AND WEB\Suttro App\references\
 ## Reference Files (read as needed)
 | File | When to read |
 |------|-------------|
-| `references/claude-code-rules.md` | **ALWAYS READ FIRST** — workflow, git, template, naming conventions |
+| `references/claude-code-rules.md` | **ALWAYS READ FIRST** - workflow, git, template, naming conventions |
 | `references/branding.md` | Logo, colors, typography, voice, social media, UI components |
 | `references/simulation-engine.md` | Canvas UX, pan/zoom, hand/mouse modes, dot grid, simulation creation |
 | `references/player-system.md` | Video + simulation player, inline/fullscreen, bottom toolbar |
@@ -98,7 +98,7 @@ Refs:    D:\APPS AND WEB\Suttro App\references\
 | Target Audience | NCTB Class 9-10 students, Bangladesh |
 | Primary Language | বাংলা (Bengali) |
 
-### Colors (CSS Variables — v2.0 Light Teal Gradient)
+### Colors (CSS Variables - v2.0 Light Teal Gradient)
 ```css
 --suttro-deep: #134E4A;        /* headers, dark bg, footer */
 --suttro-primary: #0D9488;     /* buttons, links, brand teal */
@@ -115,9 +115,9 @@ Refs:    D:\APPS AND WEB\Suttro App\references\
 --physics: #3B82F6;   /* Blue */
 --chemistry: #7C3AED; /* Vivid Purple */
 --biology: #EC4899;   /* Pink */
---subject-math: #DC2626;        /* Red — সাধারণ গণিত */
---subject-higher-math: #EA580C; /* Orange — উচ্চতর গণিত */
---subject-english: #0891B2;     /* Cyan/Teal — ইংরেজি */
+--subject-math: #DC2626;        /* Red - সাধারণ গণিত */
+--subject-higher-math: #EA580C; /* Orange - উচ্চতর গণিত */
+--subject-english: #0891B2;     /* Cyan/Teal - ইংরেজি */
 ```
 
 ### Typography
@@ -178,12 +178,12 @@ Refs:    D:\APPS AND WEB\Suttro App\references\
 
 ---
 
-## 🎮 SIMULATION CANVAS — KEY UX RULES
+## 🎮 SIMULATION CANVAS - KEY UX RULES
 
 ### Three-Layer Architecture
-1. **Layer 1 — Dot Grid Background**: CSS `radial-gradient` dots. Moves with pan/zoom.
-2. **Layer 2 — Simulation Objects**: Batteries, resistors, wires, molecules etc. `transform: translate(x,y) scale(z)` for pan/zoom.
-3. **Layer 3 — Fixed UI Overlay**: Control panels, readouts, toolbar. `position: absolute`, stays fixed during pan/zoom.
+1. **Layer 1 - Dot Grid Background**: CSS `radial-gradient` dots. Moves with pan/zoom.
+2. **Layer 2 - Simulation Objects**: Batteries, resistors, wires, molecules etc. `transform: translate(x,y) scale(z)` for pan/zoom.
+3. **Layer 3 - Fixed UI Overlay**: Control panels, readouts, toolbar. `position: absolute`, stays fixed during pan/zoom.
 
 ### Two Interaction Modes (toggle in bottom toolbar)
 | Mode | Icon | Cursor | Can Pan/Zoom | Can Move Objects |
@@ -245,14 +245,14 @@ User shares: suttro.app/sim/ohms-law
 | Page | Route | Purpose |
 |------|-------|---------|
 | হোম | `/` | Hero with live simulation, stats, features (Desktop/Mobile variants) |
-| গাইড | `/guide` | Study guide — chapter content, mastery tracker, practice |
+| গাইড | `/guide` | Study guide - chapter content, mastery tracker, practice |
 | পরীক্ষা | `/exams` | MCQ exam list by subject, class filter |
-| পরীক্ষা প্লেয়ার | `/exam/[slug]` | Exam attempt — auto-grading, results, CQ viewer |
+| পরীক্ষা প্লেয়ার | `/exam/[slug]` | Exam attempt - auto-grading, results, CQ viewer |
 | সিমুলেশন | `/simulations` | Gallery of all simulations by subject/chapter |
 | সিমুলেশন প্লেয়ার | `/sim/[slug]` | Individual simulation (canvas player) |
 | ক্লাস আর্কাইভ | `/classes` | Video recordings with subject filter |
 | ক্লাস প্লেয়ার | `/class/[slug]` | Video player (HLS + YouTube) |
-| আজকের পড়া | `/daily` | Daily lesson — class 9/10 filtered |
+| আজকের পড়া | `/daily` | Daily lesson - class 9/10 filtered |
 | অনুশীলন | `/practice` | Practice mode with SRS |
 | রিভিউ | `/review` | Review past content |
 | ড্যাশবোর্ড | `/dashboard` | Stats, XP, recent activity, progress |
@@ -260,7 +260,7 @@ User shares: suttro.app/sim/ohms-law
 | অ্যাচিভমেন্ট | `/achievements` | Badges and milestones |
 | লিডারবোর্ড | `/leaderboard` | Rankings by XP |
 | লগইন | `/login` | Phone OTP + Google OAuth |
-| অনবোর্ডিং | `/onboarding` | First-time setup — class selection + name |
+| অনবোর্ডিং | `/onboarding` | First-time setup - class selection + name |
 | প্রাইসিং | `/pricing` | Free + Premium plans, donate option |
 | পেমেন্ট | `/payment` | bKash payment flow (success/failed pages) |
 | গোপনীয়তা নীতি | `/privacy` | Privacy policy (Bengali + English) |
@@ -283,7 +283,7 @@ User shares: suttro.app/sim/ohms-law
 ### Hero Section (Homepage)
 - **NOT a static image** (unlike Shikho)
 - **Embedded live simulation** running in the hero area
-- Example: Ohm's Law simulation with sliders → "এটাই সূত্র — নিজে চালিয়ে দেখো"
+- Example: Ohm's Law simulation with sliders → "এটাই সূত্র - নিজে চালিয়ে দেখো"
 - This IS the killer differentiator from Shikho
 
 → **Full sitemap**: `references/sitemap-features.md`
@@ -296,19 +296,19 @@ User shares: suttro.app/sim/ohms-law
 |-----------|-----------|---------|-------|
 | Framework | Next.js (App Router) | 16.2 | React 19, static export for Capacitor |
 | Styling | Tailwind CSS | v4 | PostCSS, CSS variables |
-| Simulation | HTML5 Canvas 2D + React | — | PhET-proven, lightweight |
-| Pan/Zoom | CSS transform + pointer events | — | Google Maps pattern |
+| Simulation | HTML5 Canvas 2D + React | - | PhET-proven, lightweight |
+| Pan/Zoom | CSS transform + pointer events | - | Google Maps pattern |
 | Video | HLS.js + YouTube embed | 1.6 | PlayerShell shared with sim player |
-| Database | PostgreSQL (Self-hosted Supabase) | — | Kong at api.suttro.app |
-| Auth | Supabase Auth (Phone OTP + Google OAuth) | — | Auth gate in Capacitor app |
-| Payment | bKash API | — | Initiate + callback flow |
-| Hosting | Coolify on Contabo VPS | — | Docker, auto-deploy on push |
+| Database | PostgreSQL (Self-hosted Supabase) | - | Kong at api.suttro.app |
+| Auth | Supabase Auth (Phone OTP + Google OAuth) | - | Auth gate in Capacitor app |
+| Payment | bKash API | - | Initiate + callback flow |
+| Hosting | Coolify on Contabo VPS | - | Docker, auto-deploy on push |
 | Mobile App | Capacitor | 8.3 | Server URL mode → suttro.app in WebView |
 | Admin Panel | Next.js (separate app) | 16.2 | Separate Dockerfile |
-| Data Sync | Google Sheets API + Google Drive | — | Profile sync, content upload |
-| Gamification | Custom (XP, badges, SRS, leaderboard) | — | 22 API routes |
-| CMS | Custom API + admin panel | — | Dynamic site content |
-| AI Content | Claude Code | — | NCTB book → simulation generation |
+| Data Sync | Google Sheets API + Google Drive | - | Profile sync, content upload |
+| Gamification | Custom (XP, badges, SRS, leaderboard) | - | 22 API routes |
+| CMS | Custom API + admin panel | - | Dynamic site content |
+| AI Content | Claude Code | - | NCTB book → simulation generation |
 
 → **Full tech details**: `references/tech-stack.md`
 
@@ -316,22 +316,22 @@ User shares: suttro.app/sim/ohms-law
 
 ## 🚀 BUILD PHASES (Updated)
 
-### Phase 1 — MVP Foundation ✅ COMPLETE
+### Phase 1 - MVP Foundation ✅ COMPLETE
 Simulation engine, website, canvas player, first simulations, deploy to Coolify
 
-### Phase 2 — Content + Auth + Gamification ✅ COMPLETE
+### Phase 2 - Content + Auth + Gamification ✅ COMPLETE
 Video player, phone OTP + Google OAuth, exam system, guide, daily lessons,
 practice mode, XP, badges, leaderboard, SRS, bKash payment
 
-### Phase 2.5 — CMS + Admin + Branding ✅ COMPLETE
+### Phase 2.5 - CMS + Admin + Branding ✅ COMPLETE
 Admin panel (separate Next.js), dynamic CMS, Google Sheets sync,
 Design v2.0 light teal redesign, new brand logo
 
-### Phase 3 — Android App + Play Store ✅ COMPLETE
+### Phase 3 - Android App + Play Store ✅ COMPLETE
 Capacitor 8.x WebView app, auth gate, onboarding, privacy policy,
 terms of service, signed AAB/APK builds, new app icons
 
-### Phase 4 — Scale (NEXT)
+### Phase 4 - Scale (NEXT)
 - Chemistry + Biology simulations
 - AI-powered simulation generation (Claude Code pipeline)
 - iOS app
@@ -373,7 +373,7 @@ Before starting any development:
 ## 📊 PROGRESS TRACKER
 <!-- Claude Code: আপডেট করো প্রতিটি session-এর পর -->
 
-### Phase 1 — MVP Foundation ✅
+### Phase 1 - MVP Foundation ✅
 | # | Task | Status | Date | Notes |
 |---|------|--------|------|-------|
 | 1.1 | Next.js project setup | ✅ | 2026-04-02 | Next.js 16.2 + Tailwind v4 + TypeScript |
@@ -383,10 +383,10 @@ Before starting any development:
 | 1.5 | Dot grid + Pan/zoom + Mouse mode + Controls | ✅ | 2026-04-02 | DotGridCanvas, PanZoomContainer, SimObject, ControlPanel, ReadoutPanel |
 | 1.6 | Ohm's Law simulation (flagship) | ✅ | 2026-04-02 | Battery, Resistor, Bulb, Ammeter, ElectronFlow |
 | 1.7 | Light Reflection + Refraction simulations | ✅ | 2026-04-03 | Mirror, rays, θᵢ=θᵣ, Snell's law |
-| 1.8 | Website — all pages + navigation | ✅ | 2026-04-03 | Home, simulations, classes, about, pricing, login, dashboard, 404 |
+| 1.8 | Website - all pages + navigation | ✅ | 2026-04-03 | Home, simulations, classes, about, pricing, login, dashboard, 404 |
 | 1.9 | Docker + PWA + Deploy to Coolify | ✅ | 2026-04-03 | Multi-stage build, manifest.json, auto-deploy |
 
-### Phase 2 — Content + Auth + Gamification ✅
+### Phase 2 - Content + Auth + Gamification ✅
 | # | Task | Status | Date | Notes |
 |---|------|--------|------|-------|
 | 2.1 | Video player (HLS + YouTube) | ✅ | 2026-04-03 | HLS.js, speed control, progress bar, fullscreen, YouTubePlayer |
@@ -400,37 +400,37 @@ Before starting any development:
 | 2.9 | XP system | ✅ | 2026-04-10 | XP earning, tracking, lib/xp.ts |
 | 2.10 | Badge/Achievement system | ✅ | 2026-04-10 | lib/badges.ts, /api/badges, /achievements page |
 | 2.11 | Leaderboard | ✅ | 2026-04-10 | /api/leaderboard, /leaderboard page |
-| 2.12 | bKash payment integration | ✅ | 2026-04-10 | /api/payment/bkash — initiate + callback |
+| 2.12 | bKash payment integration | ✅ | 2026-04-10 | /api/payment/bkash - initiate + callback |
 | 2.13 | Subscription plans | ✅ | 2026-04-10 | /api/plans, /api/subscription, admin plan manager |
 | 2.14 | Google Sheets sync | ✅ | 2026-04-10 | Profile sync to Google Sheets on user create/update |
 | 2.15 | Content tracker / Analytics | ✅ | 2026-04-10 | ContentTracker component, /api/track |
 | 2.16 | TTS (Text-to-speech) | ✅ | 2026-04-10 | /api/tts for audio content |
 
-### Phase 2.5A — CMS + Admin Panel ✅
+### Phase 2.5A - CMS + Admin Panel ✅
 | # | Task | Status | Date | Notes |
 |---|------|--------|------|-------|
-| A.1 | Admin panel (separate Next.js app) | ✅ | 2026-04-10 | `/admin/` — own Dockerfile, node_modules, .env |
+| A.1 | Admin panel (separate Next.js app) | ✅ | 2026-04-10 | `/admin/` - own Dockerfile, node_modules, .env |
 | A.2 | Dynamic site content CMS | ✅ | 2026-04-10 | /api/site-content + admin/content editor |
-| A.3 | Exams CRUD (admin) | ✅ | 2026-04-10 | admin/exams — create, edit, list |
-| A.4 | CQ editor (admin) | ✅ | 2026-04-10 | admin/cq — creative questions collections |
-| A.5 | Daily lessons manager (admin) | ✅ | 2026-04-10 | admin/daily-lessons — CRUD + reviews |
-| A.6 | Classes manager (admin) | ✅ | 2026-04-10 | admin/classes — video class CRUD |
-| A.7 | Users manager (admin) | ✅ | 2026-04-10 | admin/users — list, view profiles |
-| A.8 | Plans manager (admin) | ✅ | 2026-04-10 | admin/plans — subscription plan config |
-| A.9 | Analytics dashboard (admin) | ✅ | 2026-04-10 | admin/analytics — charts |
-| A.10 | CSV question import | ✅ | 2026-04-10 | admin/questions/import — bulk upload |
+| A.3 | Exams CRUD (admin) | ✅ | 2026-04-10 | admin/exams - create, edit, list |
+| A.4 | CQ editor (admin) | ✅ | 2026-04-10 | admin/cq - creative questions collections |
+| A.5 | Daily lessons manager (admin) | ✅ | 2026-04-10 | admin/daily-lessons - CRUD + reviews |
+| A.6 | Classes manager (admin) | ✅ | 2026-04-10 | admin/classes - video class CRUD |
+| A.7 | Users manager (admin) | ✅ | 2026-04-10 | admin/users - list, view profiles |
+| A.8 | Plans manager (admin) | ✅ | 2026-04-10 | admin/plans - subscription plan config |
+| A.9 | Analytics dashboard (admin) | ✅ | 2026-04-10 | admin/analytics - charts |
+| A.10 | CSV question import | ✅ | 2026-04-10 | admin/questions/import - bulk upload |
 | A.11 | CMS live update fix | ✅ | 2026-04-10 | /api/revalidate ISR cache invalidation |
 
-### Phase 2.5B — Design v2.0 + Branding ✅
+### Phase 2.5B - Design v2.0 + Branding ✅
 | # | Task | Status | Date | Notes |
 |---|------|--------|------|-------|
-| D.1 | Light Teal Gradient redesign | ✅ | 2026-04-10 | Full palette swap — all pages updated |
+| D.1 | Light Teal Gradient redesign | ✅ | 2026-04-10 | Full palette swap - all pages updated |
 | D.2 | New brand logo (সূত্র stylized) | ✅ | 2026-04-10 | Logo with orange wave, web + icons generated |
 | D.3 | Subject colors update | ✅ | 2026-04-10 | Bio #EC4899, Physics #3B82F6, Chem #7C3AED |
 | D.4 | Mobile layout (AppBar + BottomNav) | ✅ | 2026-04-10 | 4-tab nav: হোম, শেখো, পরীক্ষা, আমি |
 | D.5 | Desktop/Mobile home variants | ✅ | 2026-04-10 | DesktopHome + MobileHome components |
 
-### Phase 3 — Android App + Play Store ✅
+### Phase 3 - Android App + Play Store ✅
 | # | Task | Status | Date | Notes |
 |---|------|--------|------|-------|
 | 3.1 | Capacitor 8.x setup | ✅ | 2026-04-11 | Server URL mode → suttro.app in WebView |
@@ -461,14 +461,14 @@ Before starting any development:
 | F.6 | BottomNav hide on login/onboarding | 2026-04-11 | `4872c97` |
 | F.7 | AppBar hide on login/onboarding | 2026-04-11 | `4872c97` |
 
-### Phase 4 — Scale (NEXT)
+### Phase 4 - Scale (NEXT)
 | # | Task | Status | Notes |
 |---|------|--------|-------|
-| 4.1 | Newton's Laws simulation | ⬜ Pending | — |
-| 4.2 | Wave Properties simulation | ⬜ Pending | — |
-| 4.3 | Circuit Builder simulation | ⬜ Pending | — |
-| 4.4 | Chemistry simulations | ⬜ Pending | — |
-| 4.5 | Biology simulations | ⬜ Pending | — |
+| 4.1 | Newton's Laws simulation | ⬜ Pending | - |
+| 4.2 | Wave Properties simulation | ⬜ Pending | - |
+| 4.3 | Circuit Builder simulation | ⬜ Pending | - |
+| 4.4 | Chemistry simulations | ⬜ Pending | - |
+| 4.5 | Biology simulations | ⬜ Pending | - |
 | 4.6 | AI simulation generation pipeline | ⬜ Pending | Claude Code NCTB→sim |
 | 4.7 | Offline downloads (encrypted) | ⬜ Pending | Netflix-style DRM |
 | 4.8 | Deep linking + smart redirect | ⬜ Pending | App Links |
@@ -479,7 +479,7 @@ Before starting any development:
 <!-- Claude Code: নতুন সিমুলেশন তৈরি হলে এখানে যোগ করো -->
 | Slug | Subject | Chapter | Class | Status |
 |------|---------|---------|-------|--------|
-| _template | — | — | — | ✅ Template |
+| _template | - | - | - | ✅ Template |
 | ohms-law | Physics | Ch.11 | 9 | ✅ Done |
 | light-reflection | Physics | Ch.10 | 9 | ✅ Done |
 | light-refraction | Physics | Ch.10 | 9 | ✅ Done |
@@ -497,18 +497,18 @@ Before starting any development:
 
 ### Key Files Quick Reference
 ```
-src/lib/auth-context.tsx   — Auth state (OTP + Google OAuth)
-src/lib/xp.ts              — XP progression logic
-src/lib/badges.ts          — Achievement system
-src/lib/srs.ts             — Spaced Repetition algorithm
-src/lib/bkash.ts           — bKash payment gateway
-src/lib/subscription.ts    — Subscription/plan logic
-src/lib/site-content.ts    — CMS content fetching
-src/lib/google-sheets.ts   — Google Sheets API sync
-src/lib/google-drive.ts    — Google Drive integration
-src/components/AuthGate.tsx — Auth gate + loading screen
-capacitor.config.ts        — Android app config
-android/app/build.gradle   — Android signing + build
+src/lib/auth-context.tsx   - Auth state (OTP + Google OAuth)
+src/lib/xp.ts              - XP progression logic
+src/lib/badges.ts          - Achievement system
+src/lib/srs.ts             - Spaced Repetition algorithm
+src/lib/bkash.ts           - bKash payment gateway
+src/lib/subscription.ts    - Subscription/plan logic
+src/lib/site-content.ts    - CMS content fetching
+src/lib/google-sheets.ts   - Google Sheets API sync
+src/lib/google-drive.ts    - Google Drive integration
+src/components/AuthGate.tsx - Auth gate + loading screen
+capacitor.config.ts        - Android app config
+android/app/build.gradle   - Android signing + build
 ```
 
 ### Android Build Commands

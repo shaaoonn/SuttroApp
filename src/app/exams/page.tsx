@@ -4,15 +4,15 @@ import { getSiteContent } from '@/lib/site-content';
 import ExamTabs from '@/components/exam/ExamTabs';
 
 // ─────────────────────────────────────────────
-// Exams — MCQ & সৃজনশীল listing
+// Exams - MCQ & সৃজনশীল listing
 // Design: compact mobile cards
 // ─────────────────────────────────────────────
 
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'পরীক্ষা — MCQ ও সৃজনশীল — সূত্র | suttro.app',
-  description: 'SSC MCQ মডেল টেস্ট ও বোর্ড সৃজনশীল প্রশ্ন। পদার্থবিজ্ঞান, রসায়ন, জীববিজ্ঞান — টাইমার সহ পরীক্ষা দাও, অধ্যায় অনুযায়ী প্রশ্ন দেখো।',
+  title: 'পরীক্ষা - MCQ ও সৃজনশীল - সূত্র | suttro.app',
+  description: 'SSC MCQ মডেল টেস্ট ও বোর্ড সৃজনশীল প্রশ্ন। পদার্থবিজ্ঞান, রসায়ন, জীববিজ্ঞান - টাইমার সহ পরীক্ষা দাও, অধ্যায় অনুযায়ী প্রশ্ন দেখো।',
 };
 
 export default async function ExamsPage() {
@@ -42,7 +42,7 @@ export default async function ExamsPage() {
               {cms.page_title || 'পরীক্ষা'}
             </h1>
             <p className="text-base" style={{ color: '#94A3B8' }}>
-              {cms.page_subtitle || 'MCQ মডেল টেস্ট ও বোর্ড সৃজনশীল প্রশ্ন'} — অধ্যায় অনুযায়ী ফিল্টার করো।
+              {cms.page_subtitle || 'MCQ মডেল টেস্ট ও বোর্ড সৃজনশীল প্রশ্ন'} - অধ্যায় অনুযায়ী ফিল্টার করো।
             </p>
           </div>
           <ExamTabs exams={exams} totalCQs={totalCQs} cqCollections={cqCollections} chapterNames={chapterNames} />

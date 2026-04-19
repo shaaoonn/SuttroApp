@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-// Simulation Config — EDIT THIS for each simulation
+// Simulation Config - EDIT THIS for each simulation
 // Copy _template/ → rename → customize this file
 // ─────────────────────────────────────────────
 
@@ -30,7 +30,7 @@ export interface SimulationConfig {
   canvasSize: { width: number; height: number };
 }
 
-// ⬇️ EDIT THIS — replace with your simulation's config
+// ⬇️ EDIT THIS - replace with your simulation's config
 export const simConfig: SimulationConfig = {
   id: 'template',
   slug: 'template',
@@ -38,7 +38,7 @@ export const simConfig: SimulationConfig = {
   subject: 'physics',
   nctb: { class: 9, chapter: 0, section: '0.0' },
   variables: [
-    // Example variable — replace with your own:
+    // Example variable - replace with your own:
     // {
     //   id: 'voltage',
     //   label: { bn: 'ভোল্টেজ', en: 'Voltage' },
@@ -47,7 +47,7 @@ export const simConfig: SimulationConfig = {
     // },
   ],
   formulas: [
-    // Example formula — replace with your own:
+    // Example formula - replace with your own:
     // {
     //   expression: 'V = IR',
     //   description: { bn: 'ভোল্টেজ = কারেন্ট × রোধ', en: 'Voltage = Current × Resistance' },

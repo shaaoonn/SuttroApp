@@ -5,7 +5,7 @@ import { cellDivisionConfig, PHASES, type PhaseInfo } from './config';
 import type { VariableConfig } from '../../_template/config';
 
 // ─────────────────────────────────────────────
-// Cell Division — Mitosis Simulation Logic
+// Cell Division - Mitosis Simulation Logic
 // 6 phases of mitotic cell division
 // ─────────────────────────────────────────────
 

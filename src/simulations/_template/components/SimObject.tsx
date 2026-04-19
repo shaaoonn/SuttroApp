@@ -3,7 +3,7 @@
 import { useRef, useState, type PointerEvent, type ReactNode } from 'react';
 
 // ─────────────────────────────────────────────
-// SimObject — Draggable simulation object base
+// SimObject - Draggable simulation object base
 // Use in Mouse mode to make elements movable
 // ─────────────────────────────────────────────
 

@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-// Simulation Thumbnail Data — SVG visuals
+// Simulation Thumbnail Data - SVG visuals
 // Each simulation gets a unique visual thumbnail
 // ─────────────────────────────────────────────
 

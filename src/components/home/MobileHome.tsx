@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 
 // ─────────────────────────────────────────────
-// MobileHome — App-style home screen (mobile only)
+// MobileHome - App-style home screen (mobile only)
 // Matches the 10-page design reference exactly
 // ─────────────────────────────────────────────
 
@@ -125,7 +125,7 @@ export default function MobileHome({ latestClass, content = {}, quicklinks = {} 
         </h1>
         <p className="text-sm mb-4" style={{ color: '#5F9EA0' }}>
           {user
-            ? 'তোমার streak চলছে — দারুণ!'
+            ? 'তোমার streak চলছে - দারুণ!'
             : (content.mobile_guest_subtitle || 'ক্লাস ৯-১০ ইন্টারেক্টিভ সিমুলেশন')}
         </p>
         <div className="flex gap-2 justify-center">
@@ -250,7 +250,7 @@ export default function MobileHome({ latestClass, content = {}, quicklinks = {} 
                 className="text-xs truncate"
                 style={{ color: '#B45309' }}
               >
-                {latestClass.title} — {latestClass.duration}
+                {latestClass.title} - {latestClass.duration}
               </div>
             </div>
           </Link>

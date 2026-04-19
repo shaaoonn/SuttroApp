@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-// Firebase Client SDK — Phone Authentication
+// Firebase Client SDK - Phone Authentication
 // Used for sending OTP via Firebase (free 10k/month)
 // ─────────────────────────────────────────────
 
@@ -47,7 +47,7 @@ export function setupRecaptcha(buttonId: string): RecaptchaVerifier {
   const verifier = new RecaptchaVerifier(authInstance, buttonId, {
     size: 'invisible',
     callback: () => {
-      // reCAPTCHA solved — will proceed with sendOTP
+      // reCAPTCHA solved - will proceed with sendOTP
     },
   });
   return verifier;
@@ -73,9 +73,9 @@ export async function firebaseSendOTP(
     // User-friendly error messages in Bengali
     const errorMessages: Record<string, string> = {
       'auth/invalid-phone-number': 'সঠিক ফোন নম্বর দাও',
-      'auth/too-many-requests': 'অনেকবার চেষ্টা করেছো — কিছুক্ষণ পর আবার চেষ্টা করো',
-      'auth/quota-exceeded': 'আজকের SMS সীমা শেষ — কাল আবার চেষ্টা করো',
-      'auth/captcha-check-failed': 'reCAPTCHA ভেরিফিকেশন ব্যর্থ — পেজ রিফ্রেশ করো',
+      'auth/too-many-requests': 'অনেকবার চেষ্টা করেছো - কিছুক্ষণ পর আবার চেষ্টা করো',
+      'auth/quota-exceeded': 'আজকের SMS সীমা শেষ - কাল আবার চেষ্টা করো',
+      'auth/captcha-check-failed': 'reCAPTCHA ভেরিফিকেশন ব্যর্থ - পেজ রিফ্রেশ করো',
       'auth/missing-phone-number': 'ফোন নম্বর দাও',
     };
 
@@ -105,9 +105,9 @@ export async function firebaseVerifyOTP(
     console.error('Firebase verifyOTP error:', error);
 
     const errorMessages: Record<string, string> = {
-      'auth/invalid-verification-code': 'ভুল OTP — আবার চেষ্টা করো',
-      'auth/code-expired': 'OTP মেয়াদ শেষ — আবার পাঠাও',
-      'auth/session-expired': 'সেশন মেয়াদ শেষ — আবার OTP পাঠাও',
+      'auth/invalid-verification-code': 'ভুল OTP - আবার চেষ্টা করো',
+      'auth/code-expired': 'OTP মেয়াদ শেষ - আবার পাঠাও',
+      'auth/session-expired': 'সেশন মেয়াদ শেষ - আবার OTP পাঠাও',
     };
 
     return {

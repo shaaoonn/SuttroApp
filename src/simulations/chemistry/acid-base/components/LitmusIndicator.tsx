@@ -1,7 +1,7 @@
 'use client';
 
 // ─────────────────────────────────────────────
-// Litmus Indicator — Shows litmus paper test result
+// Litmus Indicator - Shows litmus paper test result
 // Red paper: stays red in acid, turns blue in base
 // Blue paper: turns red in acid, stays blue in base
 // ─────────────────────────────────────────────

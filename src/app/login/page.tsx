@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
 
 // ─────────────────────────────────────────────
-// Login — Google OAuth only
+// Login - Google OAuth only
 // Phone verification removed (was using Firebase Phone Auth, which is paid).
 // Phone number is now collected during onboarding.
 // ─────────────────────────────────────────────
@@ -39,7 +39,7 @@ export default function LoginPage() {
         setGoogleLoading(false);
       }
     } catch {
-      setError('Google লগইনে সমস্যা — আবার চেষ্টা করো');
+      setError('Google লগইনে সমস্যা - আবার চেষ্টা করো');
       setGoogleLoading(false);
     }
   };
@@ -102,7 +102,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Google Sign-In — hidden in Capacitor WebView (Google blocks OAuth).
+          {/* Google Sign-In - hidden in Capacitor WebView (Google blocks OAuth).
               The Android app uses native Credential Manager instead. */}
           {!isApp ? (
             <button

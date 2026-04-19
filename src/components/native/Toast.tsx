@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 
 // ─────────────────────────────────────────────
-// Toast — native-style transient notifications
+// Toast - native-style transient notifications
 // Slides up from bottom, auto-dismisses, doesn't block interaction.
 // Usage:
 //   const toast = useToast();
@@ -109,7 +109,7 @@ export function useToast(): ToastContext {
   return ctx;
 }
 
-/** Hook for haptic feedback — no-op if not in WebView with vibrate support */
+/** Hook for haptic feedback - no-op if not in WebView with vibrate support */
 export function useHaptic() {
   return useCallback((duration: number | number[] = 10) => {
     if (typeof window !== 'undefined' && 'vibrate' in navigator) {

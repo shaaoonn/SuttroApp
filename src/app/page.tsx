@@ -6,7 +6,7 @@ import { getSiteContent, type ContentMap } from '@/lib/site-content';
 export const revalidate = 60;
 
 // ─────────────────────────────────────────────
-// Homepage — সূত্র | suttro.app
+// Homepage - সূত্র | suttro.app
 // Mobile: App-style home (MobileHome)
 // Desktop: Dashboard with subjects, classes,
 //          exams, daily study (DesktopHome)

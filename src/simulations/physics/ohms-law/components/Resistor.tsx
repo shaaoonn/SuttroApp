@@ -1,7 +1,7 @@
 'use client';
 
 // ─────────────────────────────────────────────
-// Resistor — Zigzag resistor symbol
+// Resistor - Zigzag resistor symbol
 // Shows resistance value in Ω
 // ─────────────────────────────────────────────
 

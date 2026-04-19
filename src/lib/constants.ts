@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-// Display constants — static, never changes
+// Display constants - static, never changes
 // Subject colors, labels, icons for UI rendering
 // ─────────────────────────────────────────────
 

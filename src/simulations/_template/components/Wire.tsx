@@ -1,7 +1,7 @@
 'use client';
 
 // ─────────────────────────────────────────────
-// Wire — SVG connection line between two points
+// Wire - SVG connection line between two points
 // Used to connect circuit components, etc.
 // ─────────────────────────────────────────────
 

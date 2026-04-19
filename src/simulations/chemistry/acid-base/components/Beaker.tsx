@@ -1,7 +1,7 @@
 'use client';
 
 // ─────────────────────────────────────────────
-// Beaker — SVG lab beaker with animated liquid
+// Beaker - SVG lab beaker with animated liquid
 // Shows acid + base mixing with color change
 // ─────────────────────────────────────────────
 

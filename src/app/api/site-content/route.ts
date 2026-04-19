@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getAllSiteContent } from '@/lib/site-content';
 
 // ─────────────────────────────────────────────
-// Site Content API — public read-only
+// Site Content API - public read-only
 // Returns all content grouped by page
 // Used by client components to get dynamic text
 // ─────────────────────────────────────────────

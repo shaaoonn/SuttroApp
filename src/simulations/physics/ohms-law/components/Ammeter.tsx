@@ -1,7 +1,7 @@
 'use client';
 
 // ─────────────────────────────────────────────
-// Ammeter — Current measurement display
+// Ammeter - Current measurement display
 // Shows current value with needle indicator
 // ─────────────────────────────────────────────
 

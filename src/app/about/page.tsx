@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { getSiteContent } from '@/lib/site-content';
 
 export const metadata: Metadata = {
-  title: 'আমাদের সম্পর্কে — সূত্র | suttro.app',
+  title: 'আমাদের সম্পর্কে - সূত্র | suttro.app',
 };
 
 export const revalidate = 60;

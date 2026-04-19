@@ -8,7 +8,7 @@ import { calculateLevel, xpForNextLevel } from '@/lib/xp';
 import { SkeletonPage, SkeletonList } from '@/components/native/Skeleton';
 
 // ─────────────────────────────────────────────
-// Dashboard — Profile & Progress
+// Dashboard - Profile & Progress
 // Matches the 10-page design reference (Page 7)
 // ─────────────────────────────────────────────
 
@@ -391,7 +391,7 @@ export default function DashboardPage() {
                   : '#3B82F6',
               }}
             >
-              {dailyScores?.today ? Math.round(dailyScores.today.score_pct) : '—'}
+              {dailyScores?.today ? Math.round(dailyScores.today.score_pct) : '-'}
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-sm font-semibold" style={{ color: '#1E293B' }}>
@@ -399,7 +399,7 @@ export default function DashboardPage() {
               </div>
               <div className="text-[11px]" style={{ color: '#94A3B8' }}>
                 {dailyScores?.today
-                  ? `${dailyScores.today.items_completed}/${dailyScores.today.items_total} সম্পন্ন — ${Math.round(dailyScores.today.marks_earned)}/${Math.round(dailyScores.today.marks_possible)} নম্বর`
+                  ? `${dailyScores.today.items_completed}/${dailyScores.today.items_total} সম্পন্ন - ${Math.round(dailyScores.today.marks_earned)}/${Math.round(dailyScores.today.marks_possible)} নম্বর`
                   : 'আজকের পড়া শুরু করো →'}
               </div>
             </div>
@@ -631,7 +631,7 @@ export default function DashboardPage() {
                           className="text-xs"
                           style={{ color: '#94A3B8' }}
                         >
-                          {attempt.correct} সঠিক, {attempt.wrong} ভুল —{' '}
+                          {attempt.correct} সঠিক, {attempt.wrong} ভুল -{' '}
                           {formatDuration(attempt.duration)}
                         </div>
                       </div>

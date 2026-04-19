@@ -1,7 +1,7 @@
 'use client';
 
 // ─────────────────────────────────────────────
-// Bulb — Light bulb that glows based on power
+// Bulb - Light bulb that glows based on power
 // Brightness = 0 (off) to 1 (full glow)
 // ─────────────────────────────────────────────
 

@@ -93,11 +93,11 @@ class LoginActivity : AppCompatActivity() {
                 if (msg.contains("cancel", ignoreCase = true) ||
                     msg.contains("dismissed", ignoreCase = true)
                 ) {
-                    // User cancelled — no error shown
+                    // User cancelled - no error shown
                 } else if (msg.contains("no credentials", ignoreCase = true) ||
                     msg.contains("no accounts", ignoreCase = true)
                 ) {
-                    showError("Google অ্যাকাউন্ট পাওয়া যায়নি — সেটিংসে অ্যাকাউন্ট যোগ করো")
+                    showError("Google অ্যাকাউন্ট পাওয়া যায়নি - সেটিংসে অ্যাকাউন্ট যোগ করো")
                 } else {
                     showError("Google: $msg")
                 }

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 
 // ─────────────────────────────────────────────
-// useSimNarration — Text-to-Speech narration hook
+// useSimNarration - Text-to-Speech narration hook
 // Uses Google Translate TTS via /api/tts proxy
 // for natural Bangla pronunciation.
 //
@@ -12,7 +12,7 @@ import { useEffect, useRef, useCallback, useState } from 'react';
 // ─────────────────────────────────────────────
 
 export interface NarrationTemplate {
-  /** Welcome message — spoken once on mount */
+  /** Welcome message - spoken once on mount */
   welcome: string;
   /** Generate contextual message from current variable values */
   generateMessage: (values: Record<string, number>) => string;
@@ -34,7 +34,7 @@ export function useSimNarration({ template, values, soundEnabled }: UseSimNarrat
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
-  // Speak function — uses Google TTS via /api/tts
+  // Speak function - uses Google TTS via /api/tts
   const speak = useCallback((text: string) => {
     if (!soundEnabled || typeof window === 'undefined') return;
 
@@ -61,7 +61,7 @@ export function useSimNarration({ template, values, soundEnabled }: UseSimNarrat
     audioRef.current = audio;
 
     audio.play().catch(() => {
-      // Autoplay blocked or audio error — silently ignore
+      // Autoplay blocked or audio error - silently ignore
     });
   }, [soundEnabled]);
 
@@ -78,7 +78,7 @@ export function useSimNarration({ template, values, soundEnabled }: UseSimNarrat
     }
   }, []);
 
-  // Welcome message — spoken once on mount
+  // Welcome message - spoken once on mount
   useEffect(() => {
     if (!soundEnabled || welcomeSpokenRef.current) return;
 
@@ -116,7 +116,7 @@ export function useSimNarration({ template, values, soundEnabled }: UseSimNarrat
       clearTimeout(debounceRef.current);
     }
 
-    // Set new debounce — 3 seconds after last change
+    // Set new debounce - 3 seconds after last change
     debounceRef.current = setTimeout(() => {
       if (soundEnabled) {
         const msg = template.generateMessage(values);
@@ -156,7 +156,7 @@ export function useSimNarration({ template, values, soundEnabled }: UseSimNarrat
 }
 
 // ─────────────────────────────────────────────
-// useSoundToggle — manages sound on/off state
+// useSoundToggle - manages sound on/off state
 // Default: ON
 // ─────────────────────────────────────────────
 

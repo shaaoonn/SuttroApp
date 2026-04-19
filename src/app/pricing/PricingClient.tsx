@@ -10,7 +10,7 @@ import { isNativeApp } from '@/lib/native-bridge';
 // shouldOverrideUrlLoading() keeps all https:// redirects in-app so the
 // bKash flow stays INSIDE the app (no external browser). On the public web
 // this just navigates the current tab. Capacitor.Browser is intentionally
-// NOT used — the Android shell is pure Kotlin, not Capacitor.
+// NOT used - the Android shell is pure Kotlin, not Capacitor.
 //
 // NOTE: On native Android, paid subscriptions are intentionally hidden to
 // comply with Google Play's billing policy (digital goods must use Play
@@ -22,7 +22,7 @@ async function openPaymentURL(url: string) {
 }
 
 // ─────────────────────────────────────────────
-// Pricing — Plan cards + Donation
+// Pricing - Plan cards + Donation
 // Design reference Page 8
 // ─────────────────────────────────────────────
 
@@ -49,7 +49,7 @@ export default function PricingClient() {
   const [donateSuccess, setDonateSuccess] = useState(false);
   const [isNative, setIsNative] = useState(false);
 
-  // Detect native Android app — we hide paid plan CTAs & donation in native
+  // Detect native Android app - we hide paid plan CTAs & donation in native
   // per Google Play's digital-goods billing policy. Users are shown a notice
   // to upgrade on suttro.app via a web browser.
   useEffect(() => {
@@ -327,7 +327,7 @@ export default function PricingClient() {
         )}
 
         {/* ═══ Donate Section ═══
-            Hidden in native Android app — bKash donations on Android are
+            Hidden in native Android app - bKash donations on Android are
             out of policy scope under Google Play's digital-goods rules.
             Donations remain available on suttro.app in a web browser. */}
         {!isNative && (
@@ -424,7 +424,7 @@ export default function PricingClient() {
         </div>
         )}
 
-        {/* Native-app notice — explain why upgrade/donate CTAs are not shown */}
+        {/* Native-app notice - explain why upgrade/donate CTAs are not shown */}
         {isNative ? (
           <div
             className="mt-6 rounded-xl p-4 text-center"
@@ -447,11 +447,11 @@ export default function PricingClient() {
             className="text-center text-[11px] mt-4"
             style={{ color: '#94A3B8' }}
           >
-            পেমেন্ট নিরাপদ — বিকাশ পেমেন্ট গেটওয়ে দ্বারা পরিচালিত
+            পেমেন্ট নিরাপদ - বিকাশ পেমেন্ট গেটওয়ে দ্বারা পরিচালিত
           </p>
         )}
 
-        {/* Refund policy link — always visible (Play Store compliance) */}
+        {/* Refund policy link - always visible (Play Store compliance) */}
         <p
           className="text-center text-[11px] mt-2"
           style={{ color: '#94A3B8' }}

@@ -1,7 +1,7 @@
 'use client';
 
 // ─────────────────────────────────────────────
-// Battery — Visual battery component
+// Battery - Visual battery component
 // Shows voltage value, ± terminals
 // ─────────────────────────────────────────────
 

@@ -6,7 +6,7 @@ import { SUBJECT_COLORS as EXAM_SUBJECT_COLORS, SUBJECT_LABELS as EXAM_SUBJECT_L
 import CQViewer from './CQViewer';
 
 // ─────────────────────────────────────────────
-// CQFilter — Browse সৃজনশীল প্রশ্ন
+// CQFilter - Browse সৃজনশীল প্রশ্ন
 // Filter by subject → chapter
 // ─────────────────────────────────────────────
 

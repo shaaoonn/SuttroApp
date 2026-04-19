@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'গোপনীয়তা নীতি | সূত্র',
-  description: 'সূত্র অ্যাপের গোপনীয়তা নীতি — আমরা কীভাবে তোমার তথ্য সংরক্ষণ ও ব্যবহার করি',
+  description: 'সূত্র অ্যাপের গোপনীয়তা নীতি - আমরা কীভাবে তোমার তথ্য সংরক্ষণ ও ব্যবহার করি',
 };
 
 export default function PrivacyPage() {
@@ -69,16 +69,16 @@ export default function PrivacyPage() {
             </p>
             <ul className="list-disc list-inside space-y-1 ml-2">
               <li>
-                <strong>Supabase</strong> — ডেটাবেস ও ব্যবহারকারী যাচাইকরণ (self-hosted)
+                <strong>Supabase</strong> - ডেটাবেস ও ব্যবহারকারী যাচাইকরণ (self-hosted)
               </li>
               <li>
-                <strong>Google Sign-In</strong> — লগইন যাচাইকরণ
+                <strong>Google Sign-In</strong> - লগইন যাচাইকরণ
               </li>
               <li>
-                <strong>Firebase Cloud Messaging</strong> — পুশ নোটিফিকেশন
+                <strong>Firebase Cloud Messaging</strong> - পুশ নোটিফিকেশন
               </li>
               <li>
-                <strong>YouTube</strong> — ভিডিও ক্লাস হোস্টিং
+                <strong>YouTube</strong> - ভিডিও ক্লাস হোস্টিং
               </li>
             </ul>
             <p className="mt-2">
@@ -141,7 +141,7 @@ export default function PrivacyPage() {
             </ul>
             <p>
               অ্যাকাউন্ট ডিলিট করলে <strong>সাথে সাথেই</strong> তোমার প্রোফাইল,
-              পরীক্ষার ফলাফল, অগ্রগতি ও Google লগইন সংযোগ — সবকিছু আমাদের সার্ভার
+              পরীক্ষার ফলাফল, অগ্রগতি ও Google লগইন সংযোগ - সবকিছু আমাদের সার্ভার
               থেকে স্থায়ীভাবে মুছে যাবে। ডায়াগনস্টিক লগ ৯০ দিনের মধ্যে স্বয়ংক্রিয়
               ভাবে মুছে যায়।
             </p>
@@ -203,8 +203,8 @@ export default function PrivacyPage() {
             </p>
             <p>
               Users can delete their account instantly in two ways:
-              (1) in-app — tap "অ্যাকাউন্ট ডিলিট করো" on the profile page, or
-              (2) on the web — visit{' '}
+              (1) in-app - tap "অ্যাকাউন্ট ডিলিট করো" on the profile page, or
+              (2) on the web - visit{' '}
               <a href="/delete-account" style={{ color: '#0D9488' }}>
                 suttro.app/delete-account
               </a>

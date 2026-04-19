@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // Get payment record first — check idempotency
+    // Get payment record first - check idempotency
     const { data: payment } = await supabase
       .from('payments')
       .select('*, subscription_plans(*)')

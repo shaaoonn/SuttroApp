@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 // ─────────────────────────────────────────────
-// ElectronFlow — Animated electrons flowing through wire
+// ElectronFlow - Animated electrons flowing through wire
 // Speed proportional to current
 // ─────────────────────────────────────────────
 

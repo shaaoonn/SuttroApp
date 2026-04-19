@@ -1,7 +1,7 @@
 'use client';
 
 // ─────────────────────────────────────────────
-// Light Ray — Animated incident & reflected rays
+// Light Ray - Animated incident & reflected rays
 // Yellow beam with arrow heads and glow effect
 // ─────────────────────────────────────────────
 
@@ -63,7 +63,7 @@ export default function LightRay({
         `}</style>
       </defs>
 
-      {/* Incident ray — glow layer */}
+      {/* Incident ray - glow layer */}
       <line
         x1={incidentStartX} y1={incidentStartY}
         x2={mirrorCenterX} y2={mirrorCenterY}
@@ -73,7 +73,7 @@ export default function LightRay({
         filter="url(#ray-glow)"
       />
 
-      {/* Incident ray — solid */}
+      {/* Incident ray - solid */}
       <line
         x1={incidentStartX} y1={incidentStartY}
         x2={mirrorCenterX} y2={mirrorCenterY}
@@ -82,7 +82,7 @@ export default function LightRay({
         markerEnd="url(#ray-arrow)"
       />
 
-      {/* Incident ray — animated dashes */}
+      {/* Incident ray - animated dashes */}
       <line
         x1={incidentStartX} y1={incidentStartY}
         x2={mirrorCenterX} y2={mirrorCenterY}
@@ -92,7 +92,7 @@ export default function LightRay({
         className="ray-animated"
       />
 
-      {/* Reflected ray — glow layer */}
+      {/* Reflected ray - glow layer */}
       <line
         x1={mirrorCenterX} y1={mirrorCenterY}
         x2={reflectedEndX} y2={reflectedEndY}
@@ -102,7 +102,7 @@ export default function LightRay({
         filter="url(#ray-glow)"
       />
 
-      {/* Reflected ray — solid */}
+      {/* Reflected ray - solid */}
       <line
         x1={mirrorCenterX} y1={mirrorCenterY}
         x2={reflectedEndX} y2={reflectedEndY}
@@ -111,7 +111,7 @@ export default function LightRay({
         markerEnd="url(#ray-arrow)"
       />
 
-      {/* Reflected ray — animated dashes */}
+      {/* Reflected ray - animated dashes */}
       <line
         x1={mirrorCenterX} y1={mirrorCenterY}
         x2={reflectedEndX} y2={reflectedEndY}

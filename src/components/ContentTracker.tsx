@@ -5,7 +5,7 @@ import { useAuth } from '@/lib/auth-context';
 import { trackEvent, type EventType, type ContentType } from '@/lib/analytics';
 
 // ─────────────────────────────────────────────
-// ContentTracker — Invisible component that
+// ContentTracker - Invisible component that
 // fires a trackEvent when mounted (page view)
 // ─────────────────────────────────────────────
 

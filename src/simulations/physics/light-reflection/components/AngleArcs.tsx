@@ -1,7 +1,7 @@
 'use client';
 
 // ─────────────────────────────────────────────
-// Angle Arcs — Shows θᵢ and θᵣ with arcs & labels
+// Angle Arcs - Shows θᵢ and θᵣ with arcs & labels
 // Incident angle (left, cyan), Reflected angle (right, orange)
 // ─────────────────────────────────────────────
 
@@ -65,7 +65,7 @@ export default function AngleArcs({
       className="absolute pointer-events-none"
       style={{ left: 0, top: 0, width: '100%', height: '100%' }}
     >
-      {/* Incident angle arc — cyan */}
+      {/* Incident angle arc - cyan */}
       <path
         d={describeArc(centerX, centerY, arcRadius, incStartDeg, incEndDeg)}
         fill="none"
@@ -87,7 +87,7 @@ export default function AngleArcs({
         θᵢ={incidenceAngle}°
       </text>
 
-      {/* Reflected angle arc — orange */}
+      {/* Reflected angle arc - orange */}
       <path
         d={describeArc(centerX, centerY, arcRadius, refStartDeg, refEndDeg)}
         fill="none"

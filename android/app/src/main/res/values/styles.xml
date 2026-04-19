@@ -11,7 +11,7 @@
         <item name="android:forceDarkAllowed">false</item>
     </style>
 
-    <!-- Login/Onboarding theme — gradient background, light status bar -->
+    <!-- Login/Onboarding theme - gradient background, light status bar -->
     <style name="AppTheme.Auth" parent="AppTheme">
         <item name="android:statusBarColor">@color/bg_teal_light</item>
     </style>

@@ -8,7 +8,7 @@ import type { PanZoomControls } from './BottomToolbar';
 import type { InteractionMode } from '@/hooks/useInteractionMode';
 
 // ─────────────────────────────────────────────
-// PlayerShell — Shared container for both
+// PlayerShell - Shared container for both
 // simulation and video players.
 // YouTube-like: works inline AND fullscreen.
 // ZERO difference between modes except size.
@@ -76,7 +76,7 @@ export default function PlayerShell({
   // Keep latest fitToScreen in a ref so the ResizeObserver effect can be
   // mount-only (otherwise we'd recreate the observer on every panZoom render,
   // and the observer fires immediately on observe(), which resets the user's
-  // pan position — that was the "snap-back-while-panning" bug).
+  // pan position - that was the "snap-back-while-panning" bug).
   const fitToScreenRef = useRef(panZoom?.fitToScreen);
   useEffect(() => {
     fitToScreenRef.current = panZoom?.fitToScreen;
@@ -96,7 +96,7 @@ export default function PlayerShell({
       if (!cr) return;
       const w = Math.round(cr.width);
       const h = Math.round(cr.height);
-      // Significant change only (>2px) — ignore subpixel jitter
+      // Significant change only (>2px) - ignore subpixel jitter
       if (Math.abs(w - lastW) < 3 && Math.abs(h - lastH) < 3) return;
       lastW = w;
       lastH = h;
@@ -112,7 +112,7 @@ export default function PlayerShell({
     };
   }, []); // mount-only
 
-  // Explicit re-fit on fullscreen change — WebView sometimes lags ResizeObserver
+  // Explicit re-fit on fullscreen change - WebView sometimes lags ResizeObserver
   useEffect(() => {
     const t1 = setTimeout(() => fitToScreenRef.current?.(), 180);
     const t2 = setTimeout(() => fitToScreenRef.current?.(), 450);
@@ -142,7 +142,7 @@ export default function PlayerShell({
         }}
       >
         <div className="flex items-center gap-2 min-w-0 flex-1">
-          {/* Back button — visible on mobile inline, and inside fullscreen on all devices */}
+          {/* Back button - visible on mobile inline, and inside fullscreen on all devices */}
           <button
             onClick={handleBack}
             className={`tappable shrink-0 w-9 h-9 -ml-1 rounded-full flex items-center justify-center hover:bg-white/10 suttro-transition ${

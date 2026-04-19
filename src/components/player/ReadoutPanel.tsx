@@ -1,8 +1,8 @@
 'use client';
 
 // ─────────────────────────────────────────────
-// ReadoutPanel — Live measurement display (bottom-left)
-// Fixed overlay (Layer 3) — stays in place during pan/zoom
+// ReadoutPanel - Live measurement display (bottom-left)
+// Fixed overlay (Layer 3) - stays in place during pan/zoom
 // Shows computed values from simulation logic
 // ─────────────────────────────────────────────
 

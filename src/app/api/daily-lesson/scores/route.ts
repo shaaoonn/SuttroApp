@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 // ─────────────────────────────────────────────
-// Daily Scores API — আজকের পড়া স্কোর
+// Daily Scores API - আজকের পড়া স্কোর
 // GET: Fetch daily + monthly scores for dashboard
 // ─────────────────────────────────────────────
 

@@ -5,7 +5,7 @@ import Hls from 'hls.js';
 import { useFullscreen } from '@/hooks/useFullscreen';
 
 // ─────────────────────────────────────────────
-// HLS Video Player — সূত্র | suttro.app
+// HLS Video Player - সূত্র | suttro.app
 // YouTube-style controls, same player shell as sim
 // ─────────────────────────────────────────────
 
@@ -60,7 +60,7 @@ export default function VideoPlayer({ src, title, chapterTag, poster }: VideoPla
         if (data.fatal) {
           switch (data.type) {
             case Hls.ErrorTypes.NETWORK_ERROR:
-              setError('নেটওয়ার্ক সমস্যা — আবার চেষ্টা করো');
+              setError('নেটওয়ার্ক সমস্যা - আবার চেষ্টা করো');
               hls.startLoad();
               break;
             case Hls.ErrorTypes.MEDIA_ERROR:

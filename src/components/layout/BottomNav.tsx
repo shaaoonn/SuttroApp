@@ -7,7 +7,7 @@ import { isNativeApp } from '@/lib/native-bridge';
 import { useHaptic } from '@/components/native/Toast';
 
 // ─────────────────────────────────────────────
-// BottomNav — 4-tab native-style bottom bar
+// BottomNav - 4-tab native-style bottom bar
 // Hidden when running inside native Android shell
 // ─────────────────────────────────────────────
 

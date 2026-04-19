@@ -4,15 +4,15 @@ import { getGuide } from '@/lib/data';
 import { getSiteContent } from '@/lib/site-content';
 
 // ─────────────────────────────────────────────
-// Guide — Subject selection
+// Guide - Subject selection
 // Mobile: gradient icon cards
 // ─────────────────────────────────────────────
 
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'গাইড — বিষয়ভিত্তিক কন্টেন্ট — সূত্র | suttro.app',
-  description: 'বিষয় ও অধ্যায় অনুযায়ী সব কন্টেন্ট — সিমুলেশন, ক্লাস, MCQ, সৃজনশীল — এক জায়গায়।',
+  title: 'গাইড - বিষয়ভিত্তিক কন্টেন্ট - সূত্র | suttro.app',
+  description: 'বিষয় ও অধ্যায় অনুযায়ী সব কন্টেন্ট - সিমুলেশন, ক্লাস, MCQ, সৃজনশীল - এক জায়গায়।',
 };
 
 // Subject-specific styling
@@ -39,7 +39,7 @@ export default async function GuidePage() {
               {cms.page_title || 'গাইড'}
             </h1>
             <p className="text-xs" style={{ color: '#5F9EA0' }}>
-              {cms.page_subtitle || 'বিষয় বেছে নাও'} — {cms.page_description || 'অধ্যায় অনুযায়ী সব কন্টেন্ট'}
+              {cms.page_subtitle || 'বিষয় বেছে নাও'} - {cms.page_description || 'অধ্যায় অনুযায়ী সব কন্টেন্ট'}
             </p>
           </div>
 
@@ -121,7 +121,7 @@ export default async function GuidePage() {
               {cms.page_title || 'গাইড'}
             </h1>
             <p className="text-base" style={{ color: '#94A3B8' }}>
-              {cms.page_subtitle || 'বিষয় বেছে নাও'} — {cms.page_description || 'অধ্যায় অনুযায়ী সব কন্টেন্ট এক জায়গায়।'}
+              {cms.page_subtitle || 'বিষয় বেছে নাও'} - {cms.page_description || 'অধ্যায় অনুযায়ী সব কন্টেন্ট এক জায়গায়।'}
             </p>
           </div>
 

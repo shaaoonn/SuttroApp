@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────
-   সূত্র | suttro.app — Brand Design Tokens
+   সূত্র | suttro.app - Brand Design Tokens
    ───────────────────────────────────────────── */
 
 :root {
-  /* Primary — Teal */
+  /* Primary - Teal */
   --suttro-primary: #0D9488;
   --suttro-primary-light: #14B8A6;
   --suttro-primary-bright: #2DD4BF;
@@ -160,7 +160,7 @@ body {
     padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
   }
 
-  /* Prevent text selection on UI chrome (not <a> — breaks touch scroll in WebView) */
+  /* Prevent text selection on UI chrome (not <a> - breaks touch scroll in WebView) */
   nav, header, footer, button {
     -webkit-user-select: none;
     user-select: none;
@@ -261,7 +261,7 @@ body {
   flex-direction: column !important;
 }
 
-/* Fixed overlay for control panels — passes through clicks to canvas */
+/* Fixed overlay for control panels - passes through clicks to canvas */
 .fixed-overlay {
   position: absolute;
   top: 0;
@@ -275,7 +275,7 @@ body {
   pointer-events: auto;
 }
 
-/* Reset font-size inside simulation player — exempt from page scaling.
+/* Reset font-size inside simulation player - exempt from page scaling.
  * Since html uses clamp(16px, 4.1vw, 32px), rem-based Tailwind sizes (text-xs etc.)
  * would scale up inside the player too. Override them to fixed px values so
  * simulation controls stay compact regardless of viewport scaling.
@@ -302,7 +302,7 @@ body {
   color: var(--player-text);
 }
 
-/* Compact simulation panels on mobile — keep simulation area breathable
+/* Compact simulation panels on mobile - keep simulation area breathable
  * and ensure the three overlay panels don't collide.
  *
  * Layout grid (mobile):
@@ -354,7 +354,7 @@ body {
   /* But ReadoutPanel (measurements) is positioned bottom-left via its own
    * Tailwind classes. Override our generic rule above for that specific case
    * by targeting the bottom-positioned variant. We use the bottom-14 class
-   * the component already has — keep it but tighten the spacing. */
+   * the component already has - keep it but tighten the spacing. */
   .readout-panel.bottom-14,
   .readout-panel[class*="bottom-"] {
     top: auto !important;
@@ -367,11 +367,11 @@ body {
   .suttro-player a {
     min-height: auto;
   }
-  /* Sim hint text — shrink on mobile */
+  /* Sim hint text - shrink on mobile */
   .suttro-player .text-xs { font-size: 10px !important; line-height: 14px !important; }
 }
 
-/* Very small screens (<400px) — further compact */
+/* Very small screens (<400px) - further compact */
 @media (max-width: 400px) {
   .control-panel {
     width: 128px !important;
@@ -385,7 +385,7 @@ body {
   }
 }
 
-/* Bottom nav spacing — push footer above bottom nav on mobile */
+/* Bottom nav spacing - push footer above bottom nav on mobile */
 @media (max-width: 1023px) {
   body {
     padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
@@ -411,11 +411,11 @@ body {
 }
 
 /* ─────────────────────────────────────────────
-   Native App Feel — Mobile/WebView
+   Native App Feel - Mobile/WebView
    Makes the web pages feel like a real Android app
    ───────────────────────────────────────────── */
 
-/* 1. Hover state isolation — prevent hover backgrounds sticking on touch tap */
+/* 1. Hover state isolation - prevent hover backgrounds sticking on touch tap */
 @media (hover: none) {
   *:hover { background-color: inherit !important; color: inherit !important; }
   /* But still allow explicit hover styles set via specific class */
@@ -428,7 +428,7 @@ body {
   * { scrollbar-width: none; -ms-overflow-style: none; }
 }
 
-/* 3. Smooth momentum scroll — opt-in per element only.
+/* 3. Smooth momentum scroll - opt-in per element only.
    Do NOT apply to <html>/<body>: Android WebView (Chromium) treats
    `overscroll-behavior-y: contain` on the root scroll container as a hint
    that can interfere with document scroll when combined with fixed/sticky
@@ -446,13 +446,13 @@ button, nav, header, [role="button"], .no-select,
   user-select: none;
 }
 
-/* 5. Fast tap — remove 300ms delay on iOS, transparent highlight on Android */
+/* 5. Fast tap - remove 300ms delay on iOS, transparent highlight on Android */
 a, button, [role="button"], .tappable {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   touch-action: manipulation;
 }
 
-/* 6. Universal press feedback — works on any element with .press class */
+/* 6. Universal press feedback - works on any element with .press class */
 .press, .tappable {
   transition: transform 120ms cubic-bezier(0.4, 0, 0.2, 1),
               opacity 120ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -462,7 +462,7 @@ a, button, [role="button"], .tappable {
   opacity: 0.85;
 }
 
-/* 7. Native-style ripple — material design ripple effect */
+/* 7. Native-style ripple - material design ripple effect */
 .ripple {
   position: relative;
   overflow: hidden;
@@ -485,7 +485,7 @@ a, button, [role="button"], .tappable {
   transition: 0s;
 }
 
-/* 8. Page enter animation — fade only (no transform).
+/* 8. Page enter animation - fade only (no transform).
    Using transform here left translateY(0) on the wrapper permanently due to
    `both` fill-mode. That created a new containing block around <main>, and
    on Android WebView that broke the document's scroll surface app-wide.
@@ -498,7 +498,7 @@ a, button, [role="button"], .tappable {
   animation: pageEnter 240ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 9. Skeleton shimmer — for loading states */
+/* 9. Skeleton shimmer - for loading states */
 @keyframes shimmer {
   0%   { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -515,7 +515,7 @@ a, button, [role="button"], .tappable {
   border-radius: 8px;
 }
 
-/* 10. Shake animation — for invalid form input feedback */
+/* 10. Shake animation - for invalid form input feedback */
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   20%, 60% { transform: translateX(-6px); }
@@ -525,21 +525,21 @@ a, button, [role="button"], .tappable {
   animation: shake 320ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
 }
 
-/* 11. Slide-up enter — for toast / bottom-sheet */
+/* 11. Slide-up enter - for toast / bottom-sheet */
 @keyframes slideUp {
   from { transform: translateY(100%); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
 }
 .slide-up { animation: slideUp 280ms cubic-bezier(0.4, 0, 0.2, 1) both; }
 
-/* 12. Fade-in — for general appearances */
+/* 12. Fade-in - for general appearances */
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 .fade-in { animation: fadeIn 200ms ease-out both; }
 
-/* 13. Safe-area handling — left/right (foldables, landscape) */
+/* 13. Safe-area handling - left/right (foldables, landscape) */
 @media (max-width: 1023px) {
   body {
     padding-left: env(safe-area-inset-left, 0px);
@@ -547,7 +547,7 @@ a, button, [role="button"], .tappable {
   }
 }
 
-/* 14. Native-style focus — only on keyboard nav, not on tap */
+/* 14. Native-style focus - only on keyboard nav, not on tap */
 :focus { outline: none; }
 :focus-visible {
   outline: 2px solid var(--suttro-primary);
@@ -555,7 +555,7 @@ a, button, [role="button"], .tappable {
   border-radius: 6px;
 }
 
-/* 15. Form inputs — native feel (16px+ to prevent iOS zoom) */
+/* 15. Form inputs - native feel (16px+ to prevent iOS zoom) */
 @media (max-width: 1023px) {
   input[type="text"], input[type="email"], input[type="tel"],
   input[type="password"], input[type="number"], input[type="search"],
@@ -579,7 +579,7 @@ img, svg {
   -webkit-touch-callout: none;
 }
 
-/* 17. Sticky headers — proper z-index + safe area + GPU compositing */
+/* 17. Sticky headers - proper z-index + safe area + GPU compositing */
 .sticky-header {
   position: sticky;
   top: 0;
@@ -590,7 +590,7 @@ img, svg {
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* 18. Pill-button pulse on press — primary CTAs */
+/* 18. Pill-button pulse on press - primary CTAs */
 .pulse-press:active {
   transform: scale(0.94);
   box-shadow: 0 2px 8px rgba(13, 148, 136, 0.35);

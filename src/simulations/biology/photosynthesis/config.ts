@@ -1,7 +1,7 @@
 import type { SimulationConfig } from '../../_template/config';
 
 // ─────────────────────────────────────────────
-// Photosynthesis — সালোকসংশ্লেষণ
+// Photosynthesis - সালোকসংশ্লেষণ
 // NCTB Class 9, Chapter 3: জীবনীশক্তি
 // Light intensity, CO₂, H₂O → Glucose + O₂
 // ─────────────────────────────────────────────

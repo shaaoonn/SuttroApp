@@ -26,7 +26,7 @@ export function sm2(
     }
     newReps += 1;
   } else {
-    // Wrong answer — reset
+    // Wrong answer - reset
     newReps = 0;
     newInterval = 1;
   }

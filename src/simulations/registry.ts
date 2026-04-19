@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-// Simulation Registry — Central list of all simulations
+// Simulation Registry - Central list of all simulations
 // Add new simulations here after creating them
 // ─────────────────────────────────────────────
 

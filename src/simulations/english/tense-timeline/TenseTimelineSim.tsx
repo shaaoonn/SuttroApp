@@ -13,7 +13,7 @@ import FormulaDisplay from '@/components/player/FormulaDisplay';
 import type { VariableConfig } from '@/simulations/_template/config';
 
 // ─────────────────────────────────────────────
-// কাল — টেন্স টাইমলাইন (Tense Timeline)
+// কাল - টেন্স টাইমলাইন (Tense Timeline)
 // Visual timeline of 12 English tenses
 // ─────────────────────────────────────────────
 
@@ -144,7 +144,7 @@ export default function TenseTimelineSim() {
           <g>
             <text x={400} y={395} fill="rgba(255,255,255,0.4)" fontSize={11}
               textAnchor="middle" fontFamily="var(--font-hind-siliguri)" fontWeight="bold">
-              ১২টি টেন্স — সম্পূর্ণ তালিকা
+              ১২টি টেন্স - সম্পূর্ণ তালিকা
             </text>
 
             {TENSES.map((grp, gi) => (
@@ -213,7 +213,7 @@ export default function TenseTimelineSim() {
           </g>
 
           <text x={400} y={25} fill="rgba(255,255,255,0.06)" fontSize={16}
-            textAnchor="middle" fontFamily="var(--font-hind-siliguri)">কাল — টেন্স টাইমলাইন</text>
+            textAnchor="middle" fontFamily="var(--font-hind-siliguri)">কাল - টেন্স টাইমলাইন</text>
         </svg>
       </PanZoomContainer>
     </PlayerShell>

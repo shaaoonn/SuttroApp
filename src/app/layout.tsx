@@ -49,7 +49,7 @@ export const viewport: Viewport = {
 };
 
 // ─────────────────────────────────────────────
-// SEO — Primary keywords (Bangladesh NCTB Class 9-10 audience)
+// SEO - Primary keywords (Bangladesh NCTB Class 9-10 audience)
 //   Brand:          suttro, suttro app, সূত্র, সূত্র অ্যাপ
 //   Intent (EN):    class 9 physics simulation, class 10 science bangla,
 //                   nctb physics simulation, ssc physics interactive,
@@ -68,22 +68,22 @@ export const metadata: Metadata = {
 
   // Title: brand + primary keyword + geo/curriculum signal (58 chars)
   title: {
-    default: "Suttro — NCTB Class 9-10 Science Simulations in Bangla",
+    default: "Suttro - NCTB Class 9-10 Science Simulations in Bangla",
     template: "%s | Suttro",
   },
 
   // Description: mixes English (for Google BD) + Bengali (for native queries),
   // includes brand + class level + subjects + USP (interactive/free)
   description:
-    "Learn Class 9-10 Physics, Chemistry, Biology with interactive simulations — free to start. NCTB-aligned, fully in বাংলা. সূত্র (Suttro) — বিজ্ঞান দেখো, বিজ্ঞান বোঝো।",
+    "Learn Class 9-10 Physics, Chemistry, Biology with interactive simulations - free to start. NCTB-aligned, fully in বাংলা. সূত্র (Suttro) - বিজ্ঞান দেখো, বিজ্ঞান বোঝো।",
 
   applicationName: BRAND,
   generator: "Next.js",
   referrer: "origin-when-cross-origin",
-  creator: "Suttro — EJOSB IT",
+  creator: "Suttro - EJOSB IT",
   publisher: "Suttro",
 
-  // Keywords (still used by Bing, DuckDuckGo, Yandex — safe to include)
+  // Keywords (still used by Bing, DuckDuckGo, Yandex - safe to include)
   keywords: [
     // Brand
     "Suttro", "suttro app", "suttro.app", "সূত্র", "সূত্র অ্যাপ",
@@ -149,7 +149,7 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: "Suttro — NCTB Class 9-10 Science Simulations in Bangla",
+    title: "Suttro - NCTB Class 9-10 Science Simulations in Bangla",
     description:
       "Interactive Physics, Chemistry, Biology simulations for NCTB Class 9-10. বিজ্ঞান দেখো, বিজ্ঞান বোঝো।",
     url: SITE_URL,
@@ -162,7 +162,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Suttro — Science simulations for Class 9-10 Bangladesh",
+        alt: "Suttro - Science simulations for Class 9-10 Bangladesh",
       },
     ],
   },
@@ -171,13 +171,13 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@suttroapp",
     creator: "@suttroapp",
-    title: "Suttro — Class 9-10 Science Simulations (NCTB Bangla)",
+    title: "Suttro - Class 9-10 Science Simulations (NCTB Bangla)",
     description:
       "Interactive Physics, Chemistry, Biology simulations in বাংলা. Free to start.",
     images: ["/twitter-image.png"],
   },
 
-  // Google Search Console verification — update when the TXT/HTML method is
+  // Google Search Console verification - update when the TXT/HTML method is
   // chosen from Search Console. The meta approach is commented out until
   // the correct token is issued, to avoid broadcasting a placeholder.
   // verification: { google: "REPLACE_WITH_TOKEN" },
@@ -191,11 +191,11 @@ export const metadata: Metadata = {
 };
 
 // ─────────────────────────────────────────────
-// Structured data (JSON-LD) — helps Google render rich results:
-//   • Organization — knowledge panel + brand logo
-//   • WebSite — sitelinks search box
-//   • SoftwareApplication — Android app card in results
-//   • EducationalOrganization — education-specific ranking signals
+// Structured data (JSON-LD) - helps Google render rich results:
+//   • Organization - knowledge panel + brand logo
+//   • WebSite - sitelinks search box
+//   • SoftwareApplication - Android app card in results
+//   • EducationalOrganization - education-specific ranking signals
 // ─────────────────────────────────────────────
 const jsonLd = [
   {
@@ -267,7 +267,7 @@ const jsonLd = [
       priceCurrency: "BDT",
     },
     // Note: aggregateRating intentionally omitted until we have real Play
-    // Store reviews — Google penalizes fabricated rating markup.
+    // Store reviews - Google penalizes fabricated rating markup.
     publisher: { "@id": `${SITE_URL}#org` },
   },
 ];
@@ -283,7 +283,7 @@ export default function RootLayout({
       className={`${hindSiliguri.variable} ${dmSerifDisplay.variable} ${dmSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <head>
-        {/* Structured data — single <script> with @graph so Google can
+        {/* Structured data - single <script> with @graph so Google can
             deduplicate the Organization/WebSite/SoftwareApplication entities. */}
         <script
           type="application/ld+json"
@@ -300,7 +300,7 @@ export default function RootLayout({
         <AuthProvider>
           <ToastProvider>
             <AuthGate>
-              {/* Desktop: website navbar — Mobile: native app bar */}
+              {/* Desktop: website navbar - Mobile: native app bar */}
               <div className="hidden lg:block"><Navbar /></div>
               <AppBar />
               <main className="flex-1 flex flex-col">

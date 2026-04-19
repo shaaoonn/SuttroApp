@@ -6,7 +6,7 @@ import type { ExamSummary } from '@/lib/data';
 import { SUBJECT_COLORS as EXAM_SUBJECT_COLORS, SUBJECT_LABELS as EXAM_SUBJECT_LABELS, SUBJECT_ICONS as EXAM_SUBJECT_ICONS } from '@/lib/constants';
 
 // ─────────────────────────────────────────────
-// ExamFilter — Browse & filter exam papers
+// ExamFilter - Browse & filter exam papers
 // ─────────────────────────────────────────────
 
 const SUBJECT_LIGHT_BG: Record<string, string> = {

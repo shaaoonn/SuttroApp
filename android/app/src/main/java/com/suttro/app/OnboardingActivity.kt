@@ -142,7 +142,7 @@ class OnboardingActivity : AppCompatActivity() {
             return
         }
 
-        // Phone is optional — if provided, must be valid
+        // Phone is optional - if provided, must be valid
         val rawPhone = phoneInput.text.toString().replace(Regex("\\D"), "")
         if (rawPhone.isNotEmpty() && rawPhone.length < 10) {
             showError("সঠিক মোবাইল নম্বর দাও (১১ সংখ্যা)")
@@ -152,7 +152,7 @@ class OnboardingActivity : AppCompatActivity() {
 
         val token = sessionManager.getAccessToken()
         if (token == null) {
-            showError("সেশন শেষ — আবার লগ ইন করো")
+            showError("সেশন শেষ - আবার লগ ইন করো")
             return
         }
 

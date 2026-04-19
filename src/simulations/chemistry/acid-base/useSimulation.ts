@@ -37,7 +37,7 @@ export interface AcidBaseState {
   litmusColor: string;
 }
 
-/** Get color for a given pH value — universal indicator colors */
+/** Get color for a given pH value - universal indicator colors */
 export function getPHColor(pH: number): string {
   if (pH <= 1)  return 'rgb(220, 38, 38)';    // deep red
   if (pH <= 2)  return 'rgb(239, 68, 68)';    // red

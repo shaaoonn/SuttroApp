@@ -6,7 +6,7 @@ import type { InteractionMode } from '@/hooks/useInteractionMode';
 import type { PanZoomState } from '@/hooks/usePanZoom';
 
 // ─────────────────────────────────────────────
-// PanZoomContainer — Viewport + Transform layer
+// PanZoomContainer - Viewport + Transform layer
 //
 // Architecture:
 //   Viewport (this div): clips overflow, fills parent
@@ -50,14 +50,14 @@ const PanZoomContainer = forwardRef<HTMLDivElement, PanZoomContainerProps>(
     ref,
   ) {
     // Hand mode: pass all handlers (pan + zoom + wheel-zoom)
-    // Mouse mode: NO wheel handler — page scrolls normally, zoom via +/- only
+    // Mouse mode: NO wheel handler - page scrolls normally, zoom via +/- only
     const canvasHandlers =
       mode === 'hand'
         ? panZoom.handlers
         : {}; // mouse mode: no pan/zoom handlers on canvas
 
     return (
-      // Viewport — fills parent, clips the large canvas
+      // Viewport - fills parent, clips the large canvas
       <div
         ref={ref}
         className="absolute inset-0 overflow-hidden"

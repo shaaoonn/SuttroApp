@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
 
-        <!-- Native Login (Google Credential Manager — phone OTP removed to save Firebase costs) -->
+        <!-- Native Login (Google Credential Manager - phone OTP removed to save Firebase costs) -->
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.Auth"
@@ -106,7 +106,7 @@
     <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <!-- Camera — for <input type="file" capture> homework photo upload -->
+    <!-- Camera - for <input type="file" capture> homework photo upload -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <!-- Storage: needed on Android 12-

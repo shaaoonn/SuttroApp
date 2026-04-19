@@ -4,7 +4,7 @@ import { getPHColorSmooth } from '../useSimulation';
 import { SUBSTANCE_EXAMPLES } from '../config';
 
 // ─────────────────────────────────────────────
-// pH Scale — Vertical gradient bar (0-14)
+// pH Scale - Vertical gradient bar (0-14)
 // Shows current pH position with indicator arrow
 // Common substance markers on the side
 // ─────────────────────────────────────────────

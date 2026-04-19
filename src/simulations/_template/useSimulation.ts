@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import { simConfig, type VariableConfig } from './config';
 
 // ─────────────────────────────────────────────
-// Simulation Logic Hook — CUSTOMIZE per simulation
+// Simulation Logic Hook - CUSTOMIZE per simulation
 // Add physics/chemistry/biology calculations here
 // ─────────────────────────────────────────────
 

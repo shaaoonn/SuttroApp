@@ -118,7 +118,7 @@ class MainContainerActivity : AppCompatActivity() {
         }
     }
 
-    // Tab path mapping — 4 tabs
+    // Tab path mapping - 4 tabs
     private val tabPaths = mapOf(
         R.id.nav_home to "/",
         R.id.nav_guide to "/guide",
@@ -335,13 +335,13 @@ class MainContainerActivity : AppCompatActivity() {
         }
     }
 
-    // ─── SwipeRefresh (DISABLED — was breaking WebView scroll) ───
+    // ─── SwipeRefresh (DISABLED - was breaking WebView scroll) ───
     //
     // SwipeRefreshLayout's `canChildScrollUp` callback uses webView.scrollY,
     // but modern Chromium-based WebView keeps view-level scrollY at 0 while
     // the HTML document scrolls internally. That made SwipeRefresh believe
     // the WebView was always "at top", so it intercepted every downward
-    // drag as a pull-to-refresh gesture — killing vertical scrolling across
+    // drag as a pull-to-refresh gesture - killing vertical scrolling across
     // every page. The WebView is fully kept as a child of SwipeRefreshLayout
     // for layout compatibility, but refresh behavior is turned off.
     //
@@ -356,7 +356,7 @@ class MainContainerActivity : AppCompatActivity() {
     //
     // Wipes WebView's HTTP cache the first time a new app version runs.
     // localStorage and cookies are PRESERVED (no session loss).
-    // Tracked in regular SharedPreferences (not encrypted — non-sensitive).
+    // Tracked in regular SharedPreferences (not encrypted - non-sensitive).
     private fun clearCacheOnVersionBump() {
         val prefs = getSharedPreferences("suttro_app_meta", MODE_PRIVATE)
         val lastSeenVersion = prefs.getInt("last_webview_cache_version", -1)
@@ -375,7 +375,7 @@ class MainContainerActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView() {
-        // Chrome DevTools remote debugging — chrome://inspect to attach.
+        // Chrome DevTools remote debugging - chrome://inspect to attach.
         // Enabled for both debug and release builds so we can diagnose
         // production-only flows (bKash, Google Sign-In) on real devices.
         WebView.setWebContentsDebuggingEnabled(true)
@@ -419,7 +419,7 @@ class MainContainerActivity : AppCompatActivity() {
         val defaultUA = settings.userAgentString
         settings.userAgentString = "$defaultUA ${SuttroConfig.USER_AGENT_SUFFIX}"
 
-        // Force light mode — no dark mode
+        // Force light mode - no dark mode
         try {
             if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
                 WebSettingsCompat.setAlgorithmicDarkeningAllowed(settings, false)
@@ -441,7 +441,7 @@ class MainContainerActivity : AppCompatActivity() {
         )
         webView.addJavascriptInterface(bridge, SuttroBridge.INTERFACE_NAME)
 
-        // Multi-window support (for target="_blank" links — PDFs, external previews)
+        // Multi-window support (for target="_blank" links - PDFs, external previews)
         settings.setSupportMultipleWindows(true)
         settings.javaScriptCanOpenWindowsAutomatically = true
 
@@ -457,7 +457,7 @@ class MainContainerActivity : AppCompatActivity() {
 
                 Log.i("SuttroNav", "shouldOverride url=$url host=$host scheme=$scheme mainFrame=$mainFrame redirect=$isRedirect gesture=$gesture")
 
-                // Logout redirect — match ONLY the bare /login route on suttro.app.
+                // Logout redirect - match ONLY the bare /login route on suttro.app.
                 // Old code used `url.contains("suttro.app/login")` which would also fire
                 // on /login-help, on query params containing the substring, etc.
                 if ((scheme == "https" || scheme == "http") &&
@@ -469,13 +469,13 @@ class MainContainerActivity : AppCompatActivity() {
                     return true
                 }
 
-                // ═══ HTTP/HTTPS — ALWAYS stay inside the WebView. ═══
+                // ═══ HTTP/HTTPS - ALWAYS stay inside the WebView. ═══
                 // Previously we external-punted any non-whitelisted host, but the
                 // bKash payment flow can route through subdomains and intermediate
                 // redirect hosts that weren't on the whitelist, which kicked the
                 // user out to Chrome right when the success page should have
                 // rendered. There is no real benefit to punting https URLs
-                // externally — the WebView can render anything the system browser
+                // externally - the WebView can render anything the system browser
                 // can, and the user still has the back button.
                 //
                 // Only non-http schemes (tel/mailto/sms/market/intent/<custom app
@@ -525,7 +525,7 @@ class MainContainerActivity : AppCompatActivity() {
                 }
             }
 
-            // ═══ File input support — <input type="file"> ═══
+            // ═══ File input support - <input type="file"> ═══
             override fun onShowFileChooser(
                 webView: WebView?,
                 callback: ValueCallback<Array<Uri>>?,
@@ -594,7 +594,7 @@ class MainContainerActivity : AppCompatActivity() {
             // Why this approach: `shouldOverrideUrlLoading` does NOT fire for the initial
             // load on a freshly-created popup WebView, so routing through a throwaway WebView
             // loses the URL (the page loads silently in an invisible WebView, and on some
-            // Android builds the system then falls back to launching the external browser —
+            // Android builds the system then falls back to launching the external browser -
             // this is exactly what broke the bKash success redirect).
             //
             // Safer pattern: hand the popup request to the main WebView. Its own
@@ -610,7 +610,7 @@ class MainContainerActivity : AppCompatActivity() {
                 Log.i("SuttroNav", "onCreateWindow dialog=$isDialog userGesture=$isUserGesture currentUrl=${view?.url}")
                 val transport = resultMsg?.obj as? WebView.WebViewTransport
                 if (transport == null) {
-                    Log.w("SuttroNav", "onCreateWindow: transport null — dropping popup")
+                    Log.w("SuttroNav", "onCreateWindow: transport null - dropping popup")
                     return false
                 }
                 transport.webView = webView
@@ -618,7 +618,7 @@ class MainContainerActivity : AppCompatActivity() {
                 return true
             }
 
-            // ═══ HTML5 Fullscreen API — for simulation/video player fullscreen toggle
+            // ═══ HTML5 Fullscreen API - for simulation/video player fullscreen toggle
             // Without this, element.requestFullscreen() in WebView is a no-op.
             override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
                 if (fullscreenView != null) {
@@ -680,7 +680,7 @@ class MainContainerActivity : AppCompatActivity() {
                             cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                         }
                     } else {
-                        // Grant non-camera resources (mic etc.) directly — DOMStorage/MidiSysex not sensitive here
+                        // Grant non-camera resources (mic etc.) directly - DOMStorage/MidiSysex not sensitive here
                         request.grant(resources)
                     }
                 }
@@ -802,7 +802,7 @@ class MainContainerActivity : AppCompatActivity() {
         }
     }
 
-    // ─── SPA Navigation (#10 — avoid full page reload) ───
+    // ─── SPA Navigation (#10 - avoid full page reload) ───
 
     private fun navigateSPA(path: String) {
         currentPath = path
@@ -931,7 +931,7 @@ class MainContainerActivity : AppCompatActivity() {
         }
     }
 
-    /** Called by SuttroBridge.updateTitle() — dynamic title from web (#7) */
+    /** Called by SuttroBridge.updateTitle() - dynamic title from web (#7) */
     private fun onDynamicTitleUpdate(title: String) {
         if (currentPath != "/" && title.isNotBlank()) {
             // Only override if not a main tab (those have fixed Bengali titles)
@@ -955,7 +955,7 @@ class MainContainerActivity : AppCompatActivity() {
         }
         isNavigatingFromTab = false
 
-        // Immersive pages — hide nav
+        // Immersive pages - hide nav
         val hideNav = path.startsWith("/sim/") || path.startsWith("/class/") || path.startsWith("/exam/")
         bottomNav.visibility = if (hideNav) View.GONE else View.VISIBLE
         toolbarContainer.visibility = if (path.startsWith("/sim/")) View.GONE else View.VISIBLE

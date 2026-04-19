@@ -5,7 +5,7 @@ import { lightReflectionConfig } from './config';
 import type { VariableConfig } from '../../_template/config';
 
 // ─────────────────────────────────────────────
-// Light Reflection Physics — θᵢ = θᵣ
+// Light Reflection Physics - θᵢ = θᵣ
 // Calculates ray geometry, angles, intersection point
 // ─────────────────────────────────────────────
 

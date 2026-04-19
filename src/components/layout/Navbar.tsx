@@ -7,7 +7,7 @@ import { useAuth } from '@/lib/auth-context';
 import MobileMenu from './MobileMenu';
 
 // ─────────────────────────────────────────────
-// Navbar — সূত্র | suttro.app
+// Navbar - সূত্র | suttro.app
 // [Logo]  বিষয়▾  সিমুলেশন  ক্লাস আর্কাইভ  আমাদের সম্পর্কে  [লগ ইন]
 // Mobile: Hamburger (☰)
 // ─────────────────────────────────────────────

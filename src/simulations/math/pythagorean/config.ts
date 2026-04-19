@@ -1,7 +1,7 @@
 import type { SimulationConfig } from '../../_template/config';
 
 // ─────────────────────────────────────────────
-// Pythagorean Theorem — পিথাগোরাসের উপপাদ্য
+// Pythagorean Theorem - পিথাগোরাসের উপপাদ্য
 // NCTB Class 9, Chapter 7: পরিমিতি
 // a² + b² = c² (সমকোণী ত্রিভুজ)
 // ─────────────────────────────────────────────

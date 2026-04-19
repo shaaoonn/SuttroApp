@@ -6,7 +6,7 @@ import type { ClassRecording } from '@/data/classes';
 import { ytThumb } from '@/lib/constants';
 
 // ─────────────────────────────────────────────
-// ClassesFilter — Compact, beautiful class archive
+// ClassesFilter - Compact, beautiful class archive
 // Subject chips + chapter pills + card list
 // ─────────────────────────────────────────────
 

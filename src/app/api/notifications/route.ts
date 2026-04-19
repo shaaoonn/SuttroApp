@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 // ─────────────────────────────────────────────
-// Notifications API — List & mark read
+// Notifications API - List & mark read
 // GET: list notifications for current user
 // POST: mark a notification as read { notification_id }
 // ─────────────────────────────────────────────

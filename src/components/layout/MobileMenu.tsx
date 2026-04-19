@@ -4,7 +4,7 @@ import Link from 'next/link';
 import type { User } from '@supabase/supabase-js';
 
 // ─────────────────────────────────────────────
-// MobileMenu — Full-screen slide-down menu
+// MobileMenu - Full-screen slide-down menu
 // Shows different state for logged-in users
 // ─────────────────────────────────────────────
 

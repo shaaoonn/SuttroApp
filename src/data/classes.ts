@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-// Shared class data — সূত্র | suttro.app
+// Shared class data - সূত্র | suttro.app
 // In production: fetched from Supabase
 // ─────────────────────────────────────────────
 
@@ -136,7 +136,7 @@ export const CLASSES: ClassRecording[] = [
   // ── পদার্থবিজ্ঞান ──
   {
     slug: '2026-04-02-ohms-law',
-    title: 'ওহমের সূত্র — তত্ত্ব ও সিমুলেশন',
+    title: 'ওহমের সূত্র - তত্ত্ব ও সিমুলেশন',
     subject: 'physics',
     chapter: 11,
     classLevel: 9,
@@ -147,7 +147,7 @@ export const CLASSES: ClassRecording[] = [
   },
   {
     slug: '2026-04-03-light-reflection',
-    title: 'আলোর প্রতিফলন — সমতল দর্পণ',
+    title: 'আলোর প্রতিফলন - সমতল দর্পণ',
     subject: 'physics',
     chapter: 8,
     classLevel: 9,
@@ -158,7 +158,7 @@ export const CLASSES: ClassRecording[] = [
   },
   {
     slug: '2026-04-06-light-refraction',
-    title: 'আলোর প্রতিসরণ — স্নেলের সূত্র',
+    title: 'আলোর প্রতিসরণ - স্নেলের সূত্র',
     subject: 'physics',
     chapter: 9,
     classLevel: 9,
@@ -182,7 +182,7 @@ export const CLASSES: ClassRecording[] = [
   },
   {
     slug: '2026-04-07-atomic-structure',
-    title: 'পরমাণুর গঠন — বোর মডেল',
+    title: 'পরমাণুর গঠন - বোর মডেল',
     subject: 'chemistry',
     chapter: 3,
     classLevel: 9,
@@ -195,7 +195,7 @@ export const CLASSES: ClassRecording[] = [
   // ── জীববিজ্ঞান ──
   {
     slug: '2026-04-05-cell-division',
-    title: 'কোষ বিভাজন — মাইটোসিস',
+    title: 'কোষ বিভাজন - মাইটোসিস',
     subject: 'biology',
     chapter: 3,
     classLevel: 10,
@@ -206,7 +206,7 @@ export const CLASSES: ClassRecording[] = [
   },
   {
     slug: '2026-04-08-photosynthesis',
-    title: 'সালোকসংশ্লেষণ — আলোক ও অন্ধকার পর্যায়',
+    title: 'সালোকসংশ্লেষণ - আলোক ও অন্ধকার পর্যায়',
     subject: 'biology',
     chapter: 4,
     classLevel: 9,
@@ -243,7 +243,7 @@ export const CLASSES: ClassRecording[] = [
   // ── উচ্চতর গণিত ──
   {
     slug: '2026-04-11-trigonometry',
-    title: 'ত্রিকোণমিতিক অনুপাত — sin, cos, tan',
+    title: 'ত্রিকোণমিতিক অনুপাত - sin, cos, tan',
     subject: 'higher-math',
     chapter: 8,
     classLevel: 9,
@@ -254,7 +254,7 @@ export const CLASSES: ClassRecording[] = [
   },
   {
     slug: '2026-04-12-straight-line',
-    title: 'সরলরেখার সমীকরণ — y = mx + c',
+    title: 'সরলরেখার সমীকরণ - y = mx + c',
     subject: 'higher-math',
     chapter: 3,
     classLevel: 10,
@@ -267,7 +267,7 @@ export const CLASSES: ClassRecording[] = [
   // ── ইংরেজি ──
   {
     slug: '2026-04-13-tense',
-    title: 'Tense — ১২টি কাল সম্পূর্ণ আলোচনা',
+    title: 'Tense - ১২টি কাল সম্পূর্ণ আলোচনা',
     subject: 'english',
     chapter: 2,
     classLevel: 9,
@@ -278,7 +278,7 @@ export const CLASSES: ClassRecording[] = [
   },
   {
     slug: '2026-04-14-sentence-structure',
-    title: 'Sentence Structure — SVO বিশ্লেষণ',
+    title: 'Sentence Structure - SVO বিশ্লেষণ',
     subject: 'english',
     chapter: 1,
     classLevel: 9,

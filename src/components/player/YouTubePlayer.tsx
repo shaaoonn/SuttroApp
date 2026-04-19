@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { useFullscreen } from '@/hooks/useFullscreen';
 
 // ─────────────────────────────────────────────
-// YouTube Embed Player — সূত্র | suttro.app
+// YouTube Embed Player - সূত্র | suttro.app
 // Responsive iframe embed with fullscreen
 // ─────────────────────────────────────────────
 

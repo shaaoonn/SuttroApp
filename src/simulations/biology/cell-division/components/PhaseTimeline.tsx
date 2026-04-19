@@ -3,7 +3,7 @@
 import { PHASES } from '../config';
 
 // ─────────────────────────────────────────────
-// Phase Timeline — Horizontal phase indicator
+// Phase Timeline - Horizontal phase indicator
 // Shows all 6 phases with current highlighted
 // ─────────────────────────────────────────────
 

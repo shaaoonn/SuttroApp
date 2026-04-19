@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-// Unified Chapter Guide — সূত্র | suttro.app
+// Unified Chapter Guide - সূত্র | suttro.app
 // Aggregates all content by subject + chapter
 // ─────────────────────────────────────────────
 

@@ -1,4 +1,4 @@
-// bKash Payment Gateway — Checkout (URL-based) API
+// bKash Payment Gateway - Checkout (URL-based) API
 // IMPORTANT: We import from 'node:process' to bypass Turbopack's
 // compile-time inlining of process.env values. Without this,
 // env vars are replaced with empty strings during Docker build
@@ -28,7 +28,7 @@ function validateCredentials() {
   if (!cfg.appKey) missing.push('BKASH_APP_KEY');
   if (!cfg.appSecret) missing.push('BKASH_APP_SECRET');
   if (missing.length > 0) {
-    throw new Error(`bKash কনফিগারেশন অসম্পূর্ণ — সার্ভারে ${missing.join(', ')} সেট করা হয়নি।`);
+    throw new Error(`bKash কনফিগারেশন অসম্পূর্ণ - সার্ভারে ${missing.join(', ')} সেট করা হয়নি।`);
   }
   return cfg;
 }

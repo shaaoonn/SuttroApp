@@ -22,10 +22,10 @@ export async function generateMetadata({ params }: PageProps) {
   const { subject, chapter } = await params;
   const guide = await getSubjectGuide(subject);
   const chInfo = await getChapterInfo(subject, Number(chapter));
-  if (!guide || !chInfo) return { title: 'পাওয়া যায়নি — সূত্র' };
+  if (!guide || !chInfo) return { title: 'পাওয়া যায়নি - সূত্র' };
   return {
-    title: `${chInfo.name} — ${guide.subjectBn} — সূত্র | suttro.app`,
-    description: `${guide.subjectBn} অধ্যায় ${chapter}: ${chInfo.name} — সিমুলেশন, ক্লাস, MCQ, সৃজনশীল।`,
+    title: `${chInfo.name} - ${guide.subjectBn} - সূত্র | suttro.app`,
+    description: `${guide.subjectBn} অধ্যায় ${chapter}: ${chInfo.name} - সিমুলেশন, ক্লাস, MCQ, সৃজনশীল।`,
   };
 }
 
@@ -79,7 +79,7 @@ export default async function ChapterPage({ params }: PageProps) {
           </div>
           <div className="flex items-center gap-3">
             <p className="text-base" style={{ color: 'var(--suttro-muted)' }}>
-              {guide.subjectBn} — অধ্যায় {chNum}
+              {guide.subjectBn} - অধ্যায় {chNum}
             </p>
             {mcqs.length > 0 && (
               <Link

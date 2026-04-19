@@ -3,7 +3,7 @@ import type { SimulationConfig } from '../../_template/config';
 export const tenseTimelineConfig: SimulationConfig = {
   id: 'tense-timeline',
   slug: 'tense-timeline',
-  title: { bn: 'কাল — টেন্স টাইমলাইন', en: 'Tense Timeline' },
+  title: { bn: 'কাল - টেন্স টাইমলাইন', en: 'Tense Timeline' },
   subject: 'english',
   nctb: { class: 9, chapter: 2, section: '2.1' },
   variables: [

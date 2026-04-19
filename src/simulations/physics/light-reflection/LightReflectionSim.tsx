@@ -19,7 +19,7 @@ import AngleArcs from './components/AngleArcs';
 // ─────────────────────────────────────────────
 // আলোর প্রতিফলন (Light Reflection) Simulation
 // NCTB Class 9, Chapter 10
-// θᵢ = θᵣ — angle of incidence = angle of reflection
+// θᵢ = θᵣ - angle of incidence = angle of reflection
 // ─────────────────────────────────────────────
 
 export default function LightReflectionSim() {

@@ -7,7 +7,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { Skeleton, SkeletonList } from '@/components/native/Skeleton';
 
 // ─────────────────────────────────────────────
-// Profile — View & edit student profile
+// Profile - View & edit student profile
 // Mobile-first design
 // ─────────────────────────────────────────────
 
@@ -80,7 +80,7 @@ export default function ProfilePage() {
         headers: { Authorization: `Bearer ${session.access_token}` },
       });
       if (res.ok) {
-        // Account deleted — sign out and redirect
+        // Account deleted - sign out and redirect
         await signOut();
         router.push('/login?deleted=1');
       } else {
@@ -280,7 +280,7 @@ export default function ProfilePage() {
               </div>
             ) : (
               <div className="space-y-0">
-                <InfoRow label="নাম" value={displayName || '—'} />
+                <InfoRow label="নাম" value={displayName || '-'} />
                 {displayPhone && <InfoRow label="ফোন" value={displayPhone} />}
                 {displayEmail && <InfoRow label="ইমেইল" value={displayEmail} />}
                 <InfoRow
@@ -400,7 +400,7 @@ export default function ProfilePage() {
               </div>
             ) : (
               <div className="space-y-4">
-                <DesktopInfoRow label="নাম" value={displayName || '—'} />
+                <DesktopInfoRow label="নাম" value={displayName || '-'} />
                 {displayPhone && <DesktopInfoRow label="ফোন" value={displayPhone} />}
                 {displayEmail && <DesktopInfoRow label="ইমেইল" value={displayEmail} />}
                 <DesktopInfoRow label="শ্রেণি" value={profile?.class_level === 10 ? '১০ম শ্রেণি' : '৯ম শ্রেণি'} />

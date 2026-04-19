@@ -1,7 +1,7 @@
 'use client';
 
 // ─────────────────────────────────────────────
-// Angle Display — Normal line + angle arcs + labels
+// Angle Display - Normal line + angle arcs + labels
 // Shows θ₁ (incidence), θ₂ (refraction), θc (critical)
 // ─────────────────────────────────────────────
 
@@ -82,7 +82,7 @@ export default function AngleDisplay({
         fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth={1}
       />
 
-      {/* θ₁ arc (incidence — cyan, above boundary) */}
+      {/* θ₁ arc (incidence - cyan, above boundary) */}
       <path
         d={arc(centerX, boundaryY, arcR, -inc, 0)}
         fill="none" stroke="#22D3EE" strokeWidth={2} strokeOpacity={0.8}
@@ -92,7 +92,7 @@ export default function AngleDisplay({
         θ₁={inc}°
       </text>
 
-      {/* θ₂ arc (refraction — blue, below boundary) */}
+      {/* θ₂ arc (refraction - blue, below boundary) */}
       {refractionAngle !== null && !isTIR && (
         <>
           <path

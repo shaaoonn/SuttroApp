@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-// Firebase Admin SDK — lazy initialization
+// Firebase Admin SDK - lazy initialization
 // Used for server-side push notification sending
 // Dynamic import to prevent build-time crash
 // ─────────────────────────────────────────────

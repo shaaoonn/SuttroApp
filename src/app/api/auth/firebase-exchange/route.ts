@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-// Force dynamic — firebase-admin can't initialize at build time
+// Force dynamic - firebase-admin can't initialize at build time
 export const dynamic = 'force-dynamic';
 
 // ─────────────────────────────────────────────
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
       );
     }
     if (!firebaseAdmin) {
-      console.error('Firebase Admin not configured — missing env vars');
+      console.error('Firebase Admin not configured - missing env vars');
       return NextResponse.json({ error: 'Firebase not configured' }, { status: 503 });
     }
 

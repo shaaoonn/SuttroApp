@@ -7,7 +7,7 @@ import ExamFilter from './ExamFilter';
 import CQFilter from './CQFilter';
 
 // ─────────────────────────────────────────────
-// ExamTabs — MCQ / সৃজনশীল tab switcher
+// ExamTabs - MCQ / সৃজনশীল tab switcher
 // ─────────────────────────────────────────────
 
 interface ExamTabsProps {
@@ -60,7 +60,7 @@ export default function ExamTabs({ exams, totalCQs, cqCollections, chapterNames 
             style={{ background: 'white', border: '1px solid #F0F4F3' }}
           >
             <p className="text-xs font-medium mb-0.5" style={{ color: '#134E4A' }}>
-              {exams.length}টি MCQ পরীক্ষা প্রস্তুত — আরও আসছে!
+              {exams.length}টি MCQ পরীক্ষা প্রস্তুত - আরও আসছে!
             </p>
             <p className="text-[11px]" style={{ color: '#94A3B8' }}>
               SSC-স্টাইল MCQ, টাইমার, নেগেটিভ মার্কিং ও বিস্তারিত ব্যাখ্যা।
@@ -75,7 +75,7 @@ export default function ExamTabs({ exams, totalCQs, cqCollections, chapterNames 
             style={{ background: 'white', border: '1px solid #F0F4F3' }}
           >
             <p className="text-xs font-medium mb-0.5" style={{ color: '#134E4A' }}>
-              {totalCQs}টি সৃজনশীল প্রশ্ন — অধ্যায় অনুযায়ী ফিল্টার করো
+              {totalCQs}টি সৃজনশীল প্রশ্ন - অধ্যায় অনুযায়ী ফিল্টার করো
             </p>
             <p className="text-[11px]" style={{ color: '#94A3B8' }}>
               প্রতিটি প্রশ্নে উদ্দীপক, ৪টি অংশ (ক-ঘ) এবং বিস্তারিত উত্তর আছে।

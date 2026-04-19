@@ -1,7 +1,7 @@
 'use client';
 
 // ─────────────────────────────────────────────
-// Nucleus — Protons (red) + Neutrons (grey)
+// Nucleus - Protons (red) + Neutrons (grey)
 // Clustered in center with subtle animation
 // ─────────────────────────────────────────────
 

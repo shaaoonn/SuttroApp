@@ -8,7 +8,7 @@ import { trackEvent, saveExamAttempt, type EarnedBadge } from '@/lib/analytics';
 import { useAuth } from '@/lib/auth-context';
 
 // ─────────────────────────────────────────────
-// ExamPlayer — MCQ Exam Interface
+// ExamPlayer - MCQ Exam Interface
 // Design reference Page 5
 // ─────────────────────────────────────────────
 
@@ -261,7 +261,7 @@ export default function ExamPlayer({ exam }: ExamPlayerProps) {
   }
 
   // ═══════════════════════════════════════
-  // RUNNING STATE — Page 5 design
+  // RUNNING STATE - Page 5 design
   // ═══════════════════════════════════════
   const isUrgent = timeLeft <= 60;
 

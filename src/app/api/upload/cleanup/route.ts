@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cleanupOldFiles } from '@/lib/google-drive';
 
 // ─────────────────────────────────────────────
-// Cleanup API — Delete Google Drive files older than 30 days
+// Cleanup API - Delete Google Drive files older than 30 days
 // Called by: cron job (daily at 3 AM Bangladesh time)
 //
 // Setup cron (use external cron service like cron-job.org):

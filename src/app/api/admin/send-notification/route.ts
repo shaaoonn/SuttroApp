@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-// Force dynamic — prevent Next.js from evaluating at build time
+// Force dynamic - prevent Next.js from evaluating at build time
 export const dynamic = 'force-dynamic';
 
 // ─────────────────────────────────────────────
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
   const user = await getUser(token);
   if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
-  // Admin check — verify user exists in admin_users table
+  // Admin check - verify user exists in admin_users table
   const { data: adminUser } = await sb
     .from('admin_users')
     .select('id, role')
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (!adminUser) {
-    return NextResponse.json({ error: 'forbidden — admin only' }, { status: 403 });
+    return NextResponse.json({ error: 'forbidden - admin only' }, { status: 403 });
   }
 
   try {
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     let tokensQuery = sb.from('push_tokens').select('fcm_token');
 
     if (target === 'all') {
-      // All tokens — no filter
+      // All tokens - no filter
     } else if (target === 'class_9' || target === 'class_10') {
       // Get user IDs for specific class from profiles
       const classNum = target === 'class_9' ? 9 : 10;
@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // 3. Send push notifications (batch 500 at a time — FCM limit)
+    // 3. Send push notifications (batch 500 at a time - FCM limit)
     let totalSuccess = 0;
     let totalFailure = 0;
 

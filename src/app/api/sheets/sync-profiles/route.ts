@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET: Check sync status — shows which env vars are missing (no secrets leaked)
+// GET: Check sync status - shows which env vars are missing (no secrets leaked)
 export async function GET() {
   const envStatus = {
     GOOGLE_OAUTH_CLIENT_ID: !!process.env.GOOGLE_OAUTH_CLIENT_ID,

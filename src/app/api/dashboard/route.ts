@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { getSupabase } from '@/lib/supabase-server';
 
 // ─────────────────────────────────────────────
-// Dashboard API — Returns user's progress data
+// Dashboard API - Returns user's progress data
 // Requires Authorization header with access token
 // ─────────────────────────────────────────────
 
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
       examTitles = Object.fromEntries(
         papers.map((p: { id: string; title: string; subject_bn: string }) => [
           p.id,
-          `${p.title} — ${p.subject_bn}`,
+          `${p.title} - ${p.subject_bn}`,
         ])
       );
     }

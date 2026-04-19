@@ -51,7 +51,7 @@ export interface RefractionGeometry {
 
 function getMediumColor(n: number): string {
   // Higher refractive index = denser = darker blue
-  if (n <= 1.05) return 'rgba(135, 206, 250, 0.08)'; // air — nearly transparent
+  if (n <= 1.05) return 'rgba(135, 206, 250, 0.08)'; // air - nearly transparent
   if (n <= 1.4)  return 'rgba(64, 164, 223, 0.18)';  // water
   if (n <= 1.8)  return 'rgba(100, 140, 200, 0.30)';  // glass
   return 'rgba(140, 120, 220, 0.40)';                  // diamond
@@ -121,7 +121,7 @@ export function useLightRefraction() {
       }
     }
 
-    // Reflection intensity (Fresnel approximation — simplified)
+    // Reflection intensity (Fresnel approximation - simplified)
     let reflectionIntensity = 0.15; // always some reflection
     if (isDenseToRare && criticalAngle !== null) {
       const ratio = incAngle / criticalAngle;

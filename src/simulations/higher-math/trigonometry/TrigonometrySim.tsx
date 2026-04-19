@@ -97,14 +97,14 @@ export default function TrigonometrySim() {
           {/* Radius line (hypotenuse) */}
           <line x1={cx} y1={cy} x2={px} y2={py} stroke="rgba(255,255,255,0.7)" strokeWidth={2} />
 
-          {/* Cosine line (horizontal — base) */}
+          {/* Cosine line (horizontal - base) */}
           <line x1={cx} y1={cy} x2={px} y2={cy} stroke="rgba(34,197,94,0.7)" strokeWidth={2.5} />
           <text x={(cx + px) / 2} y={cy + 20}
             fill="rgba(34,197,94,0.8)" fontSize={11} textAnchor="middle" fontFamily="monospace">
             cos = {state.cosValue.toFixed(3)}
           </text>
 
-          {/* Sine line (vertical — perpendicular) */}
+          {/* Sine line (vertical - perpendicular) */}
           <line x1={px} y1={cy} x2={px} y2={py} stroke="rgba(239,68,68,0.7)" strokeWidth={2.5} />
           <text x={px + (state.cosValue >= 0 ? 10 : -10)} y={(cy + py) / 2}
             fill="rgba(239,68,68,0.8)" fontSize={11}

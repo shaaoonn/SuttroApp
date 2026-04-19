@@ -1,5 +1,5 @@
-# Play Console — Step-by-Step Submission Guide
-**Just follow top-to-bottom. Every click, every paste — pre-written.**
+# Play Console - Step-by-Step Submission Guide
+**Just follow top-to-bottom. Every click, every paste - pre-written.**
 
 ---
 
@@ -14,7 +14,7 @@
 
 ---
 
-## Step 0 — Capture phone screenshots (15 min, one-time)
+## Step 0 - Capture phone screenshots (15 min, one-time)
 
 **Install APK:**
 1. Copy `suttro-v2.1.7-release.apk` to your phone
@@ -37,15 +37,15 @@ Screenshots will be in `Internal Storage/Pictures/Screenshots/`. Transfer to PC.
 
 **Requirements Play Store enforces:**
 - Min 2, max 8 per device type
-- 320–3840px on each side
+- 320-3840px on each side
 - Ratio 16:9 or 9:16 (phone screenshots are auto-portrait 9:16)
 - PNG or JPEG
 
 ---
 
-## Step 1 — Generate Feature Graphic PNG (3 min)
+## Step 1 - Generate Feature Graphic PNG (3 min)
 
-1. Double-click `play-store-assets/feature-graphic.html` — opens in Chrome
+1. Double-click `play-store-assets/feature-graphic.html` - opens in Chrome
 2. Press **F12** → DevTools opens
 3. Press **Ctrl+Shift+M** → device toolbar (top bar appears)
 4. Top bar: set **Width=1024, Height=500**, DPR=1
@@ -57,7 +57,7 @@ Screenshots will be in `Internal Storage/Pictures/Screenshots/`. Transfer to PC.
 
 ---
 
-## Step 2 — Play Console: Create the app
+## Step 2 - Play Console: Create the app
 
 **URL**: https://play.google.com/console/
 → Click **"Create app"** (top-right)
@@ -65,7 +65,7 @@ Screenshots will be in `Internal Storage/Pictures/Screenshots/`. Transfer to PC.
 | Field | Answer |
 |-------|--------|
 | App name | `Suttro` |
-| Default language | `English (United States) – en-US` |
+| Default language | `English (United States) - en-US` |
 | App or game | **App** |
 | Free or paid | **Free** |
 | Declarations (Developer Program Policies) | ✅ Tick |
@@ -75,7 +75,7 @@ Screenshots will be in `Internal Storage/Pictures/Screenshots/`. Transfer to PC.
 
 ---
 
-## Step 3 — Main store listing
+## Step 3 - Main store listing
 
 **Left menu** → **Grow → Store presence → Main store listing**
 
@@ -91,7 +91,7 @@ Suttro
 NCTB Class 9-10 science simulations in Bangla. বিজ্ঞান দেখো, বিজ্ঞান বোঝো।
 ```
 
-**Full description** (4000 char max) — copy from `PLAY_STORE_LISTING.md` section "Full description"
+**Full description** (4000 char max) - copy from `PLAY_STORE_LISTING.md` section "Full description"
 
 ### Graphics
 
@@ -100,13 +100,13 @@ NCTB Class 9-10 science simulations in Bangla. বিজ্ঞান দেখ�
 | App icon | (auto from AAB, or upload `android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png`) | 512×512 PNG |
 | Feature graphic | `play-store-assets/feature-graphic.png` | 1024×500 PNG |
 | Phone screenshots | 8 PNG files from Step 0 | 16:9 or 9:16 |
-| Tablet screenshots | *(optional — skip)* | — |
+| Tablet screenshots | *(optional - skip)* | - |
 
 → **Save**
 
 ---
 
-## Step 4 — Store settings
+## Step 4 - Store settings
 
 **Left menu** → **Grow → Store presence → Store settings**
 
@@ -114,7 +114,7 @@ NCTB Class 9-10 science simulations in Bangla. বিজ্ঞান দেখ�
 |-------|--------|
 | App category | **Education** |
 | Tags | `Education`, `Learning`, `Science` |
-| Store listing contact — Email | `shaaoonn@gmail.com` |
+| Store listing contact - Email | `shaaoonn@gmail.com` |
 | Phone (optional) | leave blank |
 | Website | `https://suttro.app` |
 | External marketing | ✅ allow (optional) |
@@ -123,7 +123,7 @@ NCTB Class 9-10 science simulations in Bangla. বিজ্ঞান দেখ�
 
 ---
 
-## Step 5 — App content (compliance forms)
+## Step 5 - App content (compliance forms)
 
 **Left menu** → **Policy → App content**
 
@@ -153,7 +153,7 @@ NCTB Class 9-10 science simulations in Bangla. বিজ্ঞান দেখ�
 - → Submit → Expected rating: **Everyone / PEGI 3 / IARC all-ages**
 
 ### 5e. Target audience
-- Target age groups: **Ages 13–15, 16–17, 18+** (Class 9-10 = age 14-16)
+- Target age groups: **Ages 13-15, 16-17, 18+** (Class 9-10 = age 14-16)
 - Appeals to children? **No**
 - → Save
 
@@ -198,7 +198,7 @@ Copy answers from `PLAY_STORE_LISTING.md` section "Data Safety". Key highlights:
 
 ---
 
-## Step 6 — Production release
+## Step 6 - Production release
 
 **Left menu** → **Release → Production** → **Create new release**
 
@@ -207,7 +207,7 @@ Copy answers from `PLAY_STORE_LISTING.md` section "Data Safety". Key highlights:
 - Wait for processing (2-5 min)
 
 ### Release name
-Auto-filled from AAB: `10 (2.1.7)` — leave as-is
+Auto-filled from AAB: `10 (2.1.7)` - leave as-is
 
 ### Release notes
 
@@ -224,7 +224,7 @@ v2.1.7
 **Bengali (bn-BD):** (add language first if not added)
 ```
 v2.1.7
-• অ্যাপের নাম "Suttro" করা হলো — সহজে খুঁজে পাওয়ার জন্য
+• অ্যাপের নাম "Suttro" করা হলো - সহজে খুঁজে পাওয়ার জন্য
 • ওয়েবসাইট SEO উন্নত করা হলো
 • Android 15 + 16 KB পেজ-সাইজ সাপোর্ট
 • আইকন ও ব্র্যান্ড আপডেট
@@ -235,7 +235,7 @@ v2.1.7
 
 ---
 
-## Step 7 — Wait for review
+## Step 7 - Wait for review
 
 - Review time: **1-7 days** (first submission is usually longer)
 - Status: `In review` → `Approved` → Live on Play Store
@@ -248,7 +248,7 @@ v2.1.7
 Common reasons + fixes:
 | Issue | Fix |
 |-------|-----|
-| "Data Safety inaccurate" | Recheck each data type — Firebase Analytics = yes, FCM = yes |
+| "Data Safety inaccurate" | Recheck each data type - Firebase Analytics = yes, FCM = yes |
 | "Screenshots don't match app" | Re-capture from real APK, not mockups |
 | "Privacy policy missing item" | Add to `/privacy` page, redeploy web |
 | "Feature graphic contains placeholder" | Use the real one from Step 1 |

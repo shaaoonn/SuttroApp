@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-// Public endpoint — returns active subscription plans for pricing page
+// Public endpoint - returns active subscription plans for pricing page
 export async function GET() {
   try {
     const supabase = createClient(

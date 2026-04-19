@@ -3,7 +3,7 @@
 import { type ReactNode, type PointerEvent, type WheelEvent } from 'react';
 
 // ─────────────────────────────────────────────
-// DotGridCanvas — Figma-style dot grid background
+// DotGridCanvas - Figma-style dot grid background
 // This is the transform layer: it's LARGER than the viewport
 // and moves with pan/zoom (CSS transform).
 // Children (simulation objects) sit on this canvas.

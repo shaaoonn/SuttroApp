@@ -28,9 +28,9 @@ const SUBJECT_COLORS: Record<string, { bg: string; light: string; lightBg: strin
 export async function generateMetadata({ params }: ClassPageProps) {
   const { slug } = await params;
   const cls = await getClassBySlug(slug);
-  if (!cls) return { title: 'ক্লাস পাওয়া যায়নি — সূত্র' };
+  if (!cls) return { title: 'ক্লাস পাওয়া যায়নি - সূত্র' };
   return {
-    title: `${cls.title} — সূত্র | suttro.app`,
+    title: `${cls.title} - সূত্র | suttro.app`,
     description: cls.description || cls.title,
   };
 }
@@ -50,7 +50,7 @@ export default async function ClassPlayerPage({ params }: ClassPageProps) {
 
       {/* ══════ MOBILE ══════ */}
       <div className="lg:hidden">
-        {/* Video Player — full width, no padding */}
+        {/* Video Player - full width, no padding */}
         <div style={{ background: '#0d1117' }}>
           {cls?.hlsSrc ? (
             <VideoPlayerWrapper

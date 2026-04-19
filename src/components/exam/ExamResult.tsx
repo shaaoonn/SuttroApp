@@ -7,7 +7,7 @@ import { EXAM_SUBJECT_COLORS } from '@/data/exams';
 import type { EarnedBadge } from '@/lib/analytics';
 
 // ─────────────────────────────────────────────
-// ExamResult — Score display + review mode
+// ExamResult - Score display + review mode
 // Design reference Page 6
 // ─────────────────────────────────────────────
 
@@ -75,7 +75,7 @@ export default function ExamResult({ exam, answers, timeUsed, onRetry, earnedBad
           {stats.percentage >= 80 ? 'দারুণ!' : stats.percentage >= 50 ? 'ভালো হয়েছে!' : 'আরো চেষ্টা করো!'}
         </div>
         <div className="text-[11px] mb-4" style={{ color: '#5F9EA0' }}>
-          {exam.subjectBn} — পরীক্ষা সম্পূর্ণ
+          {exam.subjectBn} - পরীক্ষা সম্পূর্ণ
         </div>
 
         {/* 3 stat cards */}

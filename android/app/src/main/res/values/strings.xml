@@ -2,7 +2,7 @@
 <resources>
     <!-- App label shown under the launcher icon. English "Suttro" is the
          primary brand (matches Shikho / 10 Minute School convention on the
-         BD Play Store — easier to type, search, and share). Bengali "সূত্র"
+         BD Play Store - easier to type, search, and share). Bengali "সূত্র"
          is retained as the secondary/tagline in UI text. -->
     <string name="app_name">Suttro</string>
     <string name="title_activity_main">Suttro</string>

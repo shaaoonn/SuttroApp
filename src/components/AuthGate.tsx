@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 // ─────────────────────────────────────────────
-// AuthGate — Forces login in Capacitor app
+// AuthGate - Forces login in Capacitor app
 // Shows loading screen while checking auth
 // Public paths bypass the gate
 // ─────────────────────────────────────────────
@@ -62,7 +62,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
     return <SuttroLoading />;
   }
 
-  // In app, not logged in, not on public page — show loading (redirect is happening)
+  // In app, not logged in, not on public page - show loading (redirect is happening)
   if (appMode && !user && !isPublicPath(pathname)) {
     return <SuttroLoading />;
   }

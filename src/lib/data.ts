@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-// Data Access Layer — Supabase with static fallback
+// Data Access Layer - Supabase with static fallback
 // All functions return the same shapes as the
 // original static exports for frontend compatibility
 // ─────────────────────────────────────────────
@@ -102,7 +102,7 @@ export async function getClasses(): Promise<ClassRecording[]> {
 export async function getClassBySlug(slug: string): Promise<ClassDetail | null> {
   const sb = getSupabase();
   if (!sb) {
-    // Fallback to static data — need to build ClassDetail from static
+    // Fallback to static data - need to build ClassDetail from static
     const { CLASSES } = await import('@/data/classes');
     const cls = CLASSES.find((c) => c.slug === slug);
     if (!cls) return null;

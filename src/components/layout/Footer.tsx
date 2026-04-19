@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 // ─────────────────────────────────────────────
-// Footer — সূত্র | suttro.app
+// Footer - সূত্র | suttro.app
 // ─────────────────────────────────────────────
 
 const FOOTER_LINKS = {
@@ -109,7 +109,7 @@ export default function Footer() {
           className="mt-10 pt-6 flex flex-col lg:flex-row items-center justify-between gap-4 text-sm text-white/30"
           style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
         >
-          <p>&copy; {new Date().getFullYear()} সূত্র | suttro.app — EJOSB IT</p>
+          <p>&copy; {new Date().getFullYear()} সূত্র | suttro.app - EJOSB IT</p>
           <p>বিজ্ঞান পড়া নয়, বিজ্ঞান করা।</p>
         </div>
       </div>

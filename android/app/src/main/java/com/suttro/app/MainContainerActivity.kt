@@ -369,6 +369,11 @@ class MainContainerActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView() {
+        // Chrome DevTools remote debugging — chrome://inspect to attach.
+        // Enabled for both debug and release builds so we can diagnose
+        // production-only flows (bKash, Google Sign-In) on real devices.
+        WebView.setWebContentsDebuggingEnabled(true)
+
         val settings = webView.settings
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
@@ -440,30 +445,51 @@ class MainContainerActivity : AppCompatActivity() {
                 val url = uri.toString()
                 val host = uri.host?.lowercase() ?: ""
                 val scheme = uri.scheme?.lowercase() ?: ""
+                val isRedirect = request.isRedirect
+                val mainFrame = request.isForMainFrame
 
-                // Logout redirect
-                if (url.contains("suttro.app/login")) {
+                Log.i("SuttroNav", "shouldOverride url=$url host=$host scheme=$scheme mainFrame=$mainFrame redirect=$isRedirect")
+
+                // Logout redirect — must match ONLY the bare /login route (not
+                // /login-help, /payment/success?next=suttro.app/login, etc). This
+                // bug would route any URL containing "suttro.app/login" to logout.
+                if ((scheme == "https" || scheme == "http") &&
+                    host == "suttro.app" &&
+                    (uri.path == "/login" || uri.path?.startsWith("/login/") == true)
+                ) {
+                    Log.i("SuttroNav", "→ handleLogout()")
                     handleLogout()
                     return true
                 }
 
                 // Telephone / email / SMS / market — let the system handle
                 if (scheme in setOf("tel", "mailto", "sms", "market", "intent")) {
+                    Log.i("SuttroNav", "→ system intent for scheme=$scheme")
                     try { startActivity(Intent(Intent.ACTION_VIEW, uri)) } catch (_: Exception) {}
                     return true
                 }
 
                 // Hosts allowed to load INSIDE WebView (bKash + Google Drive for PDFs + YouTube + OAuth)
                 if (isInAppHost(host)) {
+                    Log.i("SuttroNav", "→ STAY in-app (whitelisted host)")
+                    return false
+                }
+
+                // Empty host with http(s) scheme → likely a relative URL or
+                // malformed — don't punt to external, let WebView handle it.
+                if ((scheme == "https" || scheme == "http") && host.isEmpty()) {
+                    Log.w("SuttroNav", "→ STAY in-app (http(s) with empty host — not punting)")
                     return false
                 }
 
                 // Truly external — open in system browser
+                Log.w("SuttroNav", "→ EXTERNAL browser (host=$host not whitelisted)")
                 try { startActivity(Intent(Intent.ACTION_VIEW, uri)) } catch (_: Exception) {}
                 return true
             }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                Log.i("SuttroNav", "onPageStarted url=$url")
                 progressBar.visibility = View.VISIBLE
                 if (isFirstLoad) {
                     showShimmer()
@@ -471,6 +497,7 @@ class MainContainerActivity : AppCompatActivity() {
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
+                Log.i("SuttroNav", "onPageFinished url=$url")
                 progressBar.visibility = View.GONE
                 swipeRefresh.isRefreshing = false
                 hideShimmer()
@@ -576,7 +603,12 @@ class MainContainerActivity : AppCompatActivity() {
                 isUserGesture: Boolean,
                 resultMsg: Message?
             ): Boolean {
-                val transport = resultMsg?.obj as? WebView.WebViewTransport ?: return false
+                Log.i("SuttroNav", "onCreateWindow dialog=$isDialog userGesture=$isUserGesture currentUrl=${view?.url}")
+                val transport = resultMsg?.obj as? WebView.WebViewTransport
+                if (transport == null) {
+                    Log.w("SuttroNav", "onCreateWindow: transport null — dropping popup")
+                    return false
+                }
                 transport.webView = webView
                 resultMsg.sendToTarget()
                 return true

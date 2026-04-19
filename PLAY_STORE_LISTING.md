@@ -152,7 +152,7 @@ Keywords: NCTB, SSC, class 9 physics, class 10 science, bangla physics simulatio
 ### 3. Phone Screenshots - 1080×1920 or 1080×2340 PNG (minimum 2, recommended 8)
 
 **How to capture:**
-1. Install `suttro-v2.1.7-release.apk` on your phone
+1. Install `suttro-v2.1.11-release.apk` on your phone
 2. Open the app
 3. Press **Volume Down + Power** to screenshot each screen:
    - Screenshot 1: Home page (Bengali UI is the hook)
@@ -276,7 +276,7 @@ Fill the IARC questionnaire with these answers:
 
 **Release name (internal):**
 ```
-v2.1.7 (10)
+v2.1.11 (10)
 ```
 
 **Release notes (what's new - max 500 chars per language):**
@@ -307,10 +307,10 @@ English:
 
 ## 📤 Upload: AAB
 
-**File:** `D:\APPS AND WEB\Suttro App\suttro-v2.1.7-release.aab`
+**File:** `D:\APPS AND WEB\Suttro App\builds\suttro-v2.1.11.aab`
 **Size:** 8.9 MB
-**versionCode:** 10
-**versionName:** 2.1.7
+**versionCode:** 14
+**versionName:** 2.1.11
 
 ---
 
@@ -330,7 +330,7 @@ English:
 - [ ] Account deletion URL set
 - [ ] Contains ads = No
 - [ ] In-app purchases = No
-- [ ] AAB uploaded (suttro-v2.1.7-release.aab)
+- [ ] AAB uploaded (builds/suttro-v2.1.11.aab)
 - [ ] Release notes added (both Bn + En)
 - [ ] Countries = Bangladesh (+ optionally others if you want)
 - [ ] Pricing = Free

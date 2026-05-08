@@ -201,38 +201,27 @@ body {
   flex-direction: column;
 }
 
-/* ── Sim page wrapper ── Edge-to-edge on mobile (YouTube-style),
- *    centered + rounded on desktop */
+/* ── Sim page wrapper ── Edge-to-edge on every viewport.
+ * Sim controls its own internal padding/layout; no outer chrome. */
 .sim-player-wrap {
   width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 @media (min-width: 1024px) {
-  .sim-player-wrap {
-    max-width: 1152px;
-    margin: 24px auto 0;
-    padding: 0 24px;
-  }
   .sim-player-wrap .suttro-player {
-    border-radius: var(--radius-card);
+    border-radius: 0;
     box-shadow: 0 10px 30px -10px rgba(19, 78, 74, 0.2);
   }
 }
 
-/* Mobile: player spans full viewport width edge-to-edge (no side gutters).
- * Height = comfortable 4:3 aspect (taller than 16:9 → more sim breathing room)
- * with sensible min/max so it's never absurdly tall on tablets in portrait. */
 @media (max-width: 1023px) {
-  .sim-player-wrap {
-    margin: 0;
-    padding: 0;
-  }
   .sim-player-wrap .suttro-player {
     border-radius: 0;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: auto;
     width: 100vw;
     min-height: 320px;
-    max-height: 70svh;
   }
 }
 

@@ -13,20 +13,20 @@ interface Props {
   mode: MotionState['mode'];
 }
 
-const VAR_LABEL_BN: Record<VariableKey, string> = {
-  u: 'আদিবেগ',
-  v: 'বেগ',
-  a: 'ত্বরণ',
-  s: 'সরণ',
-  t: 'সময়',
-};
-
 const VAR_UNIT: Record<VariableKey, string> = {
   u: 'm/s',
   v: 'm/s',
   a: 'm/s²',
   s: 'm',
   t: 's',
+};
+
+const VAR_LABEL_BN: Record<VariableKey, string> = {
+  u: 'আদিবেগ',
+  v: 'বেগ',
+  a: 'ত্বরণ',
+  s: 'সরণ',
+  t: 'সময়',
 };
 
 const fmt = (n: number) => {
@@ -48,53 +48,54 @@ export default function ResultDisplay({
     <div
       className="rounded-xl px-3 py-2.5"
       style={{
-        background: 'rgba(11, 29, 58, 0.5)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
+        background: '#FFFFFF',
+        border: '1px solid #E2E8F0',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
       }}
     >
-      <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
-        <div className="flex items-baseline gap-1.5">
-          <span style={{ color: 'rgba(250, 251, 249, 0.55)' }}>সময় t:</span>
-          <span className="font-mono font-semibold" style={{ color: '#FAFBF9' }}>
+      <div className="grid grid-cols-3 gap-2 text-xs">
+        <div>
+          <div className="text-[10px]" style={{ color: '#94A3B8' }}>সময় t</div>
+          <div className="font-mono font-bold text-sm" style={{ color: '#1E293B' }}>
             {fmt(liveTime)}s
-          </span>
+          </div>
         </div>
-        <div className="flex items-baseline gap-1.5">
-          <span style={{ color: 'rgba(250, 251, 249, 0.55)' }}>বেগ v:</span>
-          <span className="font-mono font-semibold" style={{ color: '#2A9D6E' }}>
+        <div>
+          <div className="text-[10px]" style={{ color: '#94A3B8' }}>বেগ v</div>
+          <div className="font-mono font-bold text-sm" style={{ color: '#16A34A' }}>
             {fmt(liveV)} m/s
-          </span>
+          </div>
         </div>
-        <div className="flex items-baseline gap-1.5 col-span-2">
-          <span style={{ color: 'rgba(250, 251, 249, 0.55)' }}>সরণ s:</span>
-          <span className="font-mono font-semibold" style={{ color: '#FAFBF9' }}>
+        <div>
+          <div className="text-[10px]" style={{ color: '#94A3B8' }}>সরণ s</div>
+          <div className="font-mono font-bold text-sm" style={{ color: '#1E293B' }}>
             {fmt(liveS)} m
-          </span>
+          </div>
         </div>
       </div>
 
-      {/* Solver result line */}
+      {/* Solver result */}
       {mode === 'solver' && (
         <div
-          className="mt-2 pt-2 border-t flex items-baseline gap-1.5 text-sm"
-          style={{ borderColor: 'rgba(255, 255, 255, 0.08)' }}
+          className="mt-2 pt-2 border-t flex items-baseline gap-1.5"
+          style={{ borderColor: '#F1F5F9' }}
         >
-          <span style={{ color: 'rgba(250, 251, 249, 0.55)', fontSize: '11px' }}>
+          <span className="text-[10px] font-semibold" style={{ color: '#94A3B8' }}>
             ফলাফল:
           </span>
           {error ? (
-            <span style={{ color: '#F87171', fontSize: '12px' }}>
+            <span className="text-xs" style={{ color: '#DC2626' }}>
               ⚠ {error.message}
             </span>
           ) : lastResult && unknown ? (
-            <span className="font-mono" style={{ color: '#E8A838' }}>
+            <span
+              className="font-mono text-base font-bold"
+              style={{ color: '#D97706' }}
+            >
               {unknown} = {fmt(lastResult.value)} {VAR_UNIT[unknown]}
             </span>
           ) : unknown ? (
-            <span
-              className="italic"
-              style={{ color: 'rgba(250, 251, 249, 0.4)', fontSize: '11px' }}
-            >
+            <span className="text-xs italic" style={{ color: '#CBD5E1' }}>
               {VAR_LABEL_BN[unknown]} solve হবে…
             </span>
           ) : null}

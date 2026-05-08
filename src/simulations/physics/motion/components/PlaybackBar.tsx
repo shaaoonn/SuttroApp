@@ -30,18 +30,24 @@ export default function PlaybackBar({
   const isPlaying = status === 'playing';
   return (
     <div
-      className="rounded-xl px-3 py-2.5 flex items-center gap-2 flex-wrap"
+      className="rounded-xl px-3 py-2 flex items-center gap-2 flex-wrap"
       style={{
-        background: 'rgba(11, 29, 58, 0.5)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
+        background: '#FFFFFF',
+        border: '1px solid #E2E8F0',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
       }}
     >
       <button
         onClick={isPlaying ? onPause : onPlay}
-        className="px-4 py-1.5 rounded-lg font-medium text-sm transition-all flex items-center gap-1.5"
+        className="px-4 py-1.5 rounded-lg font-bold text-sm transition-all flex items-center gap-1.5"
         style={{
-          background: isPlaying ? '#E8A838' : '#2A9D6E',
+          background: isPlaying
+            ? 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)'
+            : 'linear-gradient(135deg, #16A34A 0%, #15803D 100%)',
           color: '#FFFFFF',
+          boxShadow: isPlaying
+            ? '0 2px 8px rgba(245, 158, 11, 0.4)'
+            : '0 2px 8px rgba(22, 163, 74, 0.4)',
         }}
       >
         {isPlaying ? (
@@ -57,11 +63,11 @@ export default function PlaybackBar({
 
       <button
         onClick={onReset}
-        className="px-3 py-1.5 rounded-lg text-sm transition-all flex items-center gap-1.5"
+        className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5"
         style={{
-          background: 'rgba(255, 255, 255, 0.08)',
-          color: 'rgba(250, 251, 249, 0.85)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          background: '#F1F5F9',
+          color: '#475569',
+          border: '1px solid #E2E8F0',
         }}
       >
         <span style={{ fontSize: '12px' }}>↺</span> Reset
@@ -71,25 +77,19 @@ export default function PlaybackBar({
 
       {/* Speed picker */}
       <div className="flex items-center gap-1">
-        <span
-          className="text-[10px]"
-          style={{ color: 'rgba(250, 251, 249, 0.55)' }}
-        >
+        <span className="text-[10px] font-semibold" style={{ color: '#94A3B8' }}>
           গতি:
         </span>
         {SPEEDS.map((s) => (
           <button
             key={s}
             onClick={() => onSpeedChange(s)}
-            className="px-1.5 py-0.5 rounded text-[11px] font-mono transition-all"
+            className="px-1.5 py-0.5 rounded text-[11px] font-mono font-semibold transition-all"
             style={{
-              background:
-                s === speed ? 'rgba(42, 157, 110, 0.2)' : 'transparent',
-              color: s === speed ? '#2A9D6E' : 'rgba(250, 251, 249, 0.6)',
-              border:
-                s === speed
-                  ? '1px solid rgba(42, 157, 110, 0.4)'
-                  : '1px solid rgba(255, 255, 255, 0.08)',
+              background: s === speed ? '#3B82F6' : '#F1F5F9',
+              color: s === speed ? '#FFFFFF' : '#475569',
+              border: '1px solid',
+              borderColor: s === speed ? '#3B82F6' : '#E2E8F0',
             }}
           >
             {s}×
@@ -98,16 +98,16 @@ export default function PlaybackBar({
       </div>
 
       {/* Ghost button */}
-      <div className="flex items-center gap-1 ml-2">
+      <div className="flex items-center gap-1 ml-1">
         <button
           onClick={onSaveGhost}
-          className="px-2 py-1 rounded text-[11px] transition-all"
+          className="px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all"
           style={{
-            background: 'rgba(255, 255, 255, 0.08)',
-            color: 'rgba(250, 251, 249, 0.85)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: '#FCE7F3',
+            color: '#BE185D',
+            border: '1px solid #FBCFE8',
           }}
-          title="বর্তমান run ghost-এ সংরক্ষণ করো"
+          title="বর্তমান run ghost-এ সংরক্ষণ"
         >
           + Ghost ({ghostCount})
         </button>
@@ -115,7 +115,7 @@ export default function PlaybackBar({
           <button
             onClick={onClearGhosts}
             className="text-[11px] px-1.5 py-1 transition-all"
-            style={{ color: 'rgba(248, 113, 113, 0.85)' }}
+            style={{ color: '#DC2626' }}
             title="Ghost মুছে দাও"
           >
             ✕

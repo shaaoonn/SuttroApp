@@ -25,8 +25,8 @@ export default function TutorialFAB({ videoUrl }: Props) {
         style={{
           width: '52px',
           height: '52px',
-          background: placeholder ? 'rgba(255, 255, 255, 0.08)' : '#FF0000',
-          border: '2px solid rgba(255, 255, 255, 0.15)',
+          background: placeholder ? 'rgba(148, 163, 184, 0.5)' : '#FF0000',
+          border: '2px solid rgba(255, 255, 255, 0.8)',
           backdropFilter: 'blur(10px)',
           opacity: placeholder ? 0.4 : 1,
           cursor: placeholder ? 'not-allowed' : 'pointer',

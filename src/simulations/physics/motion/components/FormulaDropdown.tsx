@@ -9,41 +9,33 @@ interface Props {
   onChange: (i: number) => void;
 }
 
-export default function FormulaDropdown({
-  equation,
-  variantIndex,
-  onChange,
-}: Props) {
+export default function FormulaDropdown({ equation, variantIndex, onChange }: Props) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
+    function onClickOutside(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     }
-    if (open) document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    if (open) document.addEventListener('mousedown', onClickOutside);
+    return () => document.removeEventListener('mousedown', onClickOutside);
   }, [open]);
 
   const current = equation.variants[variantIndex] ?? equation.variants[0];
 
-  // Free fall has no derivable variants for solving u, a — fewer items
   if (equation.variants.length <= 1) {
     return (
       <div
         className="rounded-xl px-3 py-2.5"
         style={{
-          background: 'rgba(255, 255, 255, 0.05)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)',
+          border: '1.5px solid #F59E0B',
         }}
       >
-        <div className="text-[10px] opacity-50 mb-0.5" style={{ color: '#FAFBF9' }}>
+        <div className="text-[10px] font-semibold mb-0.5" style={{ color: '#92400E' }}>
           সূত্র
         </div>
-        <div
-          className="font-mono text-sm font-semibold"
-          style={{ color: '#E8A838' }}
-        >
+        <div className="font-mono text-base font-bold" style={{ color: '#78350F' }}>
           {current.expression}
         </div>
       </div>
@@ -56,42 +48,38 @@ export default function FormulaDropdown({
         onClick={() => setOpen((s) => !s)}
         className="w-full rounded-xl px-3 py-2.5 text-left transition-all flex items-center justify-between"
         style={{
-          background: 'rgba(255, 255, 255, 0.05)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)',
+          border: '1.5px solid #F59E0B',
+          boxShadow: '0 2px 6px rgba(245, 158, 11, 0.2)',
         }}
       >
         <div>
-          <div
-            className="text-[10px] opacity-50 mb-0.5"
-            style={{ color: '#FAFBF9' }}
-          >
-            সমাধান চাই: <span style={{ color: '#E8A838' }}>{current.solves}</span>
+          <div className="text-[10px] font-semibold mb-0.5" style={{ color: '#92400E' }}>
+            সমাধান চাই: <span className="font-mono" style={{ color: '#78350F' }}>{current.solves}</span>
           </div>
-          <div
-            className="font-mono text-sm font-semibold"
-            style={{ color: '#E8A838' }}
-          >
+          <div className="font-mono text-base font-bold" style={{ color: '#78350F' }}>
             {current.expression}
           </div>
         </div>
         <svg
-          width="16"
-          height="16"
+          width="18"
+          height="18"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          style={{ color: 'rgba(250, 251, 249, 0.5)', transform: open ? 'rotate(180deg)' : '', transition: 'transform 0.2s' }}
+          stroke="#92400E"
+          strokeWidth="2.5"
+          style={{ transform: open ? 'rotate(180deg)' : '', transition: 'transform 0.2s' }}
         >
           <path d="M6 9l6 6 6-6" />
         </svg>
       </button>
       {open && (
         <div
-          className="absolute left-0 right-0 mt-1.5 rounded-xl py-1 shadow-2xl z-30"
+          className="absolute left-0 right-0 mt-1.5 rounded-xl py-1 shadow-xl z-30"
           style={{
-            background: '#0B1D3A',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
+            background: '#FFFFFF',
+            border: '1px solid #E2E8F0',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
           }}
         >
           {equation.variants.map((variant, i) => {
@@ -103,20 +91,20 @@ export default function FormulaDropdown({
                   onChange(i);
                   setOpen(false);
                 }}
-                className="w-full px-3 py-2 text-left flex items-baseline gap-2 transition-colors hover:bg-white/5"
+                className="w-full px-3 py-2 text-left flex items-baseline gap-2 transition-colors"
                 style={{
-                  background: active ? 'rgba(42, 157, 110, 0.15)' : 'transparent',
+                  background: active ? '#FEF3C7' : 'transparent',
                 }}
               >
                 <span
-                  className="text-[10px] opacity-60 w-3"
-                  style={{ color: '#FAFBF9' }}
+                  className="text-[10px] w-3 font-bold"
+                  style={{ color: active ? '#F59E0B' : 'transparent' }}
                 >
-                  {active ? '✓' : ''}
+                  ✓
                 </span>
                 <span
                   className="font-mono text-sm flex-1"
-                  style={{ color: active ? '#E8A838' : '#FAFBF9' }}
+                  style={{ color: active ? '#78350F' : '#1E293B', fontWeight: active ? 700 : 500 }}
                 >
                   {variant.expression}
                 </span>

@@ -34,39 +34,40 @@ export default function ValueSlider({
 }: Props) {
   return (
     <div
-      className="rounded-xl px-3 py-3 transition-colors"
+      className="rounded-xl px-3 py-2.5 transition-all"
       style={{
-        background: isHighlighted
-          ? 'rgba(232, 168, 56, 0.12)'
-          : 'rgba(255, 255, 255, 0.04)',
-        border: isHighlighted
-          ? '1px solid rgba(232, 168, 56, 0.4)'
-          : '1px solid rgba(255, 255, 255, 0.08)',
+        background: isUnknown
+          ? 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)'
+          : isHighlighted
+            ? 'linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%)'
+            : '#FFFFFF',
+        border: isUnknown
+          ? '1.5px solid #F59E0B'
+          : isHighlighted
+            ? '1.5px solid #3B82F6'
+            : '1px solid #E2E8F0',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
       }}
     >
-      <div className="flex items-baseline justify-between mb-1.5">
+      <div className="flex items-baseline justify-between mb-1">
         <span
-          className="text-xs font-medium opacity-70"
-          style={{ color: '#FAFBF9' }}
+          className="text-xs font-semibold"
+          style={{ color: '#475569' }}
         >
           {label}
         </span>
         <span
-          className="font-mono text-xs opacity-50"
-          style={{ color: '#FAFBF9' }}
+          className="font-mono text-[10px]"
+          style={{ color: '#94A3B8' }}
         >
           {unit}
         </span>
       </div>
       <div
-        className="font-mono font-bold mb-2 leading-none"
+        className="font-mono font-bold mb-1.5 leading-none"
         style={{
-          color: isUnknown
-            ? '#E8A838'
-            : isHighlighted
-              ? '#E8A838'
-              : '#FAFBF9',
-          fontSize: '20px',
+          color: isUnknown ? '#D97706' : '#1E293B',
+          fontSize: '22px',
         }}
       >
         {isUnknown ? '?' : formatValue(value)}
@@ -80,13 +81,13 @@ export default function ValueSlider({
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
           className="w-full"
-          style={{ accentColor: '#2A9D6E' }}
+          style={{ accentColor: '#16A34A' }}
         />
       )}
       {isUnknown && (
         <div
-          className="text-[10px] opacity-60 italic"
-          style={{ color: '#FAFBF9' }}
+          className="text-[10px] italic"
+          style={{ color: '#92400E' }}
         >
           সমাধান করো
         </div>

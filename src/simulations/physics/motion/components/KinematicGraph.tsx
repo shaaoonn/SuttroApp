@@ -5,12 +5,10 @@ import { positionAt, velocityAt } from '../physics';
 import type { KinematicVars } from '../types';
 
 interface Props {
-  /** Which quantity to plot on Y axis */
   variant: 'velocity' | 'displacement';
   values: KinematicVars;
   duration: number;
   liveTime: number;
-  /** For free fall, override u/a to 0/g */
   isFreefall?: boolean;
 }
 
@@ -44,48 +42,45 @@ export default function KinematicGraph({
 
     const W = cssW;
     const H = cssH;
-
-    const padL = 38;
+    const padL = 36;
     const padR = 8;
-    const padT = 8;
+    const padT = 16;
     const padB = 22;
     const innerW = W - padL - padR;
     const innerH = H - padT - padB;
 
-    // ─── Compute Y-range ──
     const u = isFreefall ? 0 : values.u;
     const a = isFreefall ? G : values.a;
-    const f =
-      variant === 'velocity'
-        ? (t: number) => velocityAt(u, a, t)
-        : (t: number) => positionAt(u, a, t);
+    const f = variant === 'velocity'
+      ? (t: number) => velocityAt(u, a, t)
+      : (t: number) => positionAt(u, a, t);
 
-    let yMin = 0,
-      yMax = 1;
+    let yMin = 0, yMax = 1;
     const samples = 60;
-    const ys: number[] = [];
     for (let i = 0; i <= samples; i++) {
       const t = (duration * i) / samples;
       const y = f(t);
-      ys.push(y);
       yMin = Math.min(yMin, y);
       yMax = Math.max(yMax, y);
     }
-    if (yMin === yMax) {
-      yMax = yMin + 1;
-    }
+    if (yMin === yMax) yMax = yMin + 1;
     const yRange = yMax - yMin;
 
-    // ─── Background ──
-    ctx.fillStyle = '#050D1F';
+    // Background
+    ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, W, H);
 
-    // ─── Grid ──
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+    // Border
+    ctx.strokeStyle = '#E2E8F0';
     ctx.lineWidth = 1;
-    const yLines = 5;
+    ctx.strokeRect(0.5, 0.5, W - 1, H - 1);
+
+    // Grid
+    ctx.strokeStyle = '#F1F5F9';
+    ctx.lineWidth = 1;
+    const yLines = 4;
     ctx.font = '9px ui-monospace, monospace';
-    ctx.fillStyle = 'rgba(250, 251, 249, 0.5)';
+    ctx.fillStyle = '#94A3B8';
     ctx.textAlign = 'right';
     for (let i = 0; i <= yLines; i++) {
       const y = padT + (innerH * i) / yLines;
@@ -97,8 +92,7 @@ export default function KinematicGraph({
       ctx.fillText(yVal.toFixed(1), padL - 4, y + 3);
     }
 
-    // ─── X axis (time) ──
-    const xLines = 5;
+    const xLines = 4;
     ctx.textAlign = 'center';
     for (let i = 0; i <= xLines; i++) {
       const x = padL + (innerW * i) / xLines;
@@ -110,10 +104,10 @@ export default function KinematicGraph({
       ctx.fillText(`${tVal.toFixed(1)}s`, x, H - 6);
     }
 
-    // ─── Zero line (if range crosses zero) ──
+    // Zero line
     if (yMin < 0 && yMax > 0) {
       const zeroY = padT + (yMax / yRange) * innerH;
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+      ctx.strokeStyle = '#CBD5E1';
       ctx.setLineDash([4, 4]);
       ctx.beginPath();
       ctx.moveTo(padL, zeroY);
@@ -122,20 +116,35 @@ export default function KinematicGraph({
       ctx.setLineDash([]);
     }
 
-    // ─── Axis labels ──
-    ctx.fillStyle = 'rgba(250, 251, 249, 0.55)';
-    ctx.font = 'bold 9px ui-monospace, monospace';
+    // Title (top-left)
+    ctx.fillStyle = '#475569';
+    ctx.font = 'bold 10px ui-monospace, monospace';
     ctx.textAlign = 'left';
-    ctx.fillText(variant === 'velocity' ? 'v (m/s)' : 's (m)', padL + 2, padT + 9);
+    ctx.fillText(variant === 'velocity' ? 'v (m/s)' : 's (m)', padL + 2, padT - 4);
     ctx.textAlign = 'right';
     ctx.fillText('t (s)', W - padR - 2, H - 6);
 
-    // ─── Plot the function ──
+    // Plot
     const xPos = (t: number) => padL + (t / duration) * innerW;
     const yPos = (y: number) => padT + ((yMax - y) / yRange) * innerH;
 
-    ctx.strokeStyle = variant === 'velocity' ? '#2A9D6E' : '#E8A838';
-    ctx.lineWidth = 2;
+    const plotColor = variant === 'velocity' ? '#16A34A' : '#F59E0B';
+
+    // Filled area below curve
+    ctx.fillStyle = plotColor + '15';
+    ctx.beginPath();
+    ctx.moveTo(xPos(0), yPos(Math.max(yMin, 0)));
+    for (let i = 0; i <= samples; i++) {
+      const t = (duration * i) / samples;
+      ctx.lineTo(xPos(t), yPos(f(t)));
+    }
+    ctx.lineTo(xPos(duration), yPos(Math.max(yMin, 0)));
+    ctx.closePath();
+    ctx.fill();
+
+    // Line
+    ctx.strokeStyle = plotColor;
+    ctx.lineWidth = 2.5;
     ctx.beginPath();
     for (let i = 0; i <= samples; i++) {
       const t = (duration * i) / samples;
@@ -147,24 +156,22 @@ export default function KinematicGraph({
     }
     ctx.stroke();
 
-    // ─── Live time marker ──
+    // Live marker
     if (liveTime > 0 && liveTime <= duration) {
       const lx = xPos(liveTime);
       const ly = yPos(f(liveTime));
-      // Vertical line
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.strokeStyle = '#94A3B8';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(lx, padT);
       ctx.lineTo(lx, padT + innerH);
       ctx.stroke();
-      // Dot
-      ctx.fillStyle = variant === 'velocity' ? '#2A9D6E' : '#E8A838';
+      ctx.fillStyle = plotColor;
       ctx.beginPath();
-      ctx.arc(lx, ly, 4, 0, Math.PI * 2);
+      ctx.arc(lx, ly, 5, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = '#FAFBF9';
-      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 2;
       ctx.stroke();
     }
   }, [values, duration, liveTime, variant, isFreefall]);
@@ -174,10 +181,11 @@ export default function KinematicGraph({
       ref={containerRef}
       className="relative w-full rounded-lg overflow-hidden"
       style={{
-        background: '#050D1F',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        minHeight: '120px',
-        height: '140px',
+        background: '#FFFFFF',
+        border: '1px solid #E2E8F0',
+        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+        minHeight: '100px',
+        height: '120px',
       }}
     >
       <canvas ref={canvasRef} />

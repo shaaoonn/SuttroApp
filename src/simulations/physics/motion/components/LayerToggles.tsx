@@ -8,40 +8,38 @@ interface Props {
   isFreefall?: boolean;
 }
 
-const LABELS: Record<keyof LayerVisibility, string> = {
-  velocityArrow: 'বেগ Arrow',
-  accelerationArrow: 'ত্বরণ Arrow',
-  distanceMarkers: 'দূরত্ব marker',
-  ghostTrail: 'Ghost trail',
-  vGraph: 'v-t graph',
-  sGraph: 's-t graph',
+const META: Record<keyof LayerVisibility, { label: string; color: string }> = {
+  velocityArrow:     { label: 'বেগ',    color: '#16A34A' },
+  accelerationArrow: { label: 'ত্বরণ',  color: '#EA580C' },
+  distanceMarkers:   { label: 'দূরত্ব', color: '#3B82F6' },
+  ghostTrail:        { label: 'Ghost',  color: '#EC4899' },
+  vGraph:            { label: 'v-t',    color: '#16A34A' },
+  sGraph:            { label: 's-t',    color: '#F59E0B' },
 };
 
 export default function LayerToggles({ layers, onToggle, isFreefall }: Props) {
   const keys = (Object.keys(layers) as (keyof LayerVisibility)[]).filter(
-    // hide ghost trail in freefall (vertical scene doesn't show paths well)
-    (k) => !(isFreefall && k === 'ghostTrail')
+    (k) => !(isFreefall && k === 'ghostTrail'),
   );
 
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <div className="flex flex-wrap gap-1">
       {keys.map((k) => {
         const on = layers[k];
+        const meta = META[k];
         return (
           <button
             key={k}
             onClick={() => onToggle(k)}
-            className="px-2.5 py-1 rounded-full text-[11px] font-medium transition-all flex items-center gap-1"
+            className="px-2 py-1 rounded-md text-[11px] font-semibold transition-all flex items-center gap-1"
             style={{
-              background: on ? 'rgba(42, 157, 110, 0.15)' : 'transparent',
-              color: on ? '#2A9D6E' : 'rgba(250, 251, 249, 0.45)',
-              border: on
-                ? '1px solid rgba(42, 157, 110, 0.4)'
-                : '1px solid rgba(255, 255, 255, 0.08)',
+              background: on ? meta.color : '#F1F5F9',
+              color: on ? '#FFFFFF' : '#94A3B8',
+              border: on ? `1px solid ${meta.color}` : '1px solid #E2E8F0',
             }}
           >
-            <span style={{ fontSize: '8px' }}>{on ? '●' : '○'}</span>
-            {LABELS[k]}
+            <span style={{ fontSize: '7px' }}>{on ? '●' : '○'}</span>
+            {meta.label}
           </button>
         );
       })}

@@ -12,8 +12,8 @@ export default function ModeSwitch({ mode, onChange }: Props) {
     <div
       className="inline-flex p-0.5 rounded-full"
       style={{
-        background: 'rgba(255, 255, 255, 0.08)',
-        border: '1px solid rgba(255, 255, 255, 0.12)',
+        background: '#F1F5F9',
+        border: '1px solid #E2E8F0',
       }}
     >
       {(['solver', 'explore'] as const).map((m) => (
@@ -22,8 +22,9 @@ export default function ModeSwitch({ mode, onChange }: Props) {
           onClick={() => onChange(m)}
           className="px-3 py-1 text-xs font-medium rounded-full transition-all"
           style={{
-            background: mode === m ? '#2A9D6E' : 'transparent',
-            color: mode === m ? '#FFFFFF' : 'rgba(250, 251, 249, 0.7)',
+            background: mode === m ? '#16A34A' : 'transparent',
+            color: mode === m ? '#FFFFFF' : '#64748B',
+            boxShadow: mode === m ? '0 2px 6px rgba(22, 163, 74, 0.35)' : 'none',
           }}
         >
           {m === 'solver' ? 'সমাধানক' : 'অনুসন্ধান'}

@@ -12,13 +12,13 @@ export default function ErrorBanner({ error }: Props) {
     <div
       className="rounded-xl px-3 py-2 text-xs flex items-start gap-2"
       style={{
-        background: 'rgba(248, 113, 113, 0.08)',
-        border: '1px solid rgba(248, 113, 113, 0.3)',
-        color: '#F87171',
+        background: '#FEF2F2',
+        border: '1.5px solid #FCA5A5',
+        color: '#B91C1C',
       }}
     >
       <span style={{ fontSize: '14px', lineHeight: 1 }}>⚠</span>
-      <span style={{ lineHeight: 1.4 }}>{error.message}</span>
+      <span style={{ lineHeight: 1.4, fontWeight: 500 }}>{error.message}</span>
     </div>
   );
 }

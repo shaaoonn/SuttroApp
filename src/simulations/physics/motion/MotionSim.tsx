@@ -14,12 +14,13 @@ import RoadScene from './components/RoadScene';
 import StepDerivation from './components/StepDerivation';
 import TutorialFAB from './components/TutorialFAB';
 import ValueSlider from './components/ValueSlider';
-import VehiclePicker from './components/VehiclePicker';
 import { motionConfig } from './config';
 import type { VariableKey } from './types';
 
 // ─────────────────────────────────────────────
-// গতি Sim — main entry. Full-bleed, scene-first layout.
+// গতি Sim — single-viewport layout, light theme.
+// Desktop: scene LEFT (60-65%), controls RIGHT (35-40%) — no scrolling.
+// Mobile: stacked, vertical scroll.
 // ─────────────────────────────────────────────
 
 const ALL_VARS: VariableKey[] = ['u', 'v', 'a', 's', 't'];
@@ -45,27 +46,32 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
 
   return (
     <div
-      className="motion-sim relative w-full"
+      className="motion-sim relative w-full flex flex-col"
       style={{
-        background: 'linear-gradient(180deg, #0B1D3A 0%, #050D1F 100%)',
-        color: '#FAFBF9',
+        background: 'linear-gradient(135deg, #FFF8E7 0%, #DBEAFE 50%, #F0F9FF 100%)',
+        color: '#1E293B',
+        minHeight: '100vh',
       }}
     >
-      {/* ─── Top bar: title + NCTB chip + ModeSwitch ─── */}
+      {/* ─── Top bar ─── */}
       <div
-        className="flex items-center justify-between gap-2 px-3 py-2 lg:px-5 lg:py-3 border-b"
-        style={{ borderColor: 'rgba(255, 255, 255, 0.08)' }}
+        className="flex items-center justify-between gap-2 px-3 py-2 lg:px-5 lg:py-2.5 flex-shrink-0"
+        style={{
+          background: 'rgba(255, 255, 255, 0.7)',
+          backdropFilter: 'blur(8px)',
+          borderBottom: '1px solid rgba(226, 232, 240, 0.6)',
+        }}
       >
         <div className="flex items-center gap-2">
-          <div className="text-base lg:text-lg font-bold" style={{ color: '#FAFBF9' }}>
+          <div className="text-base lg:text-lg font-bold" style={{ color: '#1E293B' }}>
             গতি
           </div>
           <span
-            className="text-[10px] px-1.5 py-0.5 rounded-full hidden sm:inline-block"
+            className="text-[10px] px-2 py-0.5 rounded-full font-semibold hidden sm:inline-block"
             style={{
-              background: 'rgba(232, 168, 56, 0.15)',
-              color: '#E8A838',
-              border: '1px solid rgba(232, 168, 56, 0.3)',
+              background: '#FEF3C7',
+              color: '#92400E',
+              border: '1px solid #FDE68A',
             }}
           >
             NCTB অধ্যায় ২
@@ -74,78 +80,69 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
         <ModeSwitch mode={state.mode} onChange={actions.setMode} />
       </div>
 
-      {/* ─── Equation tabs row ─── */}
-      <div
-        className="px-3 py-2 lg:px-5 border-b"
-        style={{ borderColor: 'rgba(255, 255, 255, 0.06)' }}
-      >
+      {/* ─── Equation tabs ─── */}
+      <div className="px-3 py-2 lg:px-5 flex-shrink-0">
         <EquationTabs current={state.equation} onChange={actions.setEquation} />
       </div>
 
-      {/* ─── Vehicle picker row (interactive, prominent at top) ─── */}
-      <div
-        className="px-3 py-2 lg:px-5 border-b flex items-center gap-3 flex-wrap"
-        style={{ borderColor: 'rgba(255, 255, 255, 0.06)' }}
-      >
-        <span
-          className="text-xs font-medium opacity-70 whitespace-nowrap"
-          style={{ color: '#FAFBF9' }}
+      {/* ─── Main: scene LEFT + controls RIGHT (desktop) / stacked (mobile) ─── */}
+      <div className="flex-1 flex flex-col lg:flex-row gap-3 lg:gap-4 px-3 lg:px-5 pb-3 lg:pb-4 min-h-0">
+        {/* SCENE — left/top (large) */}
+        <div
+          className="flex-1 flex flex-col gap-2 min-w-0"
+          style={{ minHeight: '300px' }}
         >
-          বস্তু:
-        </span>
-        <div className="flex-1 min-w-0">
-          <VehiclePicker current={state.vehicle} onChange={actions.setVehicle} />
+          <div
+            className="flex-1 rounded-2xl overflow-hidden"
+            style={{
+              minHeight: '320px',
+              boxShadow: '0 4px 14px rgba(0, 0, 0, 0.1)',
+              border: '2px solid rgba(255, 255, 255, 0.8)',
+            }}
+          >
+            {isFreefall ? (
+              <FreeFallScene
+                values={state.values}
+                vehicle={state.vehicle}
+                liveTime={liveTime}
+                liveS={liveS}
+                liveV={liveV}
+                duration={duration}
+                layers={state.layers}
+                onVehicleChange={actions.setVehicle}
+              />
+            ) : (
+              <RoadScene
+                values={state.values}
+                vehicle={state.vehicle}
+                liveTime={liveTime}
+                liveS={liveS}
+                liveV={liveV}
+                duration={duration}
+                layers={state.layers}
+                ghosts={state.ghosts}
+                onVehicleChange={actions.setVehicle}
+              />
+            )}
+          </div>
+
+          <PlaybackBar
+            status={state.playback.status}
+            speed={state.playback.speed}
+            onPlay={actions.play}
+            onPause={actions.pause}
+            onReset={actions.reset}
+            onSpeedChange={actions.setSpeed}
+            onSaveGhost={actions.saveGhost}
+            ghostCount={state.ghosts.length}
+            onClearGhosts={actions.clearGhosts}
+          />
         </div>
-      </div>
 
-      {/* ─── Scene — large, edge-to-edge ─── */}
-      <div
-        className="w-full"
-        style={{ height: 'clamp(320px, 55vh, 560px)' }}
-      >
-        {isFreefall ? (
-          <FreeFallScene
-            values={state.values}
-            vehicle={state.vehicle}
-            liveTime={liveTime}
-            liveS={liveS}
-            liveV={liveV}
-            duration={duration}
-            layers={state.layers}
-          />
-        ) : (
-          <RoadScene
-            values={state.values}
-            vehicle={state.vehicle}
-            liveTime={liveTime}
-            liveS={liveS}
-            liveV={liveV}
-            duration={duration}
-            layers={state.layers}
-            ghosts={state.ghosts}
-          />
-        )}
-      </div>
-
-      {/* ─── Playback bar (immediately below scene, full width) ─── */}
-      <div className="px-3 py-2.5 lg:px-5">
-        <PlaybackBar
-          status={state.playback.status}
-          speed={state.playback.speed}
-          onPlay={actions.play}
-          onPause={actions.pause}
-          onReset={actions.reset}
-          onSpeedChange={actions.setSpeed}
-          onSaveGhost={actions.saveGhost}
-          ghostCount={state.ghosts.length}
-          onClearGhosts={actions.clearGhosts}
-        />
-      </div>
-
-      {/* ─── Controls + result + graphs (responsive grid) ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-3 lg:gap-4 px-3 lg:px-5 pb-4">
-        {/* LEFT — controls */}
-        <div className="flex flex-col gap-2.5">
+        {/* CONTROLS — right/bottom panel */}
+        <div
+          className="flex flex-col gap-2 lg:gap-2.5 lg:w-[380px] flex-shrink-0 lg:overflow-y-auto lg:max-h-[calc(100vh-160px)] lg:pr-1"
+        >
           {state.mode === 'solver' && (
             <FormulaDropdown
               equation={equationDef}
@@ -153,6 +150,7 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
               onChange={actions.setVariant}
             />
           )}
+
           {state.mode === 'solver' && <StepDerivation variant={variant} />}
 
           <div className="grid grid-cols-2 gap-2">
@@ -192,12 +190,13 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
             error={state.error}
             mode={state.mode}
           />
+
           <ErrorBanner error={state.error} />
 
           <div>
             <div
-              className="text-[10px] mb-1 opacity-60"
-              style={{ color: '#FAFBF9' }}
+              className="text-[10px] mb-1 font-semibold"
+              style={{ color: '#94A3B8' }}
             >
               লেয়ার
             </div>
@@ -207,39 +206,28 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
               isFreefall={isFreefall}
             />
           </div>
-        </div>
 
-        {/* RIGHT — graphs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          {state.layers.vGraph && (
-            <KinematicGraph
-              variant="velocity"
-              values={state.values}
-              duration={duration}
-              liveTime={liveTime}
-              isFreefall={isFreefall}
-            />
-          )}
-          {state.layers.sGraph && (
-            <KinematicGraph
-              variant="displacement"
-              values={state.values}
-              duration={duration}
-              liveTime={liveTime}
-              isFreefall={isFreefall}
-            />
-          )}
-          {!state.layers.vGraph && !state.layers.sGraph && (
-            <div
-              className="rounded-lg p-4 text-xs italic flex items-center justify-center sm:col-span-2"
-              style={{
-                background: 'rgba(255, 255, 255, 0.04)',
-                border: '1px dashed rgba(255, 255, 255, 0.1)',
-                color: 'rgba(250, 251, 249, 0.4)',
-                minHeight: '100px',
-              }}
-            >
-              লেয়ার থেকে graph চালু করো
+          {/* Mini graphs */}
+          {(state.layers.vGraph || state.layers.sGraph) && (
+            <div className="grid grid-cols-1 gap-2">
+              {state.layers.vGraph && (
+                <KinematicGraph
+                  variant="velocity"
+                  values={state.values}
+                  duration={duration}
+                  liveTime={liveTime}
+                  isFreefall={isFreefall}
+                />
+              )}
+              {state.layers.sGraph && (
+                <KinematicGraph
+                  variant="displacement"
+                  values={state.values}
+                  duration={duration}
+                  liveTime={liveTime}
+                  isFreefall={isFreefall}
+                />
+              )}
             </div>
           )}
         </div>

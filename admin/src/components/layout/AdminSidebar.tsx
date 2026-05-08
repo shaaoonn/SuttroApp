@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: '/', label: 'ড্যাশবোর্ড', icon: '📊' },
   { href: '/daily-lessons', label: 'আজকের পড়া', icon: '📖' },
   { href: '/classes', label: 'ক্লাস', icon: '📹' },
+  { href: '/simulations', label: 'সিমুলেশন', icon: '🧪' },
   { href: '/exams', label: 'MCQ পরীক্ষা', icon: '📝' },
   { href: '/cq', label: 'সৃজনশীল', icon: '✍️' },
   { href: '/questions/import', label: 'CSV ইম্পোর্ট', icon: '📥' },

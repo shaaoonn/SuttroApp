@@ -33,7 +33,12 @@ const VAR_LABELS_BN: Record<VariableKey, string> = {
   t: 'সময় t',
 };
 
-export default function MotionSim() {
+export interface MotionSimProps {
+  /** Tutorial YouTube URL (passed from /sim/[slug] which reads DB) */
+  videoUrl?: string;
+}
+
+export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
   const { state, derived, actions } = useMotion();
   const { equationDef, variant, duration, liveTime, liveS, liveV } = derived;
 
@@ -225,8 +230,8 @@ export default function MotionSim() {
         </div>
       </div>
 
-      {/* Tutorial video FAB (placeholder until YT channel is created) */}
-      <TutorialFAB />
+      {/* Tutorial video FAB — videoUrl from DB (admin-editable) */}
+      <TutorialFAB videoUrl={videoUrl} />
     </div>
   );
 }

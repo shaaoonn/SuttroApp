@@ -19,6 +19,10 @@ import { SIM_THUMBNAILS } from './simThumbnails';
 interface SimEntry {
   slug: string;
   config: SimulationConfig;
+  /** Optional fields from DB (admin-editable) */
+  description?: string | null;
+  thumbnailUrl?: string | null;
+  thumbnailSvg?: string | null;
 }
 
 interface SimulationsFilterProps {
@@ -173,7 +177,14 @@ export default function SimulationsFilter({ simulations }: SimulationsFilterProp
       ) : (
         <div className="grid lg:grid-cols-3 gap-6">
           {filtered.map((sim) => {
-            const thumb = SIM_THUMBNAILS[sim.slug];
+            const fallbackThumb = SIM_THUMBNAILS[sim.slug];
+            // Priority: DB thumbnail_url > DB thumbnail_svg > code fallback SVG > emoji
+            const dbThumbUrl = sim.thumbnailUrl;
+            const dbThumbSvg = sim.thumbnailSvg;
+            const useImage = !!dbThumbUrl;
+            const useDbSvg = !useImage && !!dbThumbSvg;
+            const useFallback = !useImage && !useDbSvg && !!fallbackThumb?.visual;
+            const visualSvg = useDbSvg ? dbThumbSvg : useFallback ? fallbackThumb!.visual : '';
             return (
               <Link
                 key={sim.slug}
@@ -184,26 +195,34 @@ export default function SimulationsFilter({ simulations }: SimulationsFilterProp
                 {/* Thumbnail */}
                 <div
                   className="h-44 relative overflow-hidden"
-                  style={{ background: thumb?.bg || SUBJECT_COLORS[sim.config.subject] + '15' }}
+                  style={{ background: fallbackThumb?.bg || SUBJECT_COLORS[sim.config.subject] + '15' }}
                 >
-                  {/* SVG visual */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div
-                      className="text-6xl opacity-20 group-hover:scale-110 suttro-transition select-none"
-                      style={{ color: SUBJECT_COLORS[sim.config.subject] }}
-                    >
-                      {thumb?.icon || SUBJECT_ICONS[sim.config.subject]}
-                    </div>
-                  </div>
-
-                  {/* Thumbnail illustration */}
-                  {thumb?.visual && (
-                    <div className="absolute inset-0 flex items-center justify-center p-4 group-hover:scale-[1.03] suttro-transition">
-                      <div
-                        dangerouslySetInnerHTML={{ __html: thumb.visual }}
-                        className="w-full h-full max-w-[240px] max-h-[130px]"
-                      />
-                    </div>
+                  {useImage ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={dbThumbUrl!}
+                      alt={sim.config.title.bn}
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.05] suttro-transition"
+                    />
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div
+                          className="text-6xl opacity-20 group-hover:scale-110 suttro-transition select-none"
+                          style={{ color: SUBJECT_COLORS[sim.config.subject] }}
+                        >
+                          {fallbackThumb?.icon || SUBJECT_ICONS[sim.config.subject]}
+                        </div>
+                      </div>
+                      {visualSvg && (
+                        <div className="absolute inset-0 flex items-center justify-center p-4 group-hover:scale-[1.03] suttro-transition">
+                          <div
+                            dangerouslySetInnerHTML={{ __html: visualSvg }}
+                            className="w-full h-full max-w-[240px] max-h-[130px]"
+                          />
+                        </div>
+                      )}
+                    </>
                   )}
 
                   {/* Subject badge */}
@@ -225,9 +244,17 @@ export default function SimulationsFilter({ simulations }: SimulationsFilterProp
                   <h3 className="text-lg font-semibold mb-1" style={{ color: 'var(--suttro-deep)' }}>
                     {sim.config.title.bn}
                   </h3>
-                  <p className="text-base mb-3" style={{ color: 'var(--suttro-muted)' }}>
+                  <p className="text-base mb-2" style={{ color: 'var(--suttro-muted)' }}>
                     {sim.config.title.en} · ক্লাস {sim.config.nctb.class}
                   </p>
+                  {sim.description && (
+                    <p
+                      className="text-sm mb-3 line-clamp-2"
+                      style={{ color: 'var(--suttro-muted)' }}
+                    >
+                      {sim.description}
+                    </p>
+                  )}
 
                   {/* Formulas */}
                   {sim.config.formulas.length > 0 && (

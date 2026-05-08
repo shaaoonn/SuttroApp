@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getSimulation, simulations } from '@/simulations/registry';
+import { getSimulationMeta } from '@/lib/simulations-db';
 import MotionSim from '@/simulations/physics/motion/MotionSim';
 
 interface SimPageProps {
@@ -11,18 +12,29 @@ export function generateStaticParams() {
   return simulations.map((sim) => ({ slug: sim.slug }));
 }
 
+export const revalidate = 60;
+
 export async function generateMetadata({ params }: SimPageProps) {
   const { slug } = await params;
   const sim = getSimulation(slug);
   if (!sim) return { title: 'সিমুলেশন পাওয়া যায়নি - Suttro' };
 
+  // Prefer DB meta, fall back to code config
+  const dbMeta = await getSimulationMeta(slug);
+  const titleBn = dbMeta?.title_bn ?? sim.config.title.bn;
+  const description =
+    dbMeta?.description_bn ??
+    `${titleBn} ইন্টারেক্টিভ সিমুলেশন। NCTB ক্লাস ${sim.config.nctb.class}, অধ্যায় ${sim.config.nctb.chapter}।`;
+
   return {
-    title: `${sim.config.title.bn} - Suttro | suttro.app`,
-    description: `${sim.config.title.bn} ইন্টারেক্টিভ সিমুলেশন। NCTB ক্লাস ${sim.config.nctb.class}, অধ্যায় ${sim.config.nctb.chapter}।`,
+    title: `${titleBn} - Suttro | suttro.app`,
+    description,
   };
 }
 
-const SIMULATION_COMPONENTS: Record<string, React.ComponentType> = {
+// Map slug → component. Each accepts an optional videoUrl prop.
+type SimComponent = React.ComponentType<{ videoUrl?: string }>;
+const SIMULATION_COMPONENTS: Record<string, SimComponent> = {
   motion: MotionSim,
 };
 
@@ -35,6 +47,29 @@ const SUBJECT_LABELS: Record<string, string> = {
   english: 'ইংরেজি',
 };
 
+/** Convert YouTube watch URL to embed URL — handles youtu.be, watch?v=, /embed/ */
+function toEmbedUrl(url: string | null | undefined): string | undefined {
+  if (!url) return undefined;
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes('youtube.com') || u.hostname.includes('youtu.be')) {
+      let id = '';
+      if (u.hostname.includes('youtu.be')) {
+        id = u.pathname.replace('/', '');
+      } else if (u.pathname.startsWith('/embed/')) {
+        id = u.pathname.replace('/embed/', '');
+      } else {
+        id = u.searchParams.get('v') ?? '';
+      }
+      if (!id) return undefined;
+      return `https://www.youtube.com/embed/${id}`;
+    }
+    return url;
+  } catch {
+    return undefined;
+  }
+}
+
 export default async function SimPage({ params }: SimPageProps) {
   const { slug } = await params;
   const sim = getSimulation(slug);
@@ -43,36 +78,71 @@ export default async function SimPage({ params }: SimPageProps) {
   const SimComponent = SIMULATION_COMPONENTS[slug];
   if (!SimComponent) notFound();
 
+  // Fetch DB meta (admin-editable) — fall back to code config
+  const dbMeta = await getSimulationMeta(slug);
+
+  // If admin marked private/deleted, hide
+  if (dbMeta && dbMeta.status !== 'public') notFound();
+
+  const titleBn = dbMeta?.title_bn ?? sim.config.title.bn;
+  const titleEn = dbMeta?.title_en ?? sim.config.title.en;
+  const descriptionBn = dbMeta?.description_bn;
+  const longDescriptionBn = dbMeta?.long_description_bn;
+  const subject = dbMeta?.subject ?? sim.config.subject;
+  const nctbClass = dbMeta?.nctb_class ?? sim.config.nctb.class;
+  const nctbChapter = dbMeta?.nctb_chapter ?? sim.config.nctb.chapter;
+  const videoUrl = toEmbedUrl(dbMeta?.youtube_url);
+
   return (
     <div style={{ background: 'var(--suttro-surface)' }}>
-      {/* ── Player: edge-to-edge on mobile (YouTube-style), centered on desktop ── */}
+      {/* ── Player ── */}
       <div className="sim-player-wrap">
-        <SimComponent />
+        <SimComponent videoUrl={videoUrl} />
       </div>
 
-      {/* ── Content below player: padded ── */}
+      {/* ── Content below player ── */}
       <div className="mx-auto max-w-6xl px-4 lg:px-6 py-5 lg:py-8">
-        {/* Breadcrumb (desktop only - mobile uses native AppBar back button) */}
+        {/* Breadcrumb */}
         <nav
           className="hidden lg:flex items-center gap-2 text-base mb-5"
           style={{ color: 'var(--suttro-muted)' }}
         >
           <Link href="/simulations" className="hover:underline">সিমুলেশন</Link>
           <span>&rsaquo;</span>
-          <span>{SUBJECT_LABELS[sim.config.subject]}</span>
+          <span>{SUBJECT_LABELS[subject]}</span>
           <span>&rsaquo;</span>
-          <span style={{ color: 'var(--suttro-text)' }}>{sim.config.title.bn}</span>
+          <span style={{ color: 'var(--suttro-text)' }}>{titleBn}</span>
         </nav>
 
         {/* Title + meta */}
         <div className="mb-6">
           <h1 className="text-2xl lg:text-3xl font-bold mb-1" style={{ color: 'var(--suttro-deep)' }}>
-            {sim.config.title.bn}
+            {titleBn}
           </h1>
           <p className="text-sm lg:text-base" style={{ color: 'var(--suttro-muted)' }}>
-            {sim.config.title.en} · NCTB ক্লাস {sim.config.nctb.class}, অধ্যায় {sim.config.nctb.chapter}
+            {titleEn} · NCTB ক্লাস {nctbClass}, অধ্যায় {nctbChapter}
           </p>
+          {descriptionBn && (
+            <p className="text-sm lg:text-base mt-3" style={{ color: 'var(--suttro-text)' }}>
+              {descriptionBn}
+            </p>
+          )}
         </div>
+
+        {/* Long description (if admin filled) */}
+        {longDescriptionBn && (
+          <div
+            className="mb-6 rounded-[14px] border p-5 text-sm lg:text-base leading-relaxed"
+            style={{
+              borderColor: 'var(--suttro-border)',
+              background: 'var(--suttro-white)',
+              color: 'var(--suttro-text)',
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {longDescriptionBn}
+          </div>
+        )}
 
         {/* Info grid */}
         <div className="grid lg:grid-cols-3 gap-5 lg:gap-6">
@@ -154,7 +224,7 @@ export default async function SimPage({ params }: SimPageProps) {
                 NCTB রেফারেন্স
               </h3>
               <p className="text-sm lg:text-base" style={{ color: 'var(--suttro-primary-text)', opacity: 0.8 }}>
-                ক্লাস {sim.config.nctb.class} · {SUBJECT_LABELS[sim.config.subject]} · অধ্যায় {sim.config.nctb.chapter}
+                ক্লাস {nctbClass} · {SUBJECT_LABELS[subject]} · অধ্যায় {nctbChapter}
               </p>
             </div>
           </div>

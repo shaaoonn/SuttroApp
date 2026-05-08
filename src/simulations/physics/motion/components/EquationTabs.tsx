@@ -25,7 +25,7 @@ export default function EquationTabs({ current, onChange }: Props) {
           <button
             key={tab.key}
             onClick={() => onChange(tab.key)}
-            className="flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold transition-all whitespace-nowrap"
+            className="flex-shrink-0 px-2.5 lg:px-4 py-1 lg:py-1.5 rounded-full text-xs lg:text-sm font-semibold transition-all whitespace-nowrap"
             style={{
               background: active ? tab.color : '#FFFFFF',
               color: active ? '#FFFFFF' : '#475569',

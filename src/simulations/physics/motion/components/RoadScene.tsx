@@ -2,9 +2,10 @@
 
 import { useEffect, useRef } from 'react';
 import { positionAt } from '../physics';
-import type { GhostRun, KinematicVars, LayerVisibility, VehicleKey } from '../types';
+import type { GhostRun, KinematicVars, LayerVisibility, PlaybackStatus, VehicleKey } from '../types';
 import { drawVehicle, vehicleSize, WHEEL_RADIUS } from '../vehicles';
 import VehiclePickerOverlay from './VehiclePickerOverlay';
+import SceneOverlayControls from './SceneOverlayControls';
 
 interface Props {
   values: KinematicVars;
@@ -16,6 +17,10 @@ interface Props {
   layers: LayerVisibility;
   ghosts: GhostRun[];
   onVehicleChange: (v: VehicleKey) => void;
+  playbackStatus: PlaybackStatus;
+  onPlay: () => void;
+  onPause: () => void;
+  onReset: () => void;
 }
 
 export default function RoadScene({
@@ -28,6 +33,10 @@ export default function RoadScene({
   layers,
   ghosts,
   onVehicleChange,
+  playbackStatus,
+  onPlay,
+  onPause,
+  onReset,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -51,29 +60,28 @@ export default function RoadScene({
     const W = cssW;
     const H = cssH;
 
-    // ─── Compute world-to-screen scale ──
-    const finalS = positionAt(values.u, values.a, duration);
-    let peakAbsS = Math.abs(finalS);
-    if (values.a !== 0 && Math.sign(values.u) !== Math.sign(values.a)) {
-      const turnT = -values.u / values.a;
-      if (turnT > 0 && turnT < duration) {
-        peakAbsS = Math.max(peakAbsS, Math.abs(positionAt(values.u, values.a, turnT)));
-      }
-    }
-    const safePeak = Math.max(20, peakAbsS);
-    const usableWidth = W - 220;
-    const meterPx = usableWidth / (safePeak * 2.0);
+    // ─── Camera-follow scale ──
+    // Vehicle stays at fixed screen X. World scrolls.
+    // meterPx chosen so ~50-100m visible on screen depending on width.
+    const VISIBLE_WIDTH_METERS = Math.max(40, Math.min(120, W / 14));
+    const meterPx = W / VISIBLE_WIDTH_METERS;
 
-    // Layout zones — bigger road to fit larger vehicles
+    // Vehicle is anchored slightly left of center so we see more of the
+    // path AHEAD of the vehicle than behind (driving feel).
+    const VEHICLE_FIXED_X = W * 0.42;
+
+    // Convert world s → screen x (camera follows vehicle)
+    const worldToScreen = (worldS: number) =>
+      VEHICLE_FIXED_X + (worldS - liveS) * meterPx;
+
+    // Layout zones
     const horizonY = H * 0.55;
     const roadTop = horizonY + 6;
-    const roadHeight = Math.max(160, H * 0.34);
+    const roadHeight = Math.max(150, H * 0.34);
     const roadBottom = roadTop + roadHeight;
     const dashedLineY = (roadTop + roadBottom) / 2;
 
-    const vehicleScreenX = (s: number) => W / 2 + s * meterPx;
-
-    // ─── Day sky gradient ──
+    // ─── Day sky gradient (FIXED — no parallax) ──
     const skyGrad = ctx.createLinearGradient(0, 0, 0, horizonY);
     skyGrad.addColorStop(0, '#7CC2F0');
     skyGrad.addColorStop(0.5, '#A6D4ED');
@@ -81,10 +89,10 @@ export default function RoadScene({
     ctx.fillStyle = skyGrad;
     ctx.fillRect(0, 0, W, horizonY);
 
-    // ─── Sun (top right) with glow ──
+    // ─── Sun (FIXED) ──
     const sunX = W * 0.86;
-    const sunY = H * 0.16;
-    const sunR = 32;
+    const sunY = H * 0.17;
+    const sunR = 30;
     const glow = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunR * 3.5);
     glow.addColorStop(0, 'rgba(255, 230, 150, 0.55)');
     glow.addColorStop(0.5, 'rgba(255, 200, 100, 0.18)');
@@ -100,29 +108,42 @@ export default function RoadScene({
     ctx.arc(sunX, sunY, sunR * 0.7, 0, Math.PI * 2);
     ctx.fill();
 
-    // ─── Clouds ──
+    // ─── Clouds (FIXED — they're at infinite distance) ──
     drawCloud(ctx, W * 0.14, H * 0.12, 1.05);
     drawCloud(ctx, W * 0.42, H * 0.08, 0.85);
     drawCloud(ctx, W * 0.66, H * 0.20, 1.0);
     drawCloud(ctx, W * 0.30, H * 0.30, 0.7);
 
-    // ─── Distant hills ──
+    // ─── Hills (PARALLAX — slow scroll) ──
+    const hillParallax = -liveS * meterPx * 0.12;
+    ctx.save();
+    ctx.translate(hillParallax, 0);
+    // Far hills (lighter)
     ctx.fillStyle = 'rgba(120, 165, 140, 0.45)';
     ctx.beginPath();
-    ctx.moveTo(0, horizonY);
-    ctx.bezierCurveTo(W * 0.15, horizonY - 50, W * 0.3, horizonY - 30, W * 0.45, horizonY - 40);
-    ctx.bezierCurveTo(W * 0.6, horizonY - 50, W * 0.8, horizonY - 25, W, horizonY - 35);
-    ctx.lineTo(W, horizonY);
+    ctx.moveTo(-W, horizonY);
+    for (let x = -W; x <= W * 2; x += 100) {
+      const wave = Math.sin(x * 0.013) * 35 + Math.sin(x * 0.007) * 20;
+      ctx.lineTo(x, horizonY - 35 + wave);
+    }
+    ctx.lineTo(W * 2, horizonY);
     ctx.closePath();
     ctx.fill();
+    // Near hills (darker, slightly faster parallax via different translate)
+    ctx.restore();
+    ctx.save();
+    ctx.translate(-liveS * meterPx * 0.22, 0);
     ctx.fillStyle = 'rgba(95, 145, 120, 0.55)';
     ctx.beginPath();
-    ctx.moveTo(0, horizonY);
-    ctx.bezierCurveTo(W * 0.2, horizonY - 25, W * 0.5, horizonY - 15, W * 0.75, horizonY - 22);
-    ctx.bezierCurveTo(W * 0.9, horizonY - 28, W * 0.95, horizonY - 18, W, horizonY - 20);
-    ctx.lineTo(W, horizonY);
+    ctx.moveTo(-W, horizonY);
+    for (let x = -W; x <= W * 2; x += 80) {
+      const wave = Math.sin(x * 0.018 + 1.2) * 22 + Math.sin(x * 0.009) * 12;
+      ctx.lineTo(x, horizonY - 18 + wave);
+    }
+    ctx.lineTo(W * 2, horizonY);
     ctx.closePath();
     ctx.fill();
+    ctx.restore();
 
     // ─── Grass strip above road ──
     const grassTopGrad = ctx.createLinearGradient(0, horizonY, 0, roadTop);
@@ -139,20 +160,22 @@ export default function RoadScene({
     ctx.fillStyle = roadGrad;
     ctx.fillRect(0, roadTop, W, roadHeight);
 
-    // Yellow shoulder stripes
+    // Yellow shoulders
     ctx.fillStyle = '#FFC93C';
     ctx.fillRect(0, roadTop, W, 4);
     ctx.fillRect(0, roadBottom - 4, W, 4);
 
-    // ─── Dashed white center line (PROMINENT) ──
+    // ─── Dashed center line — SCROLLS with vehicle motion ──
     ctx.strokeStyle = '#FFFFFF';
     ctx.lineWidth = 5;
     ctx.setLineDash([34, 22]);
+    ctx.lineDashOffset = -liveS * meterPx; // dashes shift left as vehicle moves forward
     ctx.beginPath();
     ctx.moveTo(0, dashedLineY);
     ctx.lineTo(W, dashedLineY);
     ctx.stroke();
     ctx.setLineDash([]);
+    ctx.lineDashOffset = 0;
 
     // ─── Grass below road ──
     if (roadBottom < H) {
@@ -163,28 +186,33 @@ export default function RoadScene({
       ctx.fillRect(0, roadBottom, W, H - roadBottom);
     }
 
-    // ─── Distance markers below road ──
+    // ─── Distance markers — visible range based on camera ──
     if (layers.distanceMarkers) {
+      const leftEdgeS = liveS - VEHICLE_FIXED_X / meterPx;
+      const rightEdgeS = liveS + (W - VEHICLE_FIXED_X) / meterPx;
+
       let stepM = 5;
       if (meterPx < 4) stepM = 25;
       else if (meterPx < 8) stepM = 10;
       else if (meterPx < 20) stepM = 5;
-      else stepM = 1;
+      else stepM = 2;
 
       ctx.font = 'bold 12px ui-monospace, monospace';
       ctx.textAlign = 'center';
 
-      const startM = Math.floor(-safePeak / stepM) * stepM;
-      const endM = Math.ceil(safePeak / stepM) * stepM;
+      const startM = Math.floor(leftEdgeS / stepM) * stepM;
+      const endM = Math.ceil(rightEdgeS / stepM) * stepM;
       for (let m = startM; m <= endM; m += stepM) {
-        const x = vehicleScreenX(m);
-        if (x < -20 || x > W + 20) continue;
+        const x = worldToScreen(m);
+        if (x < -30 || x > W + 30) continue;
+        // Tick on road bottom edge
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(x, roadBottom);
         ctx.lineTo(x, roadBottom + 8);
         ctx.stroke();
+        // Label
         const lbl = `${m}m`;
         ctx.fillStyle = '#FFFFFF';
         ctx.strokeStyle = 'rgba(0, 0, 0, 0.75)';
@@ -194,18 +222,26 @@ export default function RoadScene({
       }
     }
 
-    // Origin (0m) emphasized
-    const x0 = vehicleScreenX(0);
-    if (x0 >= 0 && x0 <= W) {
-      ctx.strokeStyle = 'rgba(22, 163, 74, 1)';
+    // Origin marker (0m) — emphasized vertical line
+    const x0 = worldToScreen(0);
+    if (x0 >= -10 && x0 <= W + 10) {
+      ctx.strokeStyle = 'rgba(22, 163, 74, 0.85)';
       ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.moveTo(x0, roadTop - 8);
       ctx.lineTo(x0, roadBottom + 8);
       ctx.stroke();
+      // "শুরু" label
+      ctx.fillStyle = '#16A34A';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.lineWidth = 3;
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.strokeText('শুরু', x0, roadTop - 14);
+      ctx.fillText('শুরু', x0, roadTop - 14);
     }
 
-    // ─── Ghost trails ──
+    // ─── Ghost trails (camera-relative) ──
     if (layers.ghostTrail && ghosts.length > 0) {
       ghosts.forEach((ghost) => {
         ctx.strokeStyle = ghost.color;
@@ -213,7 +249,7 @@ export default function RoadScene({
         ctx.lineWidth = 3;
         ctx.beginPath();
         ghost.positions.forEach((p, i) => {
-          const x = vehicleScreenX(p.s);
+          const x = worldToScreen(p.s);
           if (i === 0) ctx.moveTo(x, dashedLineY);
           else ctx.lineTo(x, dashedLineY);
         });
@@ -222,16 +258,13 @@ export default function RoadScene({
       });
     }
 
-    // ─── Vehicle (centered visually on dashed line) ──
+    // ─── Vehicle (FIXED at VEHICLE_FIXED_X) ──
     const vSize = vehicleSize(vehicle);
-    // emoji visual content sits in lower 60% of bounding box; offset upward so
-    // the visual center lands ON the dashed line
     const vY = dashedLineY - vSize * 0.13;
-    const vX = vehicleScreenX(liveS);
+    const vX = VEHICLE_FIXED_X;
     const wheelR = WHEEL_RADIUS[vehicle];
     const wheelRotation = (liveS * meterPx) / wheelR;
 
-    // Direction: live velocity OR if stopped, look at sign(a) for hint OR default forward
     let direction = Math.sign(liveV);
     if (direction === 0) direction = Math.sign(values.a) || 1;
 
@@ -309,16 +342,20 @@ export default function RoadScene({
     <div
       ref={containerRef}
       className="relative w-full h-full overflow-hidden"
-      style={{ background: '#7CC2F0', minHeight: '320px' }}
+      style={{ background: '#7CC2F0', minHeight: '280px' }}
     >
       <canvas ref={canvasRef} />
-      {/* Floating vehicle picker overlay (top-left of scene) */}
       <VehiclePickerOverlay current={vehicle} onChange={onVehicleChange} />
+      <SceneOverlayControls
+        status={playbackStatus}
+        onPlay={onPlay}
+        onPause={onPause}
+        onReset={onReset}
+      />
     </div>
   );
 }
 
-// ─── Cloud helper ──
 function drawCloud(ctx: CanvasRenderingContext2D, x: number, y: number, scale: number) {
   ctx.save();
   ctx.translate(x, y);
@@ -339,7 +376,6 @@ function drawCloud(ctx: CanvasRenderingContext2D, x: number, y: number, scale: n
   ctx.restore();
 }
 
-// ─── Arrow helper ──
 function drawArrow(
   ctx: CanvasRenderingContext2D,
   x1: number, y1: number, x2: number, y2: number,
@@ -368,3 +404,6 @@ function drawArrow(
   ctx.closePath();
   ctx.fill();
 }
+
+// Suppress unused variable warning — duration kept in deps to trigger re-render
+void positionAt;

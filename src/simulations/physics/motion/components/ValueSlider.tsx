@@ -64,10 +64,9 @@ export default function ValueSlider({
         </span>
       </div>
       <div
-        className="font-mono font-bold mb-1.5 leading-none"
+        className="font-mono font-bold mb-1.5 leading-none text-lg lg:text-xl"
         style={{
           color: isUnknown ? '#D97706' : '#1E293B',
-          fontSize: '22px',
         }}
       >
         {isUnknown ? '?' : formatValue(value)}

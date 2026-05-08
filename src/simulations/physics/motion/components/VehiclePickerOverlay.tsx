@@ -38,7 +38,7 @@ export default function VehiclePickerOverlay({ current, onChange }: Props) {
           <button
             key={v.key}
             onClick={() => onChange(v.key)}
-            className="w-9 h-9 rounded-lg flex items-center justify-center transition-all hover:scale-110"
+            className="w-8 h-8 lg:w-9 lg:h-9 rounded-lg flex items-center justify-center transition-all hover:scale-110"
             style={{
               background: active ? '#16A34A' : 'transparent',
               boxShadow: active ? '0 2px 8px rgba(22, 163, 74, 0.4)' : 'none',
@@ -48,7 +48,7 @@ export default function VehiclePickerOverlay({ current, onChange }: Props) {
             aria-label={v.label}
             aria-pressed={active}
           >
-            <span style={{ fontSize: '20px', lineHeight: 1 }}>{v.emoji}</span>
+            <span className="text-base lg:text-xl" style={{ lineHeight: 1 }}>{v.emoji}</span>
           </button>
         );
       })}

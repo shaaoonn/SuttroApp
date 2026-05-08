@@ -18,9 +18,10 @@ import { motionConfig } from './config';
 import type { VariableKey } from './types';
 
 // ─────────────────────────────────────────────
-// গতি Sim — single-viewport layout, light theme.
-// Desktop: scene LEFT (60-65%), controls RIGHT (35-40%) — no scrolling.
-// Mobile: stacked, vertical scroll.
+// গতি Sim — single-viewport, scene-first.
+// Mobile: compact, scene fixed aspect ratio.
+// Desktop: scene LEFT (flex-1), controls RIGHT (380px).
+// Play/Reset overlaid on scene canvas (SceneOverlayControls).
 // ─────────────────────────────────────────────
 
 const ALL_VARS: VariableKey[] = ['u', 'v', 'a', 's', 't'];
@@ -50,24 +51,23 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
       style={{
         background: 'linear-gradient(135deg, #FFF8E7 0%, #DBEAFE 50%, #F0F9FF 100%)',
         color: '#1E293B',
-        minHeight: '100vh',
       }}
     >
       {/* ─── Top bar ─── */}
       <div
-        className="flex items-center justify-between gap-2 px-3 py-2 lg:px-5 lg:py-2.5 flex-shrink-0"
+        className="flex items-center justify-between gap-2 px-2.5 py-1.5 lg:px-5 lg:py-2.5 flex-shrink-0"
         style={{
           background: 'rgba(255, 255, 255, 0.7)',
           backdropFilter: 'blur(8px)',
           borderBottom: '1px solid rgba(226, 232, 240, 0.6)',
         }}
       >
-        <div className="flex items-center gap-2">
-          <div className="text-base lg:text-lg font-bold" style={{ color: '#1E293B' }}>
+        <div className="flex items-center gap-1.5 lg:gap-2">
+          <div className="text-sm lg:text-lg font-bold" style={{ color: '#1E293B' }}>
             গতি
           </div>
           <span
-            className="text-[10px] px-2 py-0.5 rounded-full font-semibold hidden sm:inline-block"
+            className="text-[9px] lg:text-[10px] px-1.5 py-0.5 rounded-full font-semibold hidden xs:inline-block"
             style={{
               background: '#FEF3C7',
               color: '#92400E',
@@ -81,23 +81,20 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
       </div>
 
       {/* ─── Equation tabs ─── */}
-      <div className="px-3 py-2 lg:px-5 flex-shrink-0">
+      <div className="px-2.5 py-1.5 lg:px-5 lg:py-2 flex-shrink-0">
         <EquationTabs current={state.equation} onChange={actions.setEquation} />
       </div>
 
-      {/* ─── Main: scene LEFT + controls RIGHT (desktop) / stacked (mobile) ─── */}
-      <div className="flex-1 flex flex-col lg:flex-row gap-3 lg:gap-4 px-3 lg:px-5 pb-3 lg:pb-4 min-h-0">
-        {/* SCENE — left/top (large) */}
-        <div
-          className="flex-1 flex flex-col gap-2 min-w-0"
-          style={{ minHeight: '300px' }}
-        >
+      {/* ─── Main: scene + controls ─── */}
+      <div className="flex flex-col lg:flex-row gap-2 lg:gap-4 px-2.5 lg:px-5 pb-2.5 lg:pb-4 lg:flex-1 lg:min-h-0">
+        {/* SCENE column */}
+        <div className="flex flex-col gap-1.5 lg:gap-2 lg:flex-1 lg:min-w-0">
           <div
-            className="flex-1 rounded-2xl overflow-hidden"
+            className="rounded-xl lg:rounded-2xl overflow-hidden aspect-[16/10] lg:aspect-auto lg:flex-1"
             style={{
-              minHeight: '320px',
               boxShadow: '0 4px 14px rgba(0, 0, 0, 0.1)',
               border: '2px solid rgba(255, 255, 255, 0.8)',
+              minHeight: '220px',
             }}
           >
             {isFreefall ? (
@@ -110,6 +107,10 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
                 duration={duration}
                 layers={state.layers}
                 onVehicleChange={actions.setVehicle}
+                playbackStatus={state.playback.status}
+                onPlay={actions.play}
+                onPause={actions.pause}
+                onReset={actions.reset}
               />
             ) : (
               <RoadScene
@@ -122,16 +123,17 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
                 layers={state.layers}
                 ghosts={state.ghosts}
                 onVehicleChange={actions.setVehicle}
+                playbackStatus={state.playback.status}
+                onPlay={actions.play}
+                onPause={actions.pause}
+                onReset={actions.reset}
               />
             )}
           </div>
 
+          {/* Playback bar — speed + ghost only (Play/Reset are overlaid on scene) */}
           <PlaybackBar
-            status={state.playback.status}
             speed={state.playback.speed}
-            onPlay={actions.play}
-            onPause={actions.pause}
-            onReset={actions.reset}
             onSpeedChange={actions.setSpeed}
             onSaveGhost={actions.saveGhost}
             ghostCount={state.ghosts.length}
@@ -139,9 +141,9 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
           />
         </div>
 
-        {/* CONTROLS — right/bottom panel */}
+        {/* CONTROLS column */}
         <div
-          className="flex flex-col gap-2 lg:gap-2.5 lg:w-[380px] flex-shrink-0 lg:overflow-y-auto lg:max-h-[calc(100vh-160px)] lg:pr-1"
+          className="flex flex-col gap-1.5 lg:gap-2 lg:w-[360px] flex-shrink-0 lg:overflow-y-auto lg:max-h-[calc(100vh-130px)] lg:pr-1"
         >
           {state.mode === 'solver' && (
             <FormulaDropdown
@@ -153,7 +155,7 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
 
           {state.mode === 'solver' && <StepDerivation variant={variant} />}
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-1.5 lg:gap-2">
             {ALL_VARS.filter(
               (v) =>
                 activeVars.includes(v) ||
@@ -195,7 +197,7 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
 
           <div>
             <div
-              className="text-[10px] mb-1 font-semibold"
+              className="text-[9px] lg:text-[10px] mb-1 font-semibold"
               style={{ color: '#94A3B8' }}
             >
               লেয়ার
@@ -209,7 +211,7 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
 
           {/* Mini graphs */}
           {(state.layers.vGraph || state.layers.sGraph) && (
-            <div className="grid grid-cols-1 gap-2">
+            <div className="grid grid-cols-1 gap-1.5 lg:gap-2">
               {state.layers.vGraph && (
                 <KinematicGraph
                   variant="velocity"

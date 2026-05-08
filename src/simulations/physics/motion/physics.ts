@@ -370,21 +370,60 @@ export function velocityAt(u: number, a: number, t: number): number {
 }
 
 /**
- * Compute total animation duration based on solved t,
- * clamped to a reasonable range.
+ * Compute total animation duration. Uses explicit t when available,
+ * otherwise derives from kinematic relations so that the displacement
+ * the user sees in the slider matches what the animation actually plays.
  */
 export function computeDuration(
   equation: EquationKey,
   vars: KinematicVars
 ): number {
-  const t = vars.t;
+  const { u, v, a, s, t } = vars;
+  const clamp = (x: number) => Math.max(0.3, Math.min(30, x));
+
+  // Free fall: derive from height (h)
   if (equation === 'freefall') {
-    // For freefall, derive from height if available
-    if (vars.s > 0) return Math.sqrt((2 * vars.s) / G);
-    return Math.max(0.5, Math.min(20, t || 5));
+    if (s > 0) return clamp(Math.sqrt((2 * s) / G));
+    if (t > 0) return clamp(t);
+    return 5;
   }
-  // Cap between 0.5s and 30s for sane animation
-  return Math.max(0.5, Math.min(30, t || 5));
+
+  // If t is explicitly known, use it
+  if (t > 0.01) return clamp(t);
+
+  // 3rd law (v² = u² + 2as) — derive t from v = u + at
+  if (Math.abs(a) > 0.001 && Math.abs(v - u) > 0.001) {
+    const derivedT = (v - u) / a;
+    if (derivedT > 0.01) return clamp(derivedT);
+  }
+
+  // 4th law (s = (u+v)t/2) — derive t = 2s / (u+v)
+  if (Math.abs(s) > 0.001 && Math.abs(u + v) > 0.001) {
+    const derivedT = (2 * s) / (u + v);
+    if (derivedT > 0.01) return clamp(derivedT);
+  }
+
+  // 2nd law (s = ut + ½at²) — solve quadratic for t (positive root)
+  if (Math.abs(s) > 0.001) {
+    if (Math.abs(a) < 0.001) {
+      // No acceleration: s = ut → t = s/u
+      if (Math.abs(u) > 0.001) {
+        const derivedT = s / u;
+        if (derivedT > 0.01) return clamp(derivedT);
+      }
+    } else {
+      // ½a t² + u t - s = 0  →  t = (-u + √(u² + 2as)) / a
+      const disc = u * u + 2 * a * s;
+      if (disc >= 0) {
+        const root1 = (-u + Math.sqrt(disc)) / a;
+        const root2 = (-u - Math.sqrt(disc)) / a;
+        const positiveRoots = [root1, root2].filter((r) => r > 0.01);
+        if (positiveRoots.length) return clamp(Math.min(...positiveRoots));
+      }
+    }
+  }
+
+  return 5; // default
 }
 
 /** Sample positions/velocities over duration for graph + ghost trails */

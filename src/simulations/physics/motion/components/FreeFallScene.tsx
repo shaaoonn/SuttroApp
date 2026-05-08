@@ -5,6 +5,8 @@ import { G } from '../physics';
 import type { KinematicVars, LayerVisibility, VehicleKey } from '../types';
 import { drawVehicle, vehicleSize, WHEEL_RADIUS } from '../vehicles';
 import VehiclePickerOverlay from './VehiclePickerOverlay';
+import SceneOverlayControls from './SceneOverlayControls';
+import type { PlaybackStatus } from '../types';
 
 interface Props {
   values: KinematicVars;
@@ -15,6 +17,10 @@ interface Props {
   duration: number;
   layers: LayerVisibility;
   onVehicleChange: (v: VehicleKey) => void;
+  playbackStatus: PlaybackStatus;
+  onPlay: () => void;
+  onPause: () => void;
+  onReset: () => void;
 }
 
 export default function FreeFallScene({
@@ -26,6 +32,10 @@ export default function FreeFallScene({
   duration,
   layers,
   onVehicleChange,
+  playbackStatus,
+  onPlay,
+  onPause,
+  onReset,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -223,6 +233,12 @@ export default function FreeFallScene({
     >
       <canvas ref={canvasRef} />
       <VehiclePickerOverlay current={vehicle} onChange={onVehicleChange} />
+      <SceneOverlayControls
+        status={playbackStatus}
+        onPlay={onPlay}
+        onPause={onPause}
+        onReset={onReset}
+      />
     </div>
   );
 }

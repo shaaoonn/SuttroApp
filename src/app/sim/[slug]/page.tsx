@@ -1,19 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getSimulation, simulations } from '@/simulations/registry';
-import OhmsLawSim from '@/simulations/physics/ohms-law/OhmsLawSim';
-import LightReflectionSim from '@/simulations/physics/light-reflection/LightReflectionSim';
-import LightRefractionSim from '@/simulations/physics/light-refraction/LightRefractionSim';
-import AcidBaseSim from '@/simulations/chemistry/acid-base/AcidBaseSim';
-import AtomicStructureSim from '@/simulations/chemistry/atomic-structure/AtomicStructureSim';
-import CellDivisionSim from '@/simulations/biology/cell-division/CellDivisionSim';
-import PhotosynthesisSim from '@/simulations/biology/photosynthesis/PhotosynthesisSim';
-import PythagoreanSim from '@/simulations/math/pythagorean/PythagoreanSim';
-import CircleGeometrySim from '@/simulations/math/circle-geometry/CircleGeometrySim';
-import TrigonometrySim from '@/simulations/higher-math/trigonometry/TrigonometrySim';
-import StraightLineSim from '@/simulations/higher-math/straight-line/StraightLineSim';
-import SentenceStructureSim from '@/simulations/english/sentence-structure/SentenceStructureSim';
-import TenseTimelineSim from '@/simulations/english/tense-timeline/TenseTimelineSim';
+import MotionSim from '@/simulations/physics/motion/MotionSim';
 
 interface SimPageProps {
   params: Promise<{ slug: string }>;
@@ -35,19 +23,7 @@ export async function generateMetadata({ params }: SimPageProps) {
 }
 
 const SIMULATION_COMPONENTS: Record<string, React.ComponentType> = {
-  'ohms-law': OhmsLawSim,
-  'light-reflection': LightReflectionSim,
-  'light-refraction': LightRefractionSim,
-  'acid-base': AcidBaseSim,
-  'atomic-structure': AtomicStructureSim,
-  'cell-division': CellDivisionSim,
-  'photosynthesis': PhotosynthesisSim,
-  'pythagorean': PythagoreanSim,
-  'circle-geometry': CircleGeometrySim,
-  'trigonometry': TrigonometrySim,
-  'straight-line': StraightLineSim,
-  'sentence-structure': SentenceStructureSim,
-  'tense-timeline': TenseTimelineSim,
+  motion: MotionSim,
 };
 
 const SUBJECT_LABELS: Record<string, string> = {

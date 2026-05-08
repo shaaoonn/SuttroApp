@@ -4,6 +4,11 @@
    সূত্র | suttro.app - Brand Design Tokens
    ───────────────────────────────────────────── */
 
+/* Hide scrollbar for horizontal overflow tabs */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+
 :root {
   /* Primary - Teal */
   --suttro-primary: #0D9488;

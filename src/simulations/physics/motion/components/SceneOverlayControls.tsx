@@ -15,6 +15,12 @@ interface Props {
   onZoomChange?: (z: number) => void;
   onToggleFullscreen?: () => void;
   isFullscreen?: boolean;
+  /**
+   * Layout mode:
+   *  - "overlay" (default): floats absolutely at bottom-center INSIDE the canvas
+   *  - "bar": static, full-width-of-parent horizontal bar (used in fullscreen)
+   */
+  mode?: 'overlay' | 'bar';
 }
 
 const SPEEDS: PlaybackSpeed[] = [0.25, 0.5, 1, 2];
@@ -31,13 +37,24 @@ export default function SceneOverlayControls({
   onZoomChange,
   onToggleFullscreen,
   isFullscreen,
+  mode = 'overlay',
 }: Props) {
   const isPlaying = status === 'playing';
+  const isBar = mode === 'bar';
 
-  return (
-    <div
-      className="absolute left-1/2 z-10 flex items-center gap-1.5 rounded-full p-1.5"
-      style={{
+  // Bar mode: static positioning, full width of parent column
+  // Overlay mode: absolute, floating bottom-center inside canvas
+  const wrapperStyle: React.CSSProperties = isBar
+    ? {
+        background: 'rgba(255, 255, 255, 0.92)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        borderTop: '1px solid rgba(226, 232, 240, 0.8)',
+        boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.08)',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+      }
+    : {
         bottom: '14px',
         transform: 'translateX(-50%)',
         background: 'rgba(255, 255, 255, 0.88)',
@@ -48,7 +65,16 @@ export default function SceneOverlayControls({
         maxWidth: '92vw',
         flexWrap: 'wrap',
         justifyContent: 'center',
-      }}
+      };
+
+  return (
+    <div
+      className={
+        isBar
+          ? 'relative z-10 flex items-center gap-1.5 px-3 py-2 w-full'
+          : 'absolute left-1/2 z-10 flex items-center gap-1.5 rounded-full p-1.5'
+      }
+      style={wrapperStyle}
     >
       {/* Play / Pause */}
       <button

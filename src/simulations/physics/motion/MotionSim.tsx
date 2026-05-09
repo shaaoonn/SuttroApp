@@ -6,12 +6,14 @@ import EquationTabs from './components/EquationTabs';
 import ErrorBanner from './components/ErrorBanner';
 import FormulaDropdown from './components/FormulaDropdown';
 import FreeFallScene from './components/FreeFallScene';
+import FullscreenSidePanel from './components/FullscreenSidePanel';
 import KinematicGraph from './components/KinematicGraph';
 import LayerToggles from './components/LayerToggles';
 import ModeSwitch from './components/ModeSwitch';
 import PlaybackBar from './components/PlaybackBar';
 import ResultDisplay from './components/ResultDisplay';
 import RoadScene from './components/RoadScene';
+import SceneOverlayControls from './components/SceneOverlayControls';
 import StepDerivation from './components/StepDerivation';
 import TutorialFAB from './components/TutorialFAB';
 import { motionConfig } from './config';
@@ -109,15 +111,69 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
     <RoadScene {...sceneCommonProps} ghosts={state.ghosts} />
   );
 
-  // ─── FULLSCREEN MODE — scene only ───
+  // Variant of sceneNode that suppresses the in-canvas Play/Reset overlay —
+  // used in fullscreen where we render an external bar below the canvas instead.
+  const sceneNodeNoOverlay = isFreefall ? (
+    <FreeFallScene {...sceneCommonProps} hideOverlayControls />
+  ) : (
+    <RoadScene
+      {...sceneCommonProps}
+      ghosts={state.ghosts}
+      hideOverlayControls
+    />
+  );
+
+  // ─── FULLSCREEN MODE — scene 4/5 + side rail 1/5 + bar-mode controls ───
   if (isFullscreen) {
     return (
       <div
         ref={containerRef}
-        className="motion-sim relative w-full h-full"
+        className="motion-sim relative w-full h-full flex flex-row"
         style={{ background: '#000' }}
       >
-        <div className="w-full h-full">{sceneNode}</div>
+        {/* Scene column */}
+        <div className="flex flex-col flex-[4] min-w-0">
+          <div className="flex-1 min-h-0 relative">{sceneNodeNoOverlay}</div>
+          <SceneOverlayControls
+            mode="bar"
+            status={state.playback.status}
+            onPlay={actions.play}
+            onPause={actions.pause}
+            onReset={actions.reset}
+            extended
+            speed={state.playback.speed}
+            onSpeedChange={actions.setSpeed}
+            zoom={state.zoom}
+            onZoomChange={actions.setZoom}
+            onToggleFullscreen={toggleFullscreen}
+            isFullscreen
+          />
+        </div>
+
+        {/* Right rail (1/5, compact) */}
+        <div
+          className="flex flex-col flex-[1] min-w-[180px] max-w-[280px] h-full"
+          style={{ background: 'rgba(255, 255, 255, 0.96)' }}
+        >
+          <FullscreenSidePanel
+            mode={state.mode}
+            equation={state.equation}
+            variantIndex={state.variantIndex}
+            onVariantChange={actions.setVariant}
+            values={state.values}
+            unknown={state.unknown}
+            lastResult={state.lastResult}
+            error={state.error}
+            liveTime={liveTime}
+            liveV={liveV}
+            liveS={liveS}
+            duration={duration}
+            layers={state.layers}
+            onToggleLayer={actions.toggleLayer}
+            isFreefall={isFreefall}
+          />
+        </div>
+
         <TutorialFAB videoUrl={videoUrl} />
       </div>
     );
@@ -158,14 +214,14 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
             {motionConfig.title.bn}
           </div>
           {/* Desktop: single line, larger */}
-          <div className="hidden lg:flex items-baseline gap-2 truncate">
+          <div className="hidden lg:flex items-baseline gap-3 truncate">
             <span
-              className="text-base font-bold"
+              className="text-xl font-bold tracking-tight"
               style={{ color: '#1E293B' }}
             >
               {motionConfig.title.bn}
             </span>
-            <span className="text-xs" style={{ color: '#94A3B8' }}>
+            <span className="text-sm" style={{ color: '#94A3B8' }}>
               {SUBJECT_BN[motionConfig.subject]} · NCTB অধ্যায় {motionConfig.nctb.chapter}
             </span>
           </div>

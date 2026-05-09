@@ -10,6 +10,8 @@ interface Props {
   duration: number;
   liveTime: number;
   isFreefall?: boolean;
+  /** Compact mode for fullscreen side rail — shorter height + smaller text */
+  compact?: boolean;
 }
 
 const G = 9.81;
@@ -20,6 +22,7 @@ export default function KinematicGraph({
   duration,
   liveTime,
   isFreefall,
+  compact = false,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -42,10 +45,10 @@ export default function KinematicGraph({
 
     const W = cssW;
     const H = cssH;
-    const padL = 36;
-    const padR = 8;
-    const padT = 16;
-    const padB = 22;
+    const padL = compact ? 28 : 36;
+    const padR = compact ? 6 : 8;
+    const padT = compact ? 12 : 16;
+    const padB = compact ? 16 : 22;
     const innerW = W - padL - padR;
     const innerH = H - padT - padB;
 
@@ -78,8 +81,8 @@ export default function KinematicGraph({
     // Grid
     ctx.strokeStyle = '#F1F5F9';
     ctx.lineWidth = 1;
-    const yLines = 4;
-    ctx.font = '9px ui-monospace, monospace';
+    const yLines = compact ? 3 : 4;
+    ctx.font = compact ? '8px ui-monospace, monospace' : '9px ui-monospace, monospace';
     ctx.fillStyle = '#94A3B8';
     ctx.textAlign = 'right';
     for (let i = 0; i <= yLines; i++) {
@@ -92,7 +95,7 @@ export default function KinematicGraph({
       ctx.fillText(yVal.toFixed(1), padL - 4, y + 3);
     }
 
-    const xLines = 4;
+    const xLines = compact ? 3 : 4;
     ctx.textAlign = 'center';
     for (let i = 0; i <= xLines; i++) {
       const x = padL + (innerW * i) / xLines;
@@ -118,11 +121,11 @@ export default function KinematicGraph({
 
     // Title (top-left)
     ctx.fillStyle = '#475569';
-    ctx.font = 'bold 10px ui-monospace, monospace';
+    ctx.font = compact ? 'bold 9px ui-monospace, monospace' : 'bold 10px ui-monospace, monospace';
     ctx.textAlign = 'left';
     ctx.fillText(variant === 'velocity' ? 'v (m/s)' : 's (m)', padL + 2, padT - 4);
     ctx.textAlign = 'right';
-    ctx.fillText('t (s)', W - padR - 2, H - 6);
+    ctx.fillText('t (s)', W - padR - 2, H - 4);
 
     // Plot
     const xPos = (t: number) => padL + (t / duration) * innerW;
@@ -174,7 +177,7 @@ export default function KinematicGraph({
       ctx.lineWidth = 2;
       ctx.stroke();
     }
-  }, [values, duration, liveTime, variant, isFreefall]);
+  }, [values, duration, liveTime, variant, isFreefall, compact]);
 
   return (
     <div
@@ -184,8 +187,8 @@ export default function KinematicGraph({
         background: '#FFFFFF',
         border: '1px solid #E2E8F0',
         boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
-        minHeight: '100px',
-        height: '120px',
+        minHeight: compact ? '70px' : '100px',
+        height: compact ? '80px' : '120px',
       }}
     >
       <canvas ref={canvasRef} />

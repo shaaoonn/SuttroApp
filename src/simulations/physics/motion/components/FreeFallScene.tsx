@@ -40,6 +40,7 @@ interface Props {
   onZoomChange?: (z: number) => void;
   onToggleFullscreen?: () => void;
   isFullscreen?: boolean;
+  hideOverlayControls?: boolean;
 }
 
 export default function FreeFallScene(props: Props) {
@@ -48,7 +49,7 @@ export default function FreeFallScene(props: Props) {
     mode, unknown, activeVars, onValueChange, onVehicleChange,
     playbackStatus, onPlay, onPause, onReset,
     extendedControls, speed, onSpeedChange, onZoomChange,
-    onToggleFullscreen, isFullscreen,
+    onToggleFullscreen, isFullscreen, hideOverlayControls,
   } = props;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -256,19 +257,21 @@ export default function FreeFallScene(props: Props) {
         activeVars={activeVars}
         onChange={onValueChange}
       />
-      <SceneOverlayControls
-        status={playbackStatus}
-        onPlay={onPlay}
-        onPause={onPause}
-        onReset={onReset}
-        extended={extendedControls}
-        speed={speed}
-        onSpeedChange={onSpeedChange}
-        zoom={zoom}
-        onZoomChange={onZoomChange}
-        onToggleFullscreen={onToggleFullscreen}
-        isFullscreen={isFullscreen}
-      />
+      {!hideOverlayControls && (
+        <SceneOverlayControls
+          status={playbackStatus}
+          onPlay={onPlay}
+          onPause={onPause}
+          onReset={onReset}
+          extended={extendedControls}
+          speed={speed}
+          onSpeedChange={onSpeedChange}
+          zoom={zoom}
+          onZoomChange={onZoomChange}
+          onToggleFullscreen={onToggleFullscreen}
+          isFullscreen={isFullscreen}
+        />
+      )}
     </div>
   );
 }

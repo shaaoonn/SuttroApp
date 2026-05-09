@@ -37,9 +37,12 @@ interface Props {
   extendedControls?: boolean;
   speed?: PlaybackSpeed;
   onSpeedChange?: (s: PlaybackSpeed) => void;
-  onZoomChange?: (z: number) => void;
-  onToggleFullscreen?: () => void;
-  isFullscreen?: boolean;
+  onZoomChange: (z: number) => void;
+  onToggleFullscreen: () => void;
+  isFullscreen: boolean;
+  ghostCount: number;
+  onSaveGhost: () => void;
+  onClearGhosts: () => void;
   hideOverlayControls?: boolean;
 }
 
@@ -48,8 +51,9 @@ export default function FreeFallScene(props: Props) {
     values, vehicle, liveTime, liveS, liveV, duration, layers, zoom,
     mode, unknown, activeVars, onValueChange, onVehicleChange,
     playbackStatus, onPlay, onPause, onReset,
-    extendedControls, speed, onSpeedChange, onZoomChange,
-    onToggleFullscreen, isFullscreen, hideOverlayControls,
+    onZoomChange, onToggleFullscreen, isFullscreen,
+    ghostCount, onSaveGhost, onClearGhosts,
+    hideOverlayControls,
   } = props;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -272,13 +276,13 @@ export default function FreeFallScene(props: Props) {
           onPlay={onPlay}
           onPause={onPause}
           onReset={onReset}
-          extended={extendedControls}
-          speed={speed}
-          onSpeedChange={onSpeedChange}
           zoom={zoom}
           onZoomChange={onZoomChange}
           onToggleFullscreen={onToggleFullscreen}
           isFullscreen={isFullscreen}
+          ghostCount={ghostCount}
+          onSaveGhost={onSaveGhost}
+          onClearGhosts={onClearGhosts}
         />
       )}
     </div>

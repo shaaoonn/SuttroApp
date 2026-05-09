@@ -36,14 +36,18 @@ interface Props {
   onPlay: () => void;
   onPause: () => void;
   onReset: () => void;
-  /** When true, scene overlay shows speed/zoom/fullscreen-exit controls too */
+  /** Reserved for future use; speed control removed per user feedback. */
   extendedControls?: boolean;
   speed?: PlaybackSpeed;
   onSpeedChange?: (s: PlaybackSpeed) => void;
-  onZoomChange?: (z: number) => void;
-  onToggleFullscreen?: () => void;
-  isFullscreen?: boolean;
-  /** When true, suppress the in-canvas Play/Reset overlay (caller renders an external bar instead) */
+  onZoomChange: (z: number) => void;
+  onToggleFullscreen: () => void;
+  isFullscreen: boolean;
+  /** Ghost compare controls — now part of main overlay */
+  ghostCount: number;
+  onSaveGhost: () => void;
+  onClearGhosts: () => void;
+  /** When true, suppress the in-canvas overlay (caller renders elsewhere) */
   hideOverlayControls?: boolean;
 }
 
@@ -52,8 +56,9 @@ export default function RoadScene(props: Props) {
     values, vehicle, liveTime, liveS, liveV, duration, layers, ghosts, zoom,
     mode, unknown, activeVars, onValueChange, onVehicleChange,
     playbackStatus, onPlay, onPause, onReset,
-    extendedControls, speed, onSpeedChange, onZoomChange,
-    onToggleFullscreen, isFullscreen, hideOverlayControls,
+    onZoomChange, onToggleFullscreen, isFullscreen,
+    ghostCount, onSaveGhost, onClearGhosts,
+    hideOverlayControls,
   } = props;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -98,10 +103,13 @@ export default function RoadScene(props: Props) {
     const worldToScreen = (worldS: number) =>
       VEHICLE_FIXED_X + (worldS - liveS) * meterPx;
 
-    const horizonY = H * 0.55;
+    // Reserve space at the bottom for distance markers so they're always
+    // visible — even on short mobile-landscape fullscreen heights.
+    const labelReserve = 38;
+    const horizonY = H * 0.45;
     const roadTop = horizonY + 6;
-    const roadHeight = Math.max(150, H * 0.34);
-    const roadBottom = roadTop + roadHeight;
+    const roadHeight = Math.max(110, H * 0.32);
+    const roadBottom = Math.min(roadTop + roadHeight, H - labelReserve);
     const dashedLineY = (roadTop + roadBottom) / 2;
 
     // ─── Day sky (FIXED) ──
@@ -382,13 +390,13 @@ export default function RoadScene(props: Props) {
           onPlay={onPlay}
           onPause={onPause}
           onReset={onReset}
-          extended={extendedControls}
-          speed={speed}
-          onSpeedChange={onSpeedChange}
           zoom={zoom}
           onZoomChange={onZoomChange}
           onToggleFullscreen={onToggleFullscreen}
           isFullscreen={isFullscreen}
+          ghostCount={ghostCount}
+          onSaveGhost={onSaveGhost}
+          onClearGhosts={onClearGhosts}
         />
       )}
     </div>

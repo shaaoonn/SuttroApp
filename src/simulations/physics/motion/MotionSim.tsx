@@ -10,10 +10,8 @@ import FullscreenSidePanel from './components/FullscreenSidePanel';
 import KinematicGraph from './components/KinematicGraph';
 import LayerToggles from './components/LayerToggles';
 import ModeSwitch from './components/ModeSwitch';
-import PlaybackBar from './components/PlaybackBar';
 import ResultDisplay from './components/ResultDisplay';
 import RoadScene from './components/RoadScene';
-import SceneOverlayControls from './components/SceneOverlayControls';
 import StepDerivation from './components/StepDerivation';
 import TutorialFAB from './components/TutorialFAB';
 import { motionConfig } from './config';
@@ -111,12 +109,13 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
     onPlay: actions.play,
     onPause: actions.pause,
     onReset: actions.reset,
-    extendedControls: isFullscreen,
-    speed: state.playback.speed,
-    onSpeedChange: actions.setSpeed,
     onZoomChange: actions.setZoom,
     onToggleFullscreen: toggleFullscreen,
     isFullscreen,
+    // Ghost compare controls — now part of the floating overlay pill
+    ghostCount: state.ghosts.length,
+    onSaveGhost: actions.saveGhost,
+    onClearGhosts: actions.clearGhosts,
   };
 
   const sceneNode = isFreefall ? (
@@ -137,7 +136,9 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
     />
   );
 
-  // ─── FULLSCREEN MODE — scene 4/5 + side rail 1/5 + bar-mode controls ───
+  // ─── FULLSCREEN MODE — scene 4/5 + side rail 1/5 ───
+  // The floating overlay pill (now bottom-right of scene) hosts ALL
+  // playback controls including fullscreen-exit, so no separate bar.
   if (isFullscreen) {
     return (
       <div
@@ -145,23 +146,9 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
         className="motion-sim relative w-full h-full flex flex-row"
         style={{ background: '#000' }}
       >
-        {/* Scene column */}
-        <div className="flex flex-col flex-[4] min-w-0">
-          <div className="flex-1 min-h-0 relative">{sceneNodeNoOverlay}</div>
-          <SceneOverlayControls
-            mode="bar"
-            status={state.playback.status}
-            onPlay={actions.play}
-            onPause={actions.pause}
-            onReset={actions.reset}
-            extended
-            speed={state.playback.speed}
-            onSpeedChange={actions.setSpeed}
-            zoom={state.zoom}
-            onZoomChange={actions.setZoom}
-            onToggleFullscreen={toggleFullscreen}
-            isFullscreen
-          />
+        {/* Scene column — overlay controls are inside the scene component */}
+        <div className="flex flex-col flex-[4] min-w-0 relative">
+          {sceneNode}
         </div>
 
         {/* Right rail (1/5, compact) */}
@@ -214,7 +201,7 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
       >
         {/* Title */}
         <div className="flex flex-col lg:flex-row lg:items-baseline lg:gap-2 min-w-0 flex-1">
-          {/* Mobile: stacked */}
+          {/* Mobile: stacked. Title 1.5× bigger per latest feedback. */}
           <div
             className="text-[10px] font-medium leading-none truncate lg:hidden"
             style={{ color: '#94A3B8' }}
@@ -222,15 +209,15 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
             {SUBJECT_BN[motionConfig.subject]} · অধ্যায় {motionConfig.nctb.chapter}
           </div>
           <div
-            className="font-bold leading-tight truncate text-sm lg:hidden"
+            className="font-bold leading-tight truncate text-xl lg:hidden"
             style={{ color: '#1E293B' }}
           >
             {motionConfig.title.bn}
           </div>
-          {/* Desktop: single line, larger */}
+          {/* Desktop: single line, larger. Title 1.5× bigger. */}
           <div className="hidden lg:flex items-baseline gap-3 truncate">
             <span
-              className="text-xl font-bold tracking-tight"
+              className="text-3xl font-bold tracking-tight"
               style={{ color: '#1E293B' }}
             >
               {motionConfig.title.bn}
@@ -264,18 +251,9 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
             {sceneNode}
           </div>
 
-          {/* Circle controls bar (only in normal mode — fullscreen has them in overlay) */}
-          <PlaybackBar
-            speed={state.playback.speed}
-            onSpeedChange={actions.setSpeed}
-            zoom={state.zoom}
-            onZoomChange={actions.setZoom}
-            onSaveGhost={actions.saveGhost}
-            ghostCount={state.ghosts.length}
-            onClearGhosts={actions.clearGhosts}
-            onToggleFullscreen={toggleFullscreen}
-            isFullscreen={isFullscreen}
-          />
+          {/* All controls (Play/Reset/Zoom/Fullscreen/Ghost) are now floating
+              at bottom-right of the canvas via SceneOverlayControls.
+              Speed control removed entirely — animation always plays at 1× real time. */}
         </div>
 
         {/* RIGHT side panel — formulas, derivation, result, layers, graphs */}

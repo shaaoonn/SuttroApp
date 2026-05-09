@@ -3,15 +3,15 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    namespace = "com.suttro.app"
+    namespace = "app.suttro.suttro"
     compileSdk = rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        applicationId "com.suttro.app"
+        applicationId "app.suttro.suttro"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 14
-        versionName "2.1.11"
+        versionCode 3
+        versionName "1.0.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -40,6 +40,13 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    // BuildConfig.DEBUG is referenced from Kotlin code (e.g. gating WebView
+    // remote debugging). AGP 8+ no longer generates BuildConfig by default —
+    // must opt in here.
+    buildFeatures {
+        buildConfig = true
     }
 
     bundle {

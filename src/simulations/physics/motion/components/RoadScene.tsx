@@ -7,6 +7,7 @@ import type {
   KinematicVars,
   LayerVisibility,
   Mode,
+  PlaybackSpeed,
   PlaybackStatus,
   VariableKey,
   VehicleKey,
@@ -35,6 +36,13 @@ interface Props {
   onPlay: () => void;
   onPause: () => void;
   onReset: () => void;
+  /** When true, scene overlay shows speed/zoom/fullscreen-exit controls too */
+  extendedControls?: boolean;
+  speed?: PlaybackSpeed;
+  onSpeedChange?: (s: PlaybackSpeed) => void;
+  onZoomChange?: (z: number) => void;
+  onToggleFullscreen?: () => void;
+  isFullscreen?: boolean;
 }
 
 export default function RoadScene(props: Props) {
@@ -42,6 +50,8 @@ export default function RoadScene(props: Props) {
     values, vehicle, liveTime, liveS, liveV, duration, layers, ghosts, zoom,
     mode, unknown, activeVars, onValueChange, onVehicleChange,
     playbackStatus, onPlay, onPause, onReset,
+    extendedControls, speed, onSpeedChange, onZoomChange,
+    onToggleFullscreen, isFullscreen,
   } = props;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -357,6 +367,13 @@ export default function RoadScene(props: Props) {
         onPlay={onPlay}
         onPause={onPause}
         onReset={onReset}
+        extended={extendedControls}
+        speed={speed}
+        onSpeedChange={onSpeedChange}
+        zoom={zoom}
+        onZoomChange={onZoomChange}
+        onToggleFullscreen={onToggleFullscreen}
+        isFullscreen={isFullscreen}
       />
     </div>
   );

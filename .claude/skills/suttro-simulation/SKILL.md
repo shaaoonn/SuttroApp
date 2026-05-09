@@ -17,30 +17,225 @@ Don't ask for approval on routine choices (file paths, color picks, slider range
 ### 2. Every new sim MUST have a DB row + be public by default
 After code is done, INSERT a fully-populated row into `simulations` table with `status='public'`. The user only edits if they want changes. Never leave the row blank for them to fill — fill it yourself with NCTB chapter name as title, your best description, etc.
 
-### 3. Brand: cartoon-leaning modern illustration
-- ✅ Flat / semi-flat 2D, soft shadows, subtle gradients
-- ✅ 2.5D perspective for vehicles; pure side-view for graph-like
-- ✅ Code-drawn Canvas primitives (NO 3D, NO stock raster assets, NO photorealistic)
+### 3. Brand: realistic-feel via system emojis + DAY theme
+**Hard-learned from Motion sim iteration (4+ rounds of feedback):**
+- ✅ **System emojis** for vehicles/objects (🚗 🏍️ 🛺 🚲 🚀 ⚽) — render as
+  photorealistic via Apple/Google/MS emoji fonts. Free, scalable, consistent.
+  Sized at ~120-130px for visibility (1.3× the default 90px).
+- ✅ **Day theme**: blue sky gradient + sun with glow + 3-4 fluffy clouds +
+  distant green hills with parallax + grass strips. NOT night/dark.
+- ✅ Subtle gradients, soft shadows, rounded pill controls, frosted-glass overlays
 - ✅ Bangla cultural objects when relevant (CNG, রিকশা, motorcycle, ক্রিকেট ball)
-- ✅ Mobile-first responsive
+- ✅ Mobile-first responsive — `window.innerWidth < 700` triggers compact mode
 - ✅ Bangla throughout — Hind Siliguri font handled by global CSS
-- ❌ NO Master Sab-style stock 3D rendering
-- ❌ NO kindergarten-cute cartoon
-- ❌ NO ultra-realistic photo-style
+- ❌ NO night/dark canvas (rejected by user — "আমরা চাচ্ছি দিনের মত")
+- ❌ NO custom Canvas-drawn vehicles from primitives (rejected — "গাড়িগুলো রিয়েল হয়নি")
+- ❌ NO stock 3D rendered images / Master Sab-style stiff renders
+- ❌ NO kindergarten cartoon
+- ❌ NO photo-realistic 3D (impossible to maintain)
 
-### 4. Use Suttro brand colors (dark theme default for sim canvas)
+### 4. Day-theme color palette (canvas)
 ```
---bg-night-deep:   #050D1F
---bg-night:        #0B1D3A
---bg-night-alt:    #1A2B42
---road / surface:  #2D3340
---velocity / OK:   #2A9D6E (suttro-primary-light)
---accel / accent:  #E8A838 (suttro-amber)
---text:            #FAFBF9
---ghost:           rgba(255,255,255,0.25)
---error:           #F87171
+/* Sky (gradient top to horizon) */
+--sky-top:        #7CC2F0  /* bright sky blue */
+--sky-mid:        #B5DCEC  /* softer */
+--sky-horizon:    #E1F0F8  /* pale at horizon */
+
+/* Sun */
+--sun:            #FFD86E
+--sun-inner:      #FFEEA0
+--sun-glow:       rgba(255, 230, 150, 0.55)
+
+/* Cloud */
+--cloud-fill:     rgba(255, 255, 255, 0.95)
+--cloud-highlight: rgba(255, 255, 255, 0.6)
+
+/* Hills (parallax) */
+--hill-far:       rgba(120, 165, 140, 0.45)
+--hill-near:      rgba(95, 145, 120, 0.55)
+
+/* Grass */
+--grass-top:      #7BB661
+--grass-bottom:   #5A9A4A → #477A3D
+
+/* Road */
+--road-grad:      #3E444E → #30353E → #3E444E
+--road-shoulder:  #FFC93C  /* yellow stripes top + bottom */
+--road-dashes:    #FFFFFF  /* white dashed center, 5px wide, [34, 22] dash */
+
+/* Vectors / labels */
+--velocity:       #16A34A  /* green pill with white text */
+--accel:          #EA580C  /* orange pill with white text */
+--origin:         #16A34A  /* "শুরু" marker */
+
+/* UI overlays */
+--overlay-bg:     rgba(255, 255, 255, 0.88)  /* frosted-glass pill */
+--overlay-border: rgba(255, 255, 255, 0.7)
+--overlay-shadow: 0 6px 20px rgba(0, 0, 0, 0.18)
+
+/* Floating readout (above vehicle) */
+--readout-bg:     rgba(11, 29, 58, 0.92)
+--readout-text:   #FFFFFF
 ```
-Outside the sim canvas (sim/[slug] page wrapper), use `var(--suttro-*)` light theme tokens.
+Outside the sim canvas (sim/[slug] page wrapper), use `var(--suttro-*)` light theme tokens (warm gradient FFF8E7 → DBEAFE → F0F9FF).
+
+---
+
+## CRITICAL VISUAL + UX PATTERNS (gold standard from Motion sim)
+
+These are non-negotiable patterns hammered out over multiple feedback iterations.
+Replicate exactly when creating a new sim. Deviation produces uglier UX.
+
+### A. Camera-follow vehicle (Subway Surfers / PhET style)
+**The vehicle (or focus object) STAYS at a fixed screen X. The world scrolls
+past.** Anyone implementing a moving-object sim must follow this:
+
+```ts
+const VEHICLE_FIXED_X = W * 0.42;  // slightly LEFT of center → see more path AHEAD
+
+// Convert world position → screen X
+const worldToScreen = (worldS: number) =>
+  VEHICLE_FIXED_X + (worldS - liveS) * meterPx;
+
+// Distance markers shift left as vehicle "moves forward"
+// Origin marker (0m, "শুরু" label) scrolls off when vehicle goes far enough
+// Sky / sun / clouds stay at FIXED screen positions (infinite-distance items)
+// Hills get slow parallax: -liveS * meterPx * 0.12 (far) and 0.22 (near)
+// Dashed center line scrolls via ctx.lineDashOffset = -liveS * meterPx
+```
+
+### B. Single floating overlay pill (bottom-RIGHT, not bottom-center)
+ALL playback controls go in ONE frosted-glass pill anchored to the bottom-right
+of the scene canvas. NO separate bar below. NO speed selector.
+
+```
+[▶ Play] [↺ Reset] [− Zoom] [+ Zoom] [⛶ FS] [👻 Ghost N]
+```
+
+- Position: `right: 14px, bottom: 14px` (8px on mobile)
+- Frosted glass: `rgba(255,255,255,0.88) + backdrop-filter: blur(10px)`
+- Mobile compact (window.innerWidth < 700): Play 36px, others 28px (was 44/34)
+- **NEVER put controls at bottom-center** — covers vehicle + 0m marker
+- **NEVER add speed multipliers** — animation always plays at 1× wall-clock time
+
+### C. Embedded sliders top-RIGHT, vehicle picker top-LEFT (inside canvas)
+Master-Sab pedagogy preserved: variable sliders are part of the visual, not
+in a separate panel. Vehicle picker stays as a vertical strip on the left.
+
+- VehiclePickerOverlay: `top-2 left-2`, scrollable when narrow (so all 6
+  emojis remain reachable — important on mobile fullscreen)
+- EmbeddedSliders: `top-2 right-2`, four narrow vertical sliders (u/v/a/t etc.)
+- Both use frosted glass, semi-transparent white background
+
+### D. Distance markers ALWAYS visible (label-reserve trick)
+Reserve 38px at the bottom of the canvas for distance labels. Otherwise short
+mobile-landscape fullscreen heights push the labels off-canvas:
+
+```ts
+const labelReserve = 38;
+const horizonY = H * 0.45;            // was 0.55 — too tall
+const roadTop = horizonY + 6;
+const roadHeight = Math.max(110, H * 0.32);
+const roadBottom = Math.min(roadTop + roadHeight, H - labelReserve);
+// Markers drawn at roadBottom + 22-24, always within H
+```
+
+### E. ResizeObserver — required for fullscreen toggle
+Without this, the canvas reads container.clientWidth on first effect run and
+keeps the old W/H when fullscreen toggles. Vehicle visibly off-position.
+
+```ts
+const [resizeKey, setResizeKey] = useState(0);
+useEffect(() => {
+  if (!containerRef.current) return;
+  const obs = new ResizeObserver(() => setResizeKey((k) => k + 1));
+  obs.observe(containerRef.current);
+  return () => obs.disconnect();
+}, []);
+
+// Add `resizeKey` to the drawing useEffect's dep list:
+useEffect(() => { /* draw */ }, [...stateDeps, resizeKey]);
+```
+
+### F. Fullscreen scroll restoration
+Browser keeps scroll position from before fullscreen. After exit, the sim is
+often off-screen below. Auto-scroll back:
+
+```ts
+useEffect(() => {
+  const handler = () => {
+    const isFs = Boolean(document.fullscreenElement);
+    setIsFullscreen(isFs);
+    if (!isFs) {
+      setTimeout(() => {
+        containerRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }, 80);
+    }
+  };
+  document.addEventListener('fullscreenchange', handler);
+  return () => document.removeEventListener('fullscreenchange', handler);
+}, []);
+```
+
+### G. Mobile fullscreen orientation lock
+On `requestFullscreen`, lock to landscape if mobile:
+
+```ts
+if (isMobile && screen.orientation && 'lock' in screen.orientation) {
+  (screen.orientation as any).lock?.('landscape').catch(() => {});
+}
+// On exit: screen.orientation.unlock()
+```
+
+### H. Fullscreen layout: scene 4/5 + side rail 1/5
+Compact rail with formula + derivation + result + layers + 2 mini graphs:
+
+```tsx
+<div className="flex flex-row w-full h-full bg-black">
+  <div className="flex flex-col flex-[4] min-w-0 relative">{sceneNode}</div>
+  <div className="flex flex-col flex-[1] min-w-[180px] max-w-[280px]">
+    <FullscreenSidePanel ... />
+  </div>
+</div>
+```
+
+The side panel applies CSS `zoom: 0.8` on `window.innerWidth < 900` so text
++ graph heights scale uniformly without per-component rewrites.
+
+### I. computeDuration must derive t from kinematic relations
+Without this, slider value (e.g., s=82m) doesn't match the animation distance.
+For each equation, derive t when not directly given:
+
+```ts
+// 1st law: t = (v - u) / a
+// 2nd law: ½at² + ut - s = 0 → quadratic positive root
+// 3rd law: t = (v - u) / a (after solving v from v² = u² + 2as)
+// 4th law: t = 2s / (u + v)
+// Free fall: t = √(2h / g)
+```
+
+### J. Title 1.5× sizing
+- Mobile stacked: subtitle text-[10px], title text-xl (was text-sm)
+- Desktop one-line: title text-3xl + tracking-tight, subtitle text-sm
+
+### K. Friendly Bangla error messages
+Show errors as Bangla messages, never raw Math errors:
+- `শূন্য দিয়ে ভাগ করা যায় না — অন্য মান চেষ্টা করো`
+- `এই combination-এ ফলাফল কাল্পনিক হয়ে যাচ্ছে — মান বদলাও`
+- `নেগেটিভ সময় সম্ভব না — অন্য মান চেষ্টা করো`
+
+### L. Direction-aware emoji rendering
+Emojis face LEFT by default on most platforms. Flip when moving right:
+
+```ts
+const naturalSign = spec.naturalFacing === 'left' ? -1 : 1;
+if (spec.naturalFacing !== 'symmetric' && naturalSign !== dir) {
+  ctx.scale(-1, 1);  // flip horizontally
+}
+```
 
 ---
 
@@ -243,6 +438,14 @@ export default function XxxSim({ videoUrl }: XxxSimProps = {}) {
 
 ### Setup boilerplate (every Scene)
 ```tsx
+const [resizeKey, setResizeKey] = useState(0);
+useEffect(() => {
+  if (!containerRef.current) return;
+  const obs = new ResizeObserver(() => setResizeKey((k) => k + 1));
+  obs.observe(containerRef.current);
+  return () => obs.disconnect();
+}, []);
+
 useEffect(() => {
   const canvas = canvasRef.current;
   const container = containerRef.current;
@@ -260,30 +463,62 @@ useEffect(() => {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   // ... draw ...
-}, [/* state deps */]);
+}, [...stateDeps, resizeKey]);  // resizeKey forces redraw on container size change
 ```
 
-### Always include
-- Sky gradient (or theme-appropriate background)
-- Scattered stars / dot texture for depth
-- Ground / road / lab-floor — clear horizontal anchor
-- Distance/value markers with labels
-- Object position from physics (NOT fake animation — `positionAt(...)`)
-- Velocity arrow (green) scaling with speed
-- Acceleration arrow (amber) showing direction
-- Ghost trails (semi-transparent, max 3)
-- Floating live readout above object: `t: X.Xs · s: Y.Ym`
-- Subtle 1px frame border
+### Always include (Day-theme scene)
+- **Day sky gradient** (#7CC2F0 → #B5DCEC → #E1F0F8 from top to horizon)
+- **Sun** with radial-gradient glow in top-right (W*0.86, H*0.17, r=30)
+- **3-4 fluffy clouds** at fixed screen positions (use `drawCloud(x, y, scale)` helper)
+- **Distant hills** with parallax (sin-curve generated, far at 0.12× and near at 0.22× vehicle motion)
+- **Grass strip** above + below road (#7BB661 → #5A9A4A gradients)
+- **Road** dark gradient (#3E444E → #30353E → #3E444E) with yellow shoulder
+  stripes (#FFC93C, 4px) and **white dashed center line** (5px wide, [34, 22]
+  dash, animated via `ctx.lineDashOffset = -liveS * meterPx`)
+- **Distance markers** below road with stroke-then-fill text (white on black)
+- **Origin marker (0m)** with green vertical line + "শুরু" label above road
+- **Object position** from physics (`positionAt(...)`) — vehicle at FIXED screen X
+- **Velocity arrow** (green pill: `#16A34A` background, white text)
+- **Acceleration arrow** (orange pill: `#EA580C` background, white text)
+- **Ghost trails** (semi-transparent, max 3)
+- **Floating live readout** above vehicle: `t: X.XXs · s: Y.Ym` (dark pill)
+- **Reserve 38px at bottom** for label visibility on short heights
 
-### Vehicle/object drawing
-- Always code-drawn — no images
-- Reference `src/simulations/physics/motion/vehicles.ts` for the standard set: sedan, motorcycle, CNG, bicycle, rocket, ball
-- For new sim domains (chemistry beaker, biology cell), make a similar `<domain>Items.ts` with drawing primitives
+### Vehicle/object drawing — emoji-first
+**Use system emojis, NOT custom Canvas drawing.** This was a major iteration
+decision — code-drawn primitives looked cartoonish; user demanded "realistic".
+Apple/Google/MS emoji fonts give photorealistic-quality renders for free.
+
+```ts
+ctx.font = `${size}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+// Direction-aware flip — emojis face LEFT by default on most platforms
+if (naturalFacing === 'left' && direction > 0) ctx.scale(-1, 1);
+ctx.fillText(emoji, 0, 0);
+```
+
+Standard vehicle set (mirrors `src/simulations/physics/motion/vehicles.ts`):
+- 🚗 sedan (size 125, faces left)
+- 🏍️ motorcycle (114, faces left)
+- 🛺 CNG / auto-rickshaw (120, faces left)
+- 🚲 bicycle (109, faces left)
+- 🚀 rocket (114, faces right — exception)
+- ⚽ football / ball (78, symmetric — rotates with motion)
+
+For new domains (chemistry, biology), think of analogous emojis:
+- Chemistry: 🧪 ⚗️ 🔬 🧫 ⚛️
+- Biology: 🌱 🌿 🍃 🦠 🧬 🌸
+- Physics: 🔋 💡 🧲 🔭 ⚖️
+
+If no suitable emoji exists, fall back to lightweight SVG (still NOT
+3D / photorealistic / stock raster).
 
 ### Arrow helper (copy-paste from RoadScene.tsx)
 ```ts
 function drawArrow(ctx, x1, y1, x2, y2, color, width) { ... }
 ```
+Plus pill-style label: `roundRect` background + white text centered on shaft midpoint.
 
 ---
 
@@ -505,17 +740,23 @@ If you must ask, these are the legitimate questions:
 ### NOT to copy
 - The deleted demo sims (ohms-law, light-reflection, etc.) used a generic dot-grid canvas + draggable objects. That pattern is OBSOLETE. Always custom canvas per sim.
 
-### File-pattern reference (file-by-file)
+### File-pattern reference (file-by-file, from Motion gold standard)
 | File | Lines | Purpose |
 |------|-------|---------|
-| config.ts | 60-80 | Variables, formulas, NCTB metadata |
-| types.ts | 80-120 | TS contracts |
-| physics.ts | 250-400 | Equations + variants + solve + validate + helpers |
-| useXxx.ts | 200-280 | useReducer + animation loop |
-| XxxSim.tsx | 150-200 | Entry + responsive layout |
-| Scene.tsx | 200-300 | Canvas drawing |
-| KinematicGraph.tsx | 130-180 | Live v-t / s-t plot |
-| Other components | 50-150 each | Sliders, dropdowns, toggles |
+| config.ts | 60-90 | Variables, formulas, NCTB metadata |
+| types.ts | 100-140 | TS contracts |
+| physics.ts | 350-450 | Equations + variants + solve + validate + computeDuration |
+| useXxx.ts | 240-280 | useReducer + rAF animation (speed always 1) |
+| vehicles.ts | 80-100 | Emoji map + drawVehicle helper |
+| XxxSim.tsx | 200-260 | Entry + responsive layout + fullscreen branch |
+| RoadScene.tsx | 380-440 | Custom Canvas day-theme scene |
+| FreeFallScene.tsx | 280-340 | Vertical Canvas variant |
+| FullscreenSidePanel.tsx | 110-140 | Compact rail (formulas + result + graphs) |
+| SceneOverlayControls.tsx | 180-220 | Bottom-right floating pill |
+| KinematicGraph.tsx | 180-220 | Live v-t / s-t with compact prop |
+| EmbeddedSliders.tsx | 80-120 | Top-right sliders inside canvas |
+| VehiclePickerOverlay.tsx | 70-100 | Top-left scrollable strip |
+| Other UI components | 40-100 each | Sliders, tabs, dropdowns, toggles |
 
 ---
 
@@ -632,36 +873,138 @@ click — Save & publish — তারপর testers update পাবে।"
 
 ## ANTI-PATTERNS — NEVER DO
 
+### Process / workflow
 ❌ **Don't** ask "should I create the simulation?" — just create it
-❌ **Don't** generate a sim without doing benchmark research first
-❌ **Don't** use stock 3D images for vehicles/items
+❌ **Don't** generate a sim without doing benchmark research first (PhET + Master Sab)
 ❌ **Don't** leave DB row blank for the user to fill — fill it yourself
 ❌ **Don't** set `status='private'` by default — always 'public'
-❌ **Don't** copy from the deleted demo sims (obsolete pattern)
-❌ **Don't** use generic dot-grid canvas — custom per sim
-❌ **Don't** show raw error codes to users — always friendly Bangla
-❌ **Don't** skip the `videoUrl` prop on the sim entry component
-❌ **Don't** forget to update `simThumbnails.ts` fallback even if admin will override
 ❌ **Don't** commit without `npm run build` passing
 ❌ **Don't** push more than one logical sim per commit — one sim, one commit
+
+### Visual / theme (lessons from Motion sim's 4+ rejection cycles)
+❌ **Don't** use NIGHT / dark canvas — user explicitly said "দিনের মত হবে আকাশ দেখা যাবে"
+❌ **Don't** draw vehicles from Canvas primitives — they look cartoonish even
+   with effort. Use system emojis (🚗 🏍️ 🛺 🚲 🚀 ⚽). Photorealistic for free.
+❌ **Don't** use stock 3D rendered images (Master Sab style — looks dated)
+❌ **Don't** put road horizon at H * 0.55 — markers go off-screen on short heights.
+   Use 0.45 + reserve 38px at the bottom for labels.
+❌ **Don't** use generic dot-grid canvas — custom day-theme scene per sim.
+❌ **Don't** put the vehicle at a moving screen position — it must STAY at fixed
+   `W * 0.42` and the world scrolls past (camera-follow pattern).
+
+### Controls / UX
+❌ **Don't** add a speed multiplier (0.25× / 0.5× / 1× / 2×) — animation MUST
+   play at 1× wall-clock time. User explicitly removed this.
+❌ **Don't** put controls at bottom-CENTER — they cover the vehicle and 0m marker.
+   Always bottom-RIGHT of canvas.
+❌ **Don't** create a separate "PlaybackBar" row below the canvas — ALL controls
+   go in the floating overlay pill inside the canvas.
+❌ **Don't** position the vehicle picker without scroll — on mobile fullscreen,
+   the football emoji at the bottom gets clipped. Always max-height + overflow-y.
+❌ **Don't** show raw Math errors — always friendly Bangla messages.
+
+### Tech / runtime
+❌ **Don't** skip the ResizeObserver — Canvas dims won't update on fullscreen
+   toggle, and the vehicle appears off-position until next state change.
+❌ **Don't** forget the scroll-into-view on fullscreen exit — sim drifts off-screen.
+❌ **Don't** trust `t` slider value alone for animation duration — derive `t`
+   from kinematic relations in `computeDuration()` so slider/scene match.
+❌ **Don't** skip the `videoUrl` prop on the sim entry component
+❌ **Don't** forget to update `simThumbnails.ts` fallback even if admin will override
+
+---
+
+## ITERATION FEEDBACK PATTERN — what to expect
+
+The Motion sim went through ~6 rounds of feedback before reaching the gold
+standard. **This is normal.** Plan for it:
+
+1. **First ship** — research + scaffold + initial code. User will tap fullscreen,
+   try mobile, screenshot what's wrong.
+2. **Round 2-3** — visual feedback ("রিয়েল হয়নি", "দিনের মত হবে", "বাটন গাড়ি
+   ঢাকছে"). Pivot strategy if needed (e.g., emoji over custom drawing).
+3. **Round 4-5** — fullscreen-specific issues, mobile-specific issues, marker
+   visibility on short heights, scroll restore.
+4. **Round 6** — final polish: title sizes, control positions, density.
+
+**During each round:**
+- User often shares screenshots — read carefully, note the layout problems
+- Bangla feedback mixes English UI terms ("ফুল স্ক্রিন", "হিসাব কিতাব", "ফ্লোটিং")
+- User explicitly authorizes destructive ops with "তুমি কর", "যদি দরকার করো"
+- Don't ask for approval on each fix — execute, ship, wait for next feedback
+
+**Common feedback triggers and fixes:**
+| User says | Fix |
+|-----------|-----|
+| "গাড়ি ঢেকে যাচ্ছে" / "বাটন কাভার করছে" | Move overlay to bottom-RIGHT |
+| "সংখ্যাগুলো দেখা যাচ্ছে না" | Reserve 38px bottom + lower horizonY |
+| "ছোট ছোট দেখাচ্ছে" / "বড় হবে" | 1.5× font scale + bigger title |
+| "রিয়েল হয়নি" | Switch to emoji rendering |
+| "রাত হয়ে আছে" | Switch to day theme |
+| "বাইরে চলে যাচ্ছে" (after fullscreen) | ResizeObserver |
+| "স্ক্রল করে উপরে আসতে হয়" | scrollIntoView on FS exit |
+| "চারপাশ সাদা" (mobile FS) | Edge-to-edge wrapper, no max-width |
 
 ---
 
 ## QUICK CHECKLIST (paste into your todos at session start)
 
+### Setup
 1. PULL — git pull origin main
 2. SKILL — read this file
 3. RESEARCH — PhET + Master Sab + NCTB chapter
-4. PLAN — show user one-message proposal
-5. SCAFFOLD — folder + types + physics + state hook
-6. UI — components per Motion gold standard
-7. CANVAS — custom scene + animation
-8. GRAPHS — if applicable
-9. ENTRY — XxxSim.tsx with videoUrl prop
-10. REGISTRY — add to registry.ts + /sim/[slug] router
-11. THUMB — add fallback SVG to simThumbnails.ts
-12. DB — INSERT row, status='public'
-13. BUILD — npm run build, verify route
-14. COMMIT — focused message
-15. PUSH — origin main
-16. DEPLOY — Coolify trigger
+
+### Plan
+4. SCOPE — single equation or multi-equation? mode toggle (solver/explore)?
+5. ASSETS — pick emojis (🚗 🏍️ 🛺 🚲 🚀 ⚽ for motion; choose analogous for new domain)
+6. PLAN — show user one-message proposal (skip if obvious)
+
+### Scaffold
+7. FOLDER — `src/simulations/<subject>/<slug>/`
+8. TYPES — types.ts with EquationKey, VariableKey, Mode, etc.
+9. PHYSICS — physics.ts (PURE — equations + variants + solve + computeDuration)
+10. STATE — useXxx.ts (useReducer + rAF, force speed=1)
+
+### UI components (mirror Motion)
+11. EquationTabs / FormulaDropdown / StepDerivation
+12. ValueSliders / EmbeddedSliders (inside canvas, top-right)
+13. VehiclePickerOverlay (top-left, scrollable)
+14. SceneOverlayControls (bottom-right pill, no speed)
+15. ResultDisplay / ErrorBanner (friendly Bangla)
+16. KinematicGraph (with `compact?: boolean` prop)
+17. FullscreenSidePanel (zoom: 0.8 on narrow viewports)
+
+### Canvas (day theme + camera-follow)
+18. ResizeObserver setup → `resizeKey` in useEffect deps
+19. Day sky + sun + clouds + parallax hills (FIXED screen positions)
+20. Road with yellow shoulders + dashed center (lineDashOffset animation)
+21. Reserve 38px bottom for distance labels
+22. Vehicle at FIXED `W * 0.42`, world scrolls via `worldToScreen()`
+23. Velocity / accel pill arrows (green / orange + white text)
+24. Floating readout above vehicle (dark pill: t + s)
+25. Origin marker (0m) with "শুরু" label
+26. Ghost trails (max 3, semi-transparent)
+27. Direction-aware emoji flip
+
+### Entry + integration
+28. XxxSim.tsx with `videoUrl?: string` prop + 1.5× title + fullscreen branch
+29. fullscreenchange listener → scrollIntoView on exit
+30. Orientation lock (mobile fullscreen → landscape)
+31. REGISTRY — add to `src/simulations/registry.ts`
+32. ROUTER — add to `src/app/sim/[slug]/page.tsx` SIMULATION_COMPONENTS
+33. THUMB — add fallback SVG to `src/components/simulations/simThumbnails.ts`
+
+### Database + admin
+34. DB SEED — INSERT row, status='public', fill all fields
+35. ADMIN — verify row appears at `/admin/simulations/<slug>` for editing
+
+### Verify + ship
+36. BUILD — `npm run build`, verify `/sim/<slug>` SSG route appears
+37. COMMIT — focused message with "Co-Authored-By"
+38. PUSH — origin main
+39. DEPLOY — Coolify auto-redeploy (or manual trigger of `d0ok448ks8s4kkcww444sgkw`)
+
+### Anticipate iteration
+40. Expect 4-6 rounds of polish feedback. Don't be defensive — execute fixes
+    quickly. Reference the "Common feedback triggers" table in the
+    ITERATION FEEDBACK PATTERN section above.

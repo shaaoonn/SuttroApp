@@ -2,11 +2,18 @@
 
 import { useEffect, useRef } from 'react';
 import { G } from '../physics';
-import type { KinematicVars, LayerVisibility, VehicleKey } from '../types';
+import type {
+  KinematicVars,
+  LayerVisibility,
+  Mode,
+  PlaybackStatus,
+  VariableKey,
+  VehicleKey,
+} from '../types';
 import { drawVehicle, vehicleSize, WHEEL_RADIUS } from '../vehicles';
 import VehiclePickerOverlay from './VehiclePickerOverlay';
 import SceneOverlayControls from './SceneOverlayControls';
-import type { PlaybackStatus } from '../types';
+import EmbeddedSliders from './EmbeddedSliders';
 
 interface Props {
   values: KinematicVars;
@@ -16,6 +23,11 @@ interface Props {
   liveV: number;
   duration: number;
   layers: LayerVisibility;
+  zoom: number;
+  mode: Mode;
+  unknown: VariableKey | null;
+  activeVars: VariableKey[];
+  onValueChange: (key: VariableKey, value: number) => void;
   onVehicleChange: (v: VehicleKey) => void;
   playbackStatus: PlaybackStatus;
   onPlay: () => void;
@@ -23,20 +35,13 @@ interface Props {
   onReset: () => void;
 }
 
-export default function FreeFallScene({
-  values,
-  vehicle,
-  liveTime,
-  liveS,
-  liveV,
-  duration,
-  layers,
-  onVehicleChange,
-  playbackStatus,
-  onPlay,
-  onPause,
-  onReset,
-}: Props) {
+export default function FreeFallScene(props: Props) {
+  const {
+    values, vehicle, liveTime, liveS, liveV, duration, layers, zoom,
+    mode, unknown, activeVars, onValueChange, onVehicleChange,
+    playbackStatus, onPlay, onPause, onReset,
+  } = props;
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -63,7 +68,7 @@ export default function FreeFallScene({
     const usableHeight = H - 130;
     const meterPx = usableHeight / totalH;
 
-    // ─── Day sky gradient ──
+    // Sky
     const skyGrad = ctx.createLinearGradient(0, 0, 0, H);
     skyGrad.addColorStop(0, '#7CC2F0');
     skyGrad.addColorStop(0.7, '#A6D4ED');
@@ -129,7 +134,6 @@ export default function FreeFallScene({
       ctx.stroke();
     }
 
-    // Crenellation
     ctx.fillStyle = '#6B5840';
     ctx.fillRect(towerX - 4, towerTop - 6, towerW + 8, 6);
     for (let i = 0; i < 4; i++) {
@@ -137,19 +141,20 @@ export default function FreeFallScene({
       ctx.fillRect(x, towerTop - 12, (towerW + 8) / 8, 6);
     }
 
-    // ─── Falling object position ──
-    const vSize = vehicleSize(vehicle);
+    // Falling object
+    const baseSize = vehicleSize(vehicle);
+    const vSize = baseSize * zoom;
     const objX = towerX + towerW + 90;
     const objY = towerTop + 12 + liveS * meterPx;
 
-    // Distance markers along fall
     if (layers.distanceMarkers) {
       let stepM = 1;
       if (totalH > 50) stepM = 10;
       else if (totalH > 20) stepM = 5;
       else if (totalH > 10) stepM = 2;
 
-      ctx.font = 'bold 12px ui-monospace, monospace';
+      const fs = Math.round(12 * zoom);
+      ctx.font = `bold ${fs}px ui-monospace, monospace`;
       ctx.textAlign = 'right';
       for (let m = 0; m <= totalH; m += stepM) {
         const y = towerTop + 12 + m * meterPx;
@@ -169,26 +174,27 @@ export default function FreeFallScene({
       }
     }
 
-    // Falling object — for free fall, direction is down (no horizontal flip needed)
+    // Object
     ctx.save();
     ctx.translate(objX, objY);
+    ctx.scale(zoom, zoom);
     const wheelR = WHEEL_RADIUS[vehicle];
     const rotation = (liveS * meterPx) / wheelR;
-    drawVehicle(ctx, vehicle, rotation, 1); // forward facing
+    drawVehicle(ctx, vehicle, rotation, 1);
     ctx.restore();
 
-    // Velocity arrow (down)
     if (layers.velocityArrow && liveV > 0.05) {
       const arrLen = Math.min(110, liveV * 4);
       drawArrow(ctx, objX + vSize * 0.55, objY, objX + vSize * 0.55, objY + arrLen, '#16A34A', 4);
-      ctx.font = 'bold 12px ui-monospace, monospace';
+      const fs = Math.round(12 * zoom);
+      ctx.font = `bold ${fs}px ui-monospace, monospace`;
       const lbl = `v = ${liveV.toFixed(1)} m/s`;
       const lblW = ctx.measureText(lbl).width;
       const lblX = objX + vSize * 0.55 + 10;
       const lblY = objY + arrLen / 2;
       ctx.fillStyle = '#16A34A';
       ctx.beginPath();
-      ctx.roundRect(lblX, lblY - 11, lblW + 14, 22, 11);
+      ctx.roundRect(lblX, lblY - fs * 0.85, lblW + 14, fs * 1.7, fs);
       ctx.fill();
       ctx.fillStyle = '#FFFFFF';
       ctx.textAlign = 'left';
@@ -197,17 +203,18 @@ export default function FreeFallScene({
       ctx.textBaseline = 'alphabetic';
     }
 
-    // Acceleration arrow
     if (layers.accelerationArrow) {
       drawArrow(ctx, objX - vSize * 0.55, objY, objX - vSize * 0.55, objY + 45, '#EA580C', 4);
-      ctx.font = 'bold 12px ui-monospace, monospace';
+      const fs = Math.round(12 * zoom);
+      ctx.font = `bold ${fs}px ui-monospace, monospace`;
       ctx.fillStyle = '#EA580C';
       ctx.textAlign = 'right';
       ctx.fillText('g', objX - vSize * 0.55 - 6, objY + 27);
     }
 
-    // Time/height readout
-    ctx.font = 'bold 13px ui-monospace, monospace';
+    // Readout
+    const fs = Math.round(13 * zoom);
+    ctx.font = `bold ${fs}px ui-monospace, monospace`;
     const labelText = `t: ${liveTime.toFixed(2)}s   ·   h: ${liveS.toFixed(1)}m`;
     ctx.textAlign = 'left';
     const textW = ctx.measureText(labelText).width;
@@ -215,24 +222,31 @@ export default function FreeFallScene({
     const lblY = 18;
     ctx.fillStyle = 'rgba(11, 29, 58, 0.92)';
     ctx.beginPath();
-    ctx.roundRect(lblX, lblY, textW + 20, 26, 10);
+    ctx.roundRect(lblX, lblY, textW + 20, fs * 2, 10);
     ctx.fill();
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
     ctx.stroke();
     ctx.fillStyle = '#FFFFFF';
     ctx.textBaseline = 'middle';
-    ctx.fillText(labelText, lblX + 10, lblY + 13);
+    ctx.fillText(labelText, lblX + 10, lblY + fs);
     ctx.textBaseline = 'alphabetic';
-  }, [values, vehicle, liveTime, liveS, liveV, duration, layers]);
+  }, [values, vehicle, liveTime, liveS, liveV, duration, layers, zoom]);
 
   return (
     <div
       ref={containerRef}
       className="relative w-full h-full overflow-hidden"
-      style={{ background: '#7CC2F0', minHeight: '320px' }}
+      style={{ background: '#7CC2F0' }}
     >
       <canvas ref={canvasRef} />
       <VehiclePickerOverlay current={vehicle} onChange={onVehicleChange} />
+      <EmbeddedSliders
+        values={values}
+        mode={mode}
+        unknown={unknown}
+        activeVars={activeVars}
+        onChange={onValueChange}
+      />
       <SceneOverlayControls
         status={playbackStatus}
         onPlay={onPlay}

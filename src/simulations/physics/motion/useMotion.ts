@@ -48,6 +48,7 @@ const initialState: MotionState = {
   ghosts: [],
   error: null,
   lastResult: null,
+  zoom: 1,
 };
 
 type Action =
@@ -65,6 +66,7 @@ type Action =
   | { type: 'SET_SPEED'; speed: PlaybackSpeed }
   | { type: 'SAVE_GHOST' }
   | { type: 'CLEAR_GHOSTS' }
+  | { type: 'SET_ZOOM'; zoom: number }
   | { type: 'RECOMPUTE' };
 
 function reducer(state: MotionState, action: Action): MotionState {
@@ -198,6 +200,9 @@ function reducer(state: MotionState, action: Action): MotionState {
     case 'CLEAR_GHOSTS':
       return { ...state, ghosts: [] };
 
+    case 'SET_ZOOM':
+      return { ...state, zoom: Math.max(0.5, Math.min(2.5, action.zoom)) };
+
     case 'RECOMPUTE': {
       if (state.mode !== 'solver' || !state.unknown) {
         return { ...state, error: null, lastResult: null };
@@ -324,6 +329,10 @@ export function useMotion() {
   );
   const saveGhost = useCallback(() => dispatch({ type: 'SAVE_GHOST' }), []);
   const clearGhosts = useCallback(() => dispatch({ type: 'CLEAR_GHOSTS' }), []);
+  const setZoom = useCallback(
+    (zoom: number) => dispatch({ type: 'SET_ZOOM', zoom }),
+    [],
+  );
 
   // ─── Derived values ──────────────────────────────────────
   const equationDef = EQUATIONS[state.equation];
@@ -355,6 +364,7 @@ export function useMotion() {
       setSpeed,
       saveGhost,
       clearGhosts,
+      setZoom,
     },
   };
 }

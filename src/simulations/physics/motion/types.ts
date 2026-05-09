@@ -103,6 +103,8 @@ export interface MotionState {
   error: ValidationError | null;
   /** Last computed result for ResultDisplay */
   lastResult: { variable: VariableKey; value: number } | null;
+  /** Visual zoom — scales vehicle + readout text only, NOT road/sky/clouds */
+  zoom: number;
 }
 
 export interface MotionActions {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { G } from '../physics';
 import type {
   KinematicVars,
@@ -54,6 +54,15 @@ export default function FreeFallScene(props: Props) {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Re-draw when container size changes (fullscreen toggle, rotation, etc.)
+  const [resizeKey, setResizeKey] = useState(0);
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const obs = new ResizeObserver(() => setResizeKey((k) => k + 1));
+    obs.observe(containerRef.current);
+    return () => obs.disconnect();
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -240,7 +249,7 @@ export default function FreeFallScene(props: Props) {
     ctx.textBaseline = 'middle';
     ctx.fillText(labelText, lblX + 10, lblY + fs);
     ctx.textBaseline = 'alphabetic';
-  }, [values, vehicle, liveTime, liveS, liveV, duration, layers, zoom]);
+  }, [values, vehicle, liveTime, liveS, liveV, duration, layers, zoom, resizeKey]);
 
   return (
     <div

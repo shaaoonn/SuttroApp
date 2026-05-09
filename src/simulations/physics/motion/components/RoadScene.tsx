@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { positionAt } from '../physics';
 import type {
   GhostRun,
@@ -58,6 +58,18 @@ export default function RoadScene(props: Props) {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Track container size so we can re-trigger the drawing effect when the
+  // viewport resizes (e.g., entering/exiting fullscreen, orientation change,
+  // window resize). Without this, the canvas keeps using the old W/H and the
+  // vehicle appears off-position until the next state change.
+  const [resizeKey, setResizeKey] = useState(0);
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const obs = new ResizeObserver(() => setResizeKey((k) => k + 1));
+    obs.observe(containerRef.current);
+    return () => obs.disconnect();
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -347,7 +359,7 @@ export default function RoadScene(props: Props) {
     ctx.textBaseline = 'middle';
     ctx.fillText(labelText, vX, lblY + readoutFs);
     ctx.textBaseline = 'alphabetic';
-  }, [values, vehicle, liveTime, liveS, liveV, duration, layers, ghosts, zoom]);
+  }, [values, vehicle, liveTime, liveS, liveV, duration, layers, ghosts, zoom, resizeKey]);
 
   return (
     <div

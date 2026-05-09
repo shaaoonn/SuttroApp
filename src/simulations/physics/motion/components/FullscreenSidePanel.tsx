@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { EQUATIONS } from '../physics';
 import type {
   EquationKey,
@@ -61,6 +62,16 @@ export default function FullscreenSidePanel({
   const equationDef = EQUATIONS[equation];
   const variant = equationDef.variants[variantIndex] ?? equationDef.variants[0];
 
+  // Mobile fullscreen detection — apply 0.8× zoom so formulas/result/graphs
+  // fit comfortably in the narrow 1/5 rail on phone-landscape.
+  const [isNarrow, setIsNarrow] = useState(false);
+  useEffect(() => {
+    const check = () => setIsNarrow(window.innerWidth < 900);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
   return (
     <div
       className="flex flex-col gap-1.5 p-2 overflow-y-auto h-full w-full"
@@ -69,6 +80,9 @@ export default function FullscreenSidePanel({
         backdropFilter: 'blur(10px)',
         WebkitBackdropFilter: 'blur(10px)',
         borderLeft: '1px solid rgba(226, 232, 240, 0.8)',
+        // CSS zoom shrinks all child sizes (text, padding, graph height) uniformly.
+        // Supported in modern Chrome/Edge/Safari/Firefox.
+        zoom: isNarrow ? 0.8 : 1,
       }}
     >
       {mode === 'solver' && (

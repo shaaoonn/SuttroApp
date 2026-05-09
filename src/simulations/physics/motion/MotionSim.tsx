@@ -49,7 +49,21 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
-    const handler = () => setIsFullscreen(Boolean(document.fullscreenElement));
+    const handler = () => {
+      const isFs = Boolean(document.fullscreenElement);
+      setIsFullscreen(isFs);
+      // On exit: bring the sim back into view (browser sometimes restores
+      // scroll position to where the user was BEFORE entering fullscreen,
+      // leaving the sim off-screen below).
+      if (!isFs) {
+        setTimeout(() => {
+          containerRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        }, 80);
+      }
+    };
     document.addEventListener('fullscreenchange', handler);
     return () => document.removeEventListener('fullscreenchange', handler);
   }, []);

@@ -465,6 +465,16 @@ After ship, user should be able to:
 - [ ] Toggle status (public ↔ private) and verify gallery hides private
 - [ ] Add YouTube URL → verify FAB modal opens video
 - [ ] Add thumbnail URL → verify gallery card uses it
+- [ ] **Test fullscreen on real mobile (landscape)** — confirm bottom controls
+      bar doesn't overlap the vehicle/object, right rail formulas/result
+      visible in compact form
+- [ ] **Confirm the right rail (`FullscreenSidePanel.tsx`) renders correctly**
+      in fullscreen on both desktop (4/5 + 1/5 split) and mobile-landscape
+- [ ] **For Android-affecting changes** (e.g., new immersive routes, native
+      toolbar logic): bump versionCode + use the GitHub Actions CI workflow
+      to build the AAB (local Windows box has only JDK 17; project requires
+      JDK 21), then upload via existing Python automation (see Step 7 →
+      Android section below)
 
 ---
 
@@ -541,6 +551,82 @@ difficulty SMALLINT 1-5
 - **Coolify admin app:** resource `bwscoksk88g40sck08sw4wso`
 - **Service role key:** in `.env.local` as `SUPABASE_SERVICE_ROLE_KEY`
 - **Repo:** https://github.com/shaaoonn/SuttroApp (push to `main`)
+
+## ANDROID APK / AAB PIPELINE (when changes touch `android/**`)
+
+Local Windows box has **only JDK 17**, but the project requires **JDK 21**
+(`JavaVersion.VERSION_21` in `android/app/build.gradle`). DO NOT try to
+build locally with `./gradlew bundleRelease` — it will silently no-op
+or fail with "JAVA_HOME is not set". Use the CI workflow instead.
+
+### Workflow: `.github/workflows/build-apk.yml`
+- Auto-triggers on push to `main` when files in `android/**` change
+- Sets up JDK 21 + Android SDK + decoded keystore from secrets
+- Runs `assembleRelease` + `bundleRelease`
+- Uploads two artifacts: `suttro-release-apk` and `suttro-release-aab`
+- Typical run time: ~3.5 minutes
+
+### Pre-flight checks before pushing Android changes
+**Critical** — if any of these are uncommitted on `main`, CI WILL fail:
+1. `android/app/google-services.json` — must contain
+   `"package_name": "app.suttro.suttro"` (the new package). The legacy
+   `com.suttro.app` block can stay too.
+2. All `android/app/src/main/java/app/suttro/suttro/*.kt` files must be
+   committed (LoginActivity, OnboardingActivity, SessionManager,
+   SplashActivity, SuttroBridge, SuttroConfig, SuttroFirebaseService,
+   util/SupabaseApi, MainContainerActivity).
+3. The OLD `android/app/src/main/java/com/suttro/app/*.kt` files MUST be
+   removed (deleted) — otherwise duplicate-class errors.
+
+Run `git status android/app/src/main/java/` before pushing to confirm
+these files are tracked + the old ones are deleted.
+
+### Steps to ship a new Android version
+```
+# 1. Edit code (e.g., MainContainerActivity logic, gradle resources)
+# 2. Bump versionCode + versionName in android/app/build.gradle
+# 3. Update RELEASE_NAME + RELEASE_NOTES_BN in scripts/play/upload_internal.py
+git add android/app/ scripts/play/upload_internal.py
+git commit -m "android(<new-version>): <one-line summary>"
+git push origin main
+# 4. Watch the CI workflow (~3.5 min):
+gh run list --workflow=build-apk.yml --limit 1
+gh run watch <run-id> --exit-status
+# 5. Download AAB artifact:
+mkdir -p .ci-artifacts
+gh run download <run-id> --name suttro-release-aab --dir .ci-artifacts/
+mkdir -p android/app/build/outputs/bundle/release
+cp .ci-artifacts/app-release.aab android/app/build/outputs/bundle/release/app-release.aab
+# 6. Upload to Play Internal Testing as draft (service account):
+PYTHONIOENCODING=utf-8 python scripts/play/upload_internal.py
+# 7. Promote draft → completed (KNOWN LIMITATION):
+PYTHONIOENCODING=utf-8 python scripts/play/promote_internal.py
+# Will fail with "Only releases with status draft may be created on draft app".
+# This is a Play Console restriction we cannot bypass via API.
+# User must manually click "Save & publish" in Play Console (~30 sec).
+```
+
+### Keystore + service account
+- Keystore: `android/app/suttro-release.keystore` — password `suttro2026`
+  (set as both `SUTTRO_STORE_PASSWORD` and `SUTTRO_KEY_PASSWORD`)
+- Service account JSON: `.secrets/play-publisher-key.json` (gitignored)
+- Service account email: `suttro-play-publisher@suttro-app.iam.gserviceaccount.com`
+- Service account has Admin permissions on Play Console (cross-Gmail bridge:
+  Cloud project owned by `shaaoonn@gmail.com`, Play Console by
+  `mdahsanullahshaon@gmail.com`)
+
+### Why the API can't auto-promote
+The Suttro app has a precarious account-standing history (suspension
+context). When Play Console enters "draft app" review-pending status,
+the API enforces `Only releases with status draft may be created on
+draft app`. The first promotion of every new versionCode requires a
+manual "Save & publish" in the browser. After that, subsequent edits
+to that release CAN be done via API — but the draft → completed
+transition itself cannot.
+
+This is unchanged from v1.0.1. Do not attempt to find an API workaround;
+none exists. Tell the user: "Upload done. ৩০ সেকেন্ডে Play Console-এ এক
+click — Save & publish — তারপর testers update পাবে।"
 
 ---
 

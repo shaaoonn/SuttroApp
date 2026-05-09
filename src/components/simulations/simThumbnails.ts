@@ -10,6 +10,41 @@ export interface SimThumbData {
 }
 
 export const SIM_THUMBNAILS: Record<string, SimThumbData> = {
+  inertia: {
+    icon: '🚌',
+    bg: 'linear-gradient(135deg, #FCD34D 0%, #FB923C 100%)',
+    visual: `<svg viewBox="0 0 240 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Sky -->
+      <rect x="0" y="0" width="240" height="80" fill="#7CC2F0"/>
+      <circle cx="200" cy="22" r="11" fill="#FFD86E"/>
+      <ellipse cx="50" cy="22" rx="20" ry="8" fill="white" opacity="0.9"/>
+      <ellipse cx="155" cy="18" rx="16" ry="6" fill="white" opacity="0.85"/>
+      <!-- Ground -->
+      <rect x="0" y="80" width="240" height="50" fill="#5A9A4A"/>
+      <!-- Road -->
+      <rect x="0" y="86" width="240" height="22" fill="#2D3340"/>
+      <line x1="0" y1="87" x2="240" y2="87" stroke="#FFC93C" stroke-width="1.4"/>
+      <line x1="0" y1="107" x2="240" y2="107" stroke="#FFC93C" stroke-width="1.4"/>
+      <line x1="0" y1="97" x2="240" y2="97" stroke="white" stroke-width="1.2" stroke-dasharray="6,4" opacity="0.7"/>
+      <!-- Bus body (cutaway, yellow) -->
+      <rect x="50" y="50" width="120" height="38" rx="6" fill="#FFC93C" stroke="#92400E" stroke-width="1.5"/>
+      <!-- Window cutaway showing interior -->
+      <rect x="56" y="58" width="108" height="22" rx="2" fill="white" opacity="0.85"/>
+      <!-- Passenger leaning forward -->
+      <text x="100" y="76" font-size="18" text-anchor="middle">🧍</text>
+      <!-- Lurch arrow -->
+      <line x1="105" y1="63" x2="125" y2="63" stroke="#BE185D" stroke-width="2"/>
+      <polygon points="125,63 121,60 121,66" fill="#BE185D"/>
+      <!-- Wheels -->
+      <circle cx="74" cy="92" r="6" fill="#1F2937"/>
+      <circle cx="146" cy="92" r="6" fill="#1F2937"/>
+      <!-- Brake indicator -->
+      <text x="190" y="68" fill="#DC2626" font-size="14" font-weight="bold">🛑</text>
+      <!-- Title -->
+      <text x="120" y="125" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="sans-serif">F_net = 0 → constant v</text>
+    </svg>`,
+  },
+
   motion: {
     icon: '🚗',
     bg: 'linear-gradient(135deg, #0B1D3A 0%, #1B6B4A 100%)',

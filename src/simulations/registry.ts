@@ -5,6 +5,7 @@
 
 import type { SimulationConfig } from './_template/config';
 import { motionConfig } from './physics/motion/config';
+import { inertiaConfig } from './physics/inertia/config';
 
 export interface SimRegistryEntry {
   slug: string;
@@ -17,6 +18,11 @@ export const simulations: SimRegistryEntry[] = [
     slug: 'motion',
     config: motionConfig,
     component: () => import('./physics/motion/MotionSim'),
+  },
+  {
+    slug: 'inertia',
+    config: inertiaConfig,
+    component: () => import('./physics/inertia/InertiaSim'),
   },
 ];
 

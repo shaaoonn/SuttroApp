@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getSimulation, simulations } from '@/simulations/registry';
 import { getSimulationMeta } from '@/lib/simulations-db';
 import MotionSim from '@/simulations/physics/motion/MotionSim';
+import InertiaSim from '@/simulations/physics/inertia/InertiaSim';
 
 interface SimPageProps {
   params: Promise<{ slug: string }>;
@@ -36,6 +37,7 @@ export async function generateMetadata({ params }: SimPageProps) {
 type SimComponent = React.ComponentType<{ videoUrl?: string }>;
 const SIMULATION_COMPONENTS: Record<string, SimComponent> = {
   motion: MotionSim,
+  inertia: InertiaSim,
 };
 
 const SUBJECT_LABELS: Record<string, string> = {

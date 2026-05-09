@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Strict HTTPS-only policy. The app talks to:
+  - suttro.app + api.suttro.app (Suttro web + self-hosted Supabase via Kong/Caddy, HTTPS)
+  - googleapis.com / accounts.google.com / gstatic.com (Google Sign-In + assets)
+  - YouTube + Drive (HTTPS only)
+  All cleartext traffic is rejected in every domain — including arbitrary
+  unlisted hosts via the base-config — to close downgrade-attack vectors and
+  satisfy Play's Network security audit.
+-->
 <network-security-config>
     <base-config cleartextTrafficPermitted="false">
         <trust-anchors>
@@ -11,9 +20,5 @@
         <domain includeSubdomains="true">googleapis.com</domain>
         <domain includeSubdomains="true">accounts.google.com</domain>
         <domain includeSubdomains="true">gstatic.com</domain>
-    </domain-config>
-    <!-- Self-hosted Supabase via Coolify (HTTP internal) -->
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">sslip.io</domain>
     </domain-config>
 </network-security-config>

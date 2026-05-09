@@ -6,11 +6,11 @@
          is retained as the secondary/tagline in UI text. -->
     <string name="app_name">Suttro</string>
     <string name="title_activity_main">Suttro</string>
-    <string name="package_name">com.suttro.app</string>
-    <string name="custom_url_scheme">com.suttro.app</string>
+    <string name="package_name">app.suttro.suttro</string>
+    <string name="custom_url_scheme">app.suttro.suttro</string>
 
     <!-- Login (Google only) -->
-    <string name="login_tagline">বিজ্ঞান পড়ার সবচেয়ে সহজ উপায়</string>
+    <string name="login_tagline">ছুঁয়ে দেখো বিজ্ঞান</string>
     <string name="login_title">লগ ইন করো</string>
     <string name="login_subtitle">Google অ্যাকাউন্ট দিয়ে এক ট্যাপে</string>
     <string name="btn_google_primary">Google দিয়ে লগ ইন করো</string>

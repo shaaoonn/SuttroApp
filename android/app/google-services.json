@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:209048026817:android:0f95f91d4041ad66bc5e40",
+        "android_client_info": {
+          "package_name": "app.suttro.suttro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbeRFs2oFrWF9fa-oBuGXyNlbIYVMJ45s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:209048026817:android:1b7ac21076fbd4ecbc5e40",
         "android_client_info": {
           "package_name": "com.suttro.app"

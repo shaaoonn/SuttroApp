@@ -3,7 +3,7 @@
 # ─────────────────────────────────────────────
 
 # Keep app classes
--keep class com.suttro.app.** { *; }
+-keep class app.suttro.suttro.** { *; }
 
 # WebView JavaScript interface
 -keepclassmembers class * {
@@ -73,16 +73,16 @@
 -keep class kotlin.Metadata { *; }
 -keepattributes RuntimeVisibleAnnotations,AnnotationDefault
 
-# Activities/Services declared in AndroidManifest — already covered by com.suttro.app.**
+# Activities/Services declared in AndroidManifest — already covered by app.suttro.suttro.**
 # but make explicit for R8 full-mode safety
--keep class com.suttro.app.SplashActivity { *; }
--keep class com.suttro.app.LoginActivity { *; }
--keep class com.suttro.app.OnboardingActivity { *; }
--keep class com.suttro.app.MainContainerActivity { *; }
--keep class com.suttro.app.SuttroFirebaseService { *; }
+-keep class app.suttro.suttro.SplashActivity { *; }
+-keep class app.suttro.suttro.LoginActivity { *; }
+-keep class app.suttro.suttro.OnboardingActivity { *; }
+-keep class app.suttro.suttro.MainContainerActivity { *; }
+-keep class app.suttro.suttro.SuttroFirebaseService { *; }
 
 # SuttroBridge — exposed to JavaScript, all public methods must survive obfuscation
--keep class com.suttro.app.SuttroBridge {
+-keep class app.suttro.suttro.SuttroBridge {
     public *;
 }
 

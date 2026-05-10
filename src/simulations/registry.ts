@@ -6,6 +6,7 @@
 import type { SimulationConfig } from './_template/config';
 import { motionConfig } from './physics/motion/config';
 import { inertiaConfig } from './physics/inertia/config';
+import { forceAccelerationConfig } from './physics/force-acceleration/config';
 
 export interface SimRegistryEntry {
   slug: string;
@@ -23,6 +24,11 @@ export const simulations: SimRegistryEntry[] = [
     slug: 'inertia',
     config: inertiaConfig,
     component: () => import('./physics/inertia/InertiaSim'),
+  },
+  {
+    slug: 'force-acceleration',
+    config: forceAccelerationConfig,
+    component: () => import('./physics/force-acceleration/ForceAccelerationSim'),
   },
 ];
 

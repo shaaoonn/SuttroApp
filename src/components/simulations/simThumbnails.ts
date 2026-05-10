@@ -10,6 +10,38 @@ export interface SimThumbData {
 }
 
 export const SIM_THUMBNAILS: Record<string, SimThumbData> = {
+  'force-acceleration': {
+    icon: '🛒',
+    bg: 'linear-gradient(135deg, #FBBF24 0%, #F97316 100%)',
+    visual: `<svg viewBox="0 0 240 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- sky -->
+      <rect x="0" y="0" width="240" height="80" fill="#7CC2F0"/>
+      <circle cx="200" cy="22" r="11" fill="#FFD86E"/>
+      <ellipse cx="60" cy="22" rx="20" ry="8" fill="white" opacity="0.9"/>
+      <!-- ground / road -->
+      <rect x="0" y="80" width="240" height="50" fill="#5A9A4A"/>
+      <rect x="0" y="86" width="240" height="22" fill="#2D3340"/>
+      <line x1="0" y1="97" x2="240" y2="97" stroke="white" stroke-width="1.2" stroke-dasharray="6,4" opacity="0.7"/>
+      <!-- 3 pushers -->
+      <text x="48" y="78" font-size="20" text-anchor="middle">🧒</text>
+      <text x="68" y="78" font-size="20" text-anchor="middle">🧒</text>
+      <text x="88" y="78" font-size="20" text-anchor="middle">🧒</text>
+      <!-- cart skateboard -->
+      <rect x="105" y="55" width="56" height="26" rx="3" fill="#B8814B" stroke="#5C3917" stroke-width="1.5"/>
+      <line x1="105" y1="56" x2="161" y2="80" stroke="#5C3917" stroke-width="1.5"/>
+      <line x1="161" y1="56" x2="105" y2="80" stroke="#5C3917" stroke-width="1.5"/>
+      <rect x="105" y="80" width="56" height="4" rx="1" fill="#92400E"/>
+      <circle cx="115" cy="86" r="5" fill="#10B981"/>
+      <circle cx="151" cy="86" r="5" fill="#10B981"/>
+      <!-- F arrow over cart -->
+      <line x1="135" y1="44" x2="200" y2="44" stroke="#EA580C" stroke-width="3"/>
+      <polygon points="200,44 192,40 192,48" fill="#EA580C"/>
+      <text x="167" y="38" fill="#EA580C" font-size="11" font-weight="bold">F = ma</text>
+      <!-- title -->
+      <text x="120" y="125" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="sans-serif">Newton 2nd Law</text>
+    </svg>`,
+  },
+
   inertia: {
     icon: '🚌',
     bg: 'linear-gradient(135deg, #FCD34D 0%, #FB923C 100%)',

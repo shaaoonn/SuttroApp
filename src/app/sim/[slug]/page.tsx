@@ -4,6 +4,7 @@ import { getSimulation, simulations } from '@/simulations/registry';
 import { getSimulationMeta } from '@/lib/simulations-db';
 import MotionSim from '@/simulations/physics/motion/MotionSim';
 import InertiaSim from '@/simulations/physics/inertia/InertiaSim';
+import ForceAccelerationSim from '@/simulations/physics/force-acceleration/ForceAccelerationSim';
 
 interface SimPageProps {
   params: Promise<{ slug: string }>;
@@ -38,6 +39,7 @@ type SimComponent = React.ComponentType<{ videoUrl?: string }>;
 const SIMULATION_COMPONENTS: Record<string, SimComponent> = {
   motion: MotionSim,
   inertia: InertiaSim,
+  'force-acceleration': ForceAccelerationSim,
 };
 
 const SUBJECT_LABELS: Record<string, string> = {

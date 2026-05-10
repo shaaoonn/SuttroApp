@@ -20,6 +20,9 @@ export type PlaybackStatus = 'idle' | 'playing' | 'paused' | 'finished';
 
 export type PlaybackSpeed = 0.25 | 0.5 | 1 | 2;
 
+/** Distance display unit — calculations always in meters; this is display-only. */
+export type DistanceUnit = 'm' | 'cm';
+
 export interface KinematicVars {
   u: number; // initial velocity (m/s)
   v: number; // final velocity (m/s)
@@ -105,6 +108,11 @@ export interface MotionState {
   lastResult: { variable: VariableKey; value: number } | null;
   /** Visual zoom — scales vehicle + readout text only, NOT road/sky/clouds */
   zoom: number;
+  /** UI text-size scale — scales right-panel + embedded-slider sizes for projector use.
+   *  Range 0.7 – 1.8 in 0.1 increments. Persists in localStorage. */
+  textScale: number;
+  /** Distance display unit — toggle between meters and centimeters */
+  distanceUnit: DistanceUnit;
 }
 
 export interface MotionActions {

@@ -10,6 +10,8 @@ interface Props {
   unknown: VariableKey | null;
   activeVars: VariableKey[];
   onChange: (key: VariableKey, value: number) => void;
+  /** UI text-size scale (1.0 default). Applied via CSS zoom. */
+  textScale?: number;
 }
 
 const VAR_COLORS: Record<VariableKey, { fill: string; thumb: string; bg: string }> = {
@@ -27,6 +29,7 @@ export default function EmbeddedSliders({
   unknown,
   activeVars,
   onChange,
+  textScale = 1.0,
 }: Props) {
   const visibleVars: VariableKey[] = (['u', 'v', 'a', 's', 't'] as VariableKey[]).filter(
     (v) => activeVars.includes(v) || (mode === 'solver' && unknown === v),
@@ -42,6 +45,7 @@ export default function EmbeddedSliders({
         border: '1px solid rgba(255, 255, 255, 0.85)',
         boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)',
         padding: '8px 6px',
+        zoom: textScale,
       }}
     >
       <div className="flex gap-1">

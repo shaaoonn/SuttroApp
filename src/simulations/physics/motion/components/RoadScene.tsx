@@ -49,6 +49,10 @@ interface Props {
   onClearGhosts: () => void;
   /** When true, suppress the in-canvas overlay (caller renders elsewhere) */
   hideOverlayControls?: boolean;
+  /** Display unit for distance markers + floating readout (meters/centimeters) */
+  distanceUnit?: 'm' | 'cm';
+  /** UI text scale for embedded sliders inside canvas */
+  textScale?: number;
 }
 
 export default function RoadScene(props: Props) {
@@ -59,6 +63,8 @@ export default function RoadScene(props: Props) {
     onZoomChange, onToggleFullscreen, isFullscreen,
     ghostCount, onSaveGhost, onClearGhosts,
     hideOverlayControls,
+    distanceUnit = 'm',
+    textScale = 1.0,
   } = props;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -240,7 +246,9 @@ export default function RoadScene(props: Props) {
         ctx.moveTo(x, roadBottom);
         ctx.lineTo(x, roadBottom + 8);
         ctx.stroke();
-        const lbl = `${m}m`;
+        // Display unit-aware marker label (×100 for cm)
+        const displayVal = distanceUnit === 'cm' ? m * 100 : m;
+        const lbl = `${displayVal}${distanceUnit}`;
         ctx.fillStyle = '#FFFFFF';
         ctx.strokeStyle = 'rgba(0, 0, 0, 0.75)';
         ctx.lineWidth = 3.5;
@@ -350,7 +358,8 @@ export default function RoadScene(props: Props) {
     // Floating readout
     const readoutFs = Math.round(13 * zoom);
     ctx.font = `bold ${readoutFs}px ui-monospace, monospace`;
-    const labelText = `t: ${liveTime.toFixed(2)}s   ·   s: ${liveS.toFixed(1)}m`;
+    const displayS = distanceUnit === 'cm' ? liveS * 100 : liveS;
+    const labelText = `t: ${liveTime.toFixed(2)}s   ·   s: ${displayS.toFixed(1)}${distanceUnit}`;
     ctx.textAlign = 'center';
     const textW = ctx.measureText(labelText).width;
     const lblPad = 12;
@@ -367,7 +376,7 @@ export default function RoadScene(props: Props) {
     ctx.textBaseline = 'middle';
     ctx.fillText(labelText, vX, lblY + readoutFs);
     ctx.textBaseline = 'alphabetic';
-  }, [values, vehicle, liveTime, liveS, liveV, duration, layers, ghosts, zoom, resizeKey]);
+  }, [values, vehicle, liveTime, liveS, liveV, duration, layers, ghosts, zoom, resizeKey, distanceUnit]);
 
   return (
     <div
@@ -383,6 +392,7 @@ export default function RoadScene(props: Props) {
         unknown={unknown}
         activeVars={activeVars}
         onChange={onValueChange}
+        textScale={textScale}
       />
       {!hideOverlayControls && (
         <SceneOverlayControls

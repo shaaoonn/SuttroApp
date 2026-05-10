@@ -40,6 +40,7 @@ interface Props {
   layers: LayerVisibility;
   onToggleLayer: (key: keyof LayerVisibility) => void;
   isFreefall: boolean;
+  distanceUnit?: 'm' | 'cm';
 }
 
 export default function FullscreenSidePanel({
@@ -58,6 +59,7 @@ export default function FullscreenSidePanel({
   layers,
   onToggleLayer,
   isFreefall,
+  distanceUnit = 'm',
 }: Props) {
   const equationDef = EQUATIONS[equation];
   const variant = equationDef.variants[variantIndex] ?? equationDef.variants[0];
@@ -104,6 +106,7 @@ export default function FullscreenSidePanel({
         lastResult={lastResult}
         error={error}
         mode={mode}
+        distanceUnit={distanceUnit}
       />
 
       <ErrorBanner error={error} />

@@ -44,6 +44,8 @@ interface Props {
   onSaveGhost: () => void;
   onClearGhosts: () => void;
   hideOverlayControls?: boolean;
+  distanceUnit?: 'm' | 'cm';
+  textScale?: number;
 }
 
 export default function FreeFallScene(props: Props) {
@@ -54,6 +56,8 @@ export default function FreeFallScene(props: Props) {
     onZoomChange, onToggleFullscreen, isFullscreen,
     ghostCount, onSaveGhost, onClearGhosts,
     hideOverlayControls,
+    distanceUnit = 'm',
+    textScale = 1.0,
   } = props;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -191,7 +195,8 @@ export default function FreeFallScene(props: Props) {
         ctx.fillStyle = '#0B1D3A';
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
         ctx.lineWidth = 3;
-        const lbl = `${m}m`;
+        const dispVal = distanceUnit === 'cm' ? m * 100 : m;
+        const lbl = `${dispVal}${distanceUnit}`;
         ctx.strokeText(lbl, towerX - 6, y + 3);
         ctx.fillText(lbl, towerX - 6, y + 3);
       }
@@ -238,7 +243,8 @@ export default function FreeFallScene(props: Props) {
     // Readout
     const fs = Math.round(13 * zoom);
     ctx.font = `bold ${fs}px ui-monospace, monospace`;
-    const labelText = `t: ${liveTime.toFixed(2)}s   ·   h: ${liveS.toFixed(1)}m`;
+    const dispH = distanceUnit === 'cm' ? liveS * 100 : liveS;
+    const labelText = `t: ${liveTime.toFixed(2)}s   ·   h: ${dispH.toFixed(1)}${distanceUnit}`;
     ctx.textAlign = 'left';
     const textW = ctx.measureText(labelText).width;
     const lblX = W - textW - 32;
@@ -253,7 +259,7 @@ export default function FreeFallScene(props: Props) {
     ctx.textBaseline = 'middle';
     ctx.fillText(labelText, lblX + 10, lblY + fs);
     ctx.textBaseline = 'alphabetic';
-  }, [values, vehicle, liveTime, liveS, liveV, duration, layers, zoom, resizeKey]);
+  }, [values, vehicle, liveTime, liveS, liveV, duration, layers, zoom, resizeKey, distanceUnit]);
 
   return (
     <div
@@ -269,6 +275,7 @@ export default function FreeFallScene(props: Props) {
         unknown={unknown}
         activeVars={activeVars}
         onChange={onValueChange}
+        textScale={textScale}
       />
       {!hideOverlayControls && (
         <SceneOverlayControls

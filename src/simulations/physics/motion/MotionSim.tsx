@@ -12,6 +12,7 @@ import LayerToggles from './components/LayerToggles';
 import ModeSwitch from './components/ModeSwitch';
 import ResultDisplay from './components/ResultDisplay';
 import RoadScene from './components/RoadScene';
+import SimSettings from './components/SimSettings';
 import StepDerivation from './components/StepDerivation';
 import TutorialFAB from './components/TutorialFAB';
 import { motionConfig } from './config';
@@ -111,6 +112,8 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
     onReset: actions.reset,
     onZoomChange: actions.setZoom,
     onToggleFullscreen: toggleFullscreen,
+    distanceUnit: state.distanceUnit,
+    textScale: state.textScale,
     isFullscreen,
     // Ghost compare controls — now part of the floating overlay pill
     ghostCount: state.ghosts.length,
@@ -154,7 +157,7 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
         {/* Right rail (1/5, compact) */}
         <div
           className="flex flex-col flex-[1] min-w-[180px] max-w-[280px] h-full"
-          style={{ background: 'rgba(255, 255, 255, 0.96)' }}
+          style={{ background: 'rgba(255, 255, 255, 0.96)', zoom: state.textScale }}
         >
           <FullscreenSidePanel
             mode={state.mode}
@@ -172,6 +175,7 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
             layers={state.layers}
             onToggleLayer={actions.toggleLayer}
             isFreefall={isFreefall}
+            distanceUnit={state.distanceUnit}
           />
         </div>
 
@@ -228,7 +232,15 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
           </div>
         </div>
 
-        <ModeSwitch mode={state.mode} onChange={actions.setMode} />
+        <div className="flex items-center gap-2">
+          <SimSettings
+            textScale={state.textScale}
+            onTextScaleChange={actions.setTextScale}
+            distanceUnit={state.distanceUnit}
+            onDistanceUnitChange={actions.setDistanceUnit}
+          />
+          <ModeSwitch mode={state.mode} onChange={actions.setMode} />
+        </div>
       </div>
 
       {/* ═══ Equation tabs ═══ */}
@@ -256,8 +268,13 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
               Speed control removed entirely — animation always plays at 1× real time. */}
         </div>
 
-        {/* RIGHT side panel — formulas, derivation, result, layers, graphs */}
-        <div className="flex flex-col gap-2 lg:w-[360px] flex-shrink-0 lg:overflow-y-auto lg:max-h-[calc(100vh-160px)] lg:pr-1">
+        {/* RIGHT side panel — formulas, derivation, result, layers, graphs.
+            CSS zoom = textScale lets teachers scale ALL right-panel content
+            at once (formulas, sliders, results, graphs) for projector use. */}
+        <div
+          className="flex flex-col gap-2 lg:w-[360px] flex-shrink-0 lg:overflow-y-auto lg:max-h-[calc(100vh-160px)] lg:pr-1"
+          style={{ zoom: state.textScale }}
+        >
           {state.mode === 'solver' && (
             <FormulaDropdown
               equation={equationDef}
@@ -276,6 +293,7 @@ export default function MotionSim({ videoUrl }: MotionSimProps = {}) {
             lastResult={state.lastResult}
             error={state.error}
             mode={state.mode}
+            distanceUnit={state.distanceUnit}
           />
           <ErrorBanner error={state.error} />
 

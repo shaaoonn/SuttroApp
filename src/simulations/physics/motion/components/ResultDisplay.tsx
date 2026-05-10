@@ -11,15 +11,20 @@ interface Props {
   lastResult: MotionState['lastResult'];
   error: ValidationError | null;
   mode: MotionState['mode'];
+  distanceUnit?: 'm' | 'cm';
 }
 
-const VAR_UNIT: Record<VariableKey, string> = {
+const baseVarUnit: Record<VariableKey, string> = {
   u: 'm/s',
   v: 'm/s',
   a: 'm/s²',
   s: 'm',
   t: 's',
 };
+function varUnit(k: VariableKey, du: 'm' | 'cm'): string {
+  if (k === 's' && du === 'cm') return 'cm';
+  return baseVarUnit[k];
+}
 
 const VAR_LABEL_BN: Record<VariableKey, string> = {
   u: 'আদিবেগ',
@@ -43,7 +48,15 @@ export default function ResultDisplay({
   lastResult,
   error,
   mode,
+  distanceUnit = 'm',
 }: Props) {
+  // Display value for `s` field — multiply by 100 if cm mode
+  const displayLiveS = distanceUnit === 'cm' ? liveS * 100 : liveS;
+  // Display value for solver result if it's `s` — same conversion
+  const displayResultValue =
+    lastResult && unknown === 's' && distanceUnit === 'cm'
+      ? lastResult.value * 100
+      : lastResult?.value;
   return (
     <div
       className="rounded-xl px-3 py-2.5"
@@ -69,7 +82,7 @@ export default function ResultDisplay({
         <div>
           <div className="text-[10px]" style={{ color: '#94A3B8' }}>সরণ s</div>
           <div className="font-mono font-bold text-sm" style={{ color: '#1E293B' }}>
-            {fmt(liveS)} m
+            {fmt(displayLiveS)} {distanceUnit}
           </div>
         </div>
       </div>
@@ -92,7 +105,7 @@ export default function ResultDisplay({
               className="font-mono text-base font-bold"
               style={{ color: '#D97706' }}
             >
-              {unknown} = {fmt(lastResult.value)} {VAR_UNIT[unknown]}
+              {unknown} = {fmt(displayResultValue ?? lastResult.value)} {varUnit(unknown, distanceUnit)}
             </span>
           ) : unknown ? (
             <span className="text-xs italic" style={{ color: '#CBD5E1' }}>

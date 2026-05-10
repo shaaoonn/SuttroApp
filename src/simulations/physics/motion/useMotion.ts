@@ -12,6 +12,7 @@ import {
   velocityAt,
 } from './physics';
 import type {
+  DistanceUnit,
   EquationKey,
   GhostRun,
   KinematicVars,
@@ -21,6 +22,24 @@ import type {
   VariableKey,
   VehicleKey,
 } from './types';
+
+// ─── localStorage keys for user-preference state ───
+const LS_TEXT_SCALE = 'suttro:motion:textScale';
+const LS_DISTANCE_UNIT = 'suttro:motion:distanceUnit';
+
+function loadTextScale(): number {
+  if (typeof window === 'undefined') return 1.0;
+  const raw = localStorage.getItem(LS_TEXT_SCALE);
+  const n = raw ? parseFloat(raw) : NaN;
+  if (!Number.isFinite(n) || n < 0.6 || n > 2.0) return 1.0;
+  return n;
+}
+
+function loadDistanceUnit(): DistanceUnit {
+  if (typeof window === 'undefined') return 'm';
+  const raw = localStorage.getItem(LS_DISTANCE_UNIT);
+  return raw === 'cm' ? 'cm' : 'm';
+}
 
 // ─────────────────────────────────────────────
 // গতি Sim - State management hook
@@ -49,6 +68,8 @@ const initialState: MotionState = {
   error: null,
   lastResult: null,
   zoom: 1,
+  textScale: 1.0,
+  distanceUnit: 'm',
 };
 
 type Action =
@@ -67,6 +88,8 @@ type Action =
   | { type: 'SAVE_GHOST' }
   | { type: 'CLEAR_GHOSTS' }
   | { type: 'SET_ZOOM'; zoom: number }
+  | { type: 'SET_TEXT_SCALE'; scale: number }
+  | { type: 'SET_DISTANCE_UNIT'; unit: DistanceUnit }
   | { type: 'RECOMPUTE' };
 
 function reducer(state: MotionState, action: Action): MotionState {
@@ -203,6 +226,12 @@ function reducer(state: MotionState, action: Action): MotionState {
     case 'SET_ZOOM':
       return { ...state, zoom: Math.max(0.5, Math.min(2.5, action.zoom)) };
 
+    case 'SET_TEXT_SCALE':
+      return { ...state, textScale: Math.max(0.7, Math.min(1.8, action.scale)) };
+
+    case 'SET_DISTANCE_UNIT':
+      return { ...state, distanceUnit: action.unit };
+
     case 'RECOMPUTE': {
       if (state.mode !== 'solver' || !state.unknown) {
         return { ...state, error: null, lastResult: null };
@@ -228,10 +257,26 @@ function reducer(state: MotionState, action: Action): MotionState {
 }
 
 export function useMotion() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState, (s) => ({
+    ...s,
+    textScale: loadTextScale(),
+    distanceUnit: loadDistanceUnit(),
+  }));
   const rafRef = useRef<number | null>(null);
   const lastTimestampRef = useRef<number | null>(null);
   const elapsedAccumRef = useRef<number>(0);
+
+  // Persist textScale + distanceUnit to localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(LS_TEXT_SCALE, String(state.textScale));
+    }
+  }, [state.textScale]);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(LS_DISTANCE_UNIT, state.distanceUnit);
+    }
+  }, [state.distanceUnit]);
 
   // ─── Recompute on relevant state changes ─────────────────
   useEffect(() => {
@@ -333,6 +378,14 @@ export function useMotion() {
     (zoom: number) => dispatch({ type: 'SET_ZOOM', zoom }),
     [],
   );
+  const setTextScale = useCallback(
+    (scale: number) => dispatch({ type: 'SET_TEXT_SCALE', scale }),
+    [],
+  );
+  const setDistanceUnit = useCallback(
+    (unit: DistanceUnit) => dispatch({ type: 'SET_DISTANCE_UNIT', unit }),
+    [],
+  );
 
   // ─── Derived values ──────────────────────────────────────
   const equationDef = EQUATIONS[state.equation];
@@ -365,6 +418,8 @@ export function useMotion() {
       saveGhost,
       clearGhosts,
       setZoom,
+      setTextScale,
+      setDistanceUnit,
     },
   };
 }

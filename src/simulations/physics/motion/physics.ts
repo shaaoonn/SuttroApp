@@ -15,6 +15,35 @@ import type {
 
 export const G = 9.81; // m/s² — gravity for free fall
 
+// ─── Display-unit helpers (meters internally, cm/m display) ─────
+
+/** Convert internal meters value to a display string in either m or cm. */
+export function formatDistance(
+  meters: number,
+  unit: 'm' | 'cm',
+  decimals = 2,
+): string {
+  if (!Number.isFinite(meters)) return '—';
+  if (unit === 'cm') {
+    const cm = meters * 100;
+    if (Math.abs(cm) >= 100000) return `${(cm / 1000).toFixed(0)}k cm`;
+    if (Math.abs(cm) >= 1000) return `${cm.toFixed(0)} cm`;
+    return `${cm.toFixed(decimals)} cm`;
+  }
+  if (Math.abs(meters) >= 1000) return `${meters.toFixed(0)} m`;
+  return `${meters.toFixed(decimals)} m`;
+}
+
+/** Distance suffix only ('m' or 'cm') for slider/legend use. */
+export function distanceSuffix(unit: 'm' | 'cm'): string {
+  return unit;
+}
+
+/** Convert m → display number (×100 if cm). For axis labels w/o unit. */
+export function toDisplayDistance(meters: number, unit: 'm' | 'cm'): number {
+  return unit === 'cm' ? meters * 100 : meters;
+}
+
 // ─── Equation definitions with all algebraic variants ──────────
 
 export const EQUATIONS: Record<EquationKey, EquationDef> = {
